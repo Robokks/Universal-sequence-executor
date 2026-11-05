@@ -10,6 +10,14 @@ def main(argv=None):
     parser = argparse.ArgumentParser(prog="lvbatch", description="Safe batch-wise AIXML / VI build")
     sub = parser.add_subparsers(dest="action", required=True)
     sub.add_parser("list", help="Show batch plan")
+    dmo = sub.add_parser("demo-run", help="Run simulation sequence; optional NI gRPC U02 decisions")
+    dmo.add_argument("--plan", type=Path, default=None)
+    dmo.add_argument("--backend", choices=["mock", "grpc"], default="mock")
+    dmo.add_argument("--exe", type=Path, default=None)
+    dmo.add_argument("--native-dir", type=Path, default=None)
+    gui = sub.add_parser("demo-gui", help="Start simulation-only desktop operator UI")
+    gui.add_argument("--exe", type=Path, default=None)
+    gui.add_argument("--native-dir", type=Path, default=None)
     sub.add_parser("sim-smoke", help="A01 deterministic reference simulator demo (no LabVIEW or hardware)")
     a01prep = sub.add_parser("a01-clock-prepare", help="Stage only native Sim_Clock.vi in scratch output")
     a01prep.add_argument("--native-dir", default="native_clock_v1")
@@ -43,6 +51,21 @@ def main(argv=None):
     dock = sub.add_parser("docker-compile", help="NI headless MassCompile, real Docker run")
     dock.add_argument("--batch", default="U01")
     args = parser.parse_args(argv)
+    if args.action == "demo-run":
+        import asyncio
+        from .sequence_mvp import PLAN_FILE, run_file, save_results
+        out = asyncio.run(run_file(args.plan or PLAN_FILE, args.backend,
+                                   exe=args.exe, vi_dir=args.native_dir))
+        json_file, csv_file = save_results(out)
+        print(json.dumps({"run_id": out["run_id"], "status": out["status"],
+                          "backend": out["backend"], "native_decisions": out["native_decisions"],
+                          "steps": out["steps"], "json": str(json_file),
+                          "csv": str(csv_file)}, indent=2))
+        return 0 if out["status"] == "PASS" else 2
+    if args.action == "demo-gui":
+        from .sequence_gui import launch
+        launch(args.exe, args.native_dir)
+        return 0
     if args.action == "a01-clock-prepare":
         from .a01_clock import prepare_sim_clock
         output = prepare_sim_clock(args.native_dir)

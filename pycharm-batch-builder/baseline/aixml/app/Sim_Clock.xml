@@ -1,0 +1,17 @@
+<VI _name="Sim_Clock.vi" description="Deterministic pure virtual-clock step. The caller owns the clock state. Accept only nonnegative current and increment with signed 64-bit overflow protection. On invalid input keep current_ms and set valid false. Synthetic only; never use as a hardware clock.">
+  <Control _name="current_ms" conIdx="3" connection="required" outputs="value:101.value" type="int64" uid="101" uid_parent="root" value="0" />
+  <Control _name="advance_ms" conIdx="2" connection="required" outputs="value:102.value" type="int64" uid="102" uid_parent="root" value="0" />
+  <Constant _name="Zero I64" outputs="value:103.value" type="int64" uid="103" uid_parent="root" value="0" />
+  <Constant _name="Maximum I64" outputs="value:104.value" type="int64" uid="104" uid_parent="root" value="9223372036854775807" />
+  <Node _name="In Range and Coerce" inputs="x:101.value,lower limit:103.value,upper limit:104.value" outputs="coerced(x):105.coerced(x),In Range?:105.In Range?" uid="105" uid_parent="root" includeLow="true" includeHigh="true" />
+  <Node _name="In Range and Coerce" inputs="x:102.value,lower limit:103.value,upper limit:104.value" outputs="coerced(x):106.coerced(x),In Range?:106.In Range?" uid="106" uid_parent="root" includeLow="true" includeHigh="true" />
+  <Node _name="Subtract" inputs="x:104.value,y:101.value" outputs="x-y:107.x-y" uid="107" uid_parent="root" />
+  <Node _name="In Range and Coerce" inputs="x:102.value,lower limit:103.value,upper limit:107.x-y" outputs="coerced(x):108.coerced(x),In Range?:108.In Range?" uid="108" uid_parent="root" includeLow="true" includeHigh="true" />
+  <Constant _name="Boolean False" outputs="value:109.value" type="bool" uid="109" uid_parent="root" value="false" />
+  <Node _name="Select" inputs="s:105.In Range?,t:106.In Range?,f:109.value" outputs="s? t\3Af:110.s? t\3Af" uid="110" uid_parent="root" />
+  <Node _name="Select" inputs="s:110.s? t\3Af,t:108.In Range?,f:109.value" outputs="s? t\3Af:111.s? t\3Af" uid="111" uid_parent="root" />
+  <Node _name="Add" inputs="x:101.value,y:102.value" outputs="x+y:112.x+y" uid="112" uid_parent="root" />
+  <Node _name="Select" inputs="s:111.s? t\3Af,t:112.x+y,f:101.value" outputs="s? t\3Af:113.s? t\3Af" uid="113" uid_parent="root" />
+  <Indicator _name="next_ms" conIdx="1" connection="recommended" inputs="value:113.s? t\3Af" type="int64" uid="114" uid_parent="root" value="0" />
+  <Indicator _name="valid" conIdx="0" connection="recommended" inputs="value:111.s? t\3Af" type="bool" uid="115" uid_parent="root" value="false" />
+</VI>

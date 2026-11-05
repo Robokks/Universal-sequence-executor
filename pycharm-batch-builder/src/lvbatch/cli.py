@@ -39,6 +39,8 @@ def main(argv=None):
     cm = sub.add_parser("compose", help="EXPERIMENTAL offline AIXML to VI; no native validation")
     cm.add_argument("--batch", default="U01"); cm.add_argument("--mcp-checkout", required=True, type=Path)
     cm.add_argument("--year", default=2026, type=int)
+    cm.add_argument("--finish-exe", type=Path, default=None,
+                    help="After successful new offline composition, back up and clean the VIs in LabVIEW")
     mcp = sub.add_parser("mcp-generate", help="Use a running Windows LabVIEW MCP service")
     mcp.add_argument("--batch", default="U01"); mcp.add_argument("--exe", required=True, type=Path)
     mcp.add_argument("--backend", default="grpc", choices=["grpc", "pylabview"])
@@ -136,7 +138,18 @@ def main(argv=None):
     if args.action == "compose":
         from .offline import compose
         out = compose(args.batch, args.mcp_checkout, args.year)
-        print(json.dumps(out, indent=2)); return 0 if out["complete"] else 2
+        if out["complete"] and args.finish_exe is not None:
+            from .native_cleanup import cleanup_batch
+            finished = cleanup_batch(args.batch, args.finish_exe, apply=True)
+            out["post_generation_cleanup"] = {
+                "ok": finished.get("ok") is True,
+                "backup_dir": finished.get("backup_dir"),
+                "evidence": str(Path("outputs") / args.batch.upper() /
+                                "evidence/native_cleanup.json"),
+            }
+        print(json.dumps(out, indent=2))
+        return 0 if (out["complete"] and
+                     out.get("post_generation_cleanup", {"ok": True})["ok"]) else 2
     if args.action in ("mcp-generate", "mcp-test"):
         from .mcp_client import generate, native_test
         out = (generate(args.batch, args.exe, args.backend, args.pane)

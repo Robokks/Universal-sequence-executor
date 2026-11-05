@@ -11,6 +11,11 @@ def main(argv=None):
     sub = parser.add_subparsers(dest="action", required=True)
     sub.add_parser("list", help="Show batch plan")
     sub.add_parser("sim-smoke", help="A01 deterministic reference simulator demo (no LabVIEW or hardware)")
+    a01prep = sub.add_parser("a01-clock-prepare", help="Stage only native Sim_Clock.vi in scratch output")
+    a01prep.add_argument("--native-dir", default="native_clock_v1")
+    a01test = sub.add_parser("a01-clock-test", help="Execute exact signed-64-bit clock cases in LabVIEW")
+    a01test.add_argument("--exe", required=True, type=Path)
+    a01test.add_argument("--backend", choices=["grpc", "pylabview"], default="grpc")
     prep = sub.add_parser("prepare", help="Stage VI AIXML with embedded documentation")
     prep.add_argument("--batch", default="U01"); prep.add_argument("--pane", choices=["4815", "4833"], default="4815")
     prep.add_argument("--layout", choices=["compact", "fixed"], default="compact",
@@ -38,6 +43,22 @@ def main(argv=None):
     dock = sub.add_parser("docker-compile", help="NI headless MassCompile, real Docker run")
     dock.add_argument("--batch", default="U01")
     args = parser.parse_args(argv)
+    if args.action == "a01-clock-prepare":
+        from .a01_clock import prepare_sim_clock
+        output = prepare_sim_clock(args.native_dir)
+        print(json.dumps({"batch": output["batch"], "component": output["component"],
+                          "connector": output["items"][0]["connector_map"],
+                          "connector_pattern": output["items"][0]["connector_pattern"],
+                          "native_vi": output["items"][0]["native_vi"],
+                          "native_vis_staged": output["native_vis_staged"],
+                          "native_vis_built": 0}, indent=2))
+        return 0
+    if args.action == "a01-clock-test":
+        from .a01_clock import test_native_sim_clock
+        output = test_native_sim_clock(args.exe, args.backend)
+        print(json.dumps(output, indent=2))
+        return 0 if output["native_test_count"] == 8 and output["passes"] == 8 and (
+            output["failures"] == 0 and output["not_run"] == 0) else 2
     if args.action == "sim-smoke":
         from .sim_reference import SimSession, SimModel, Command, Fault
         simulator = SimSession("SIM-SMOKE-1", model=SimModel())

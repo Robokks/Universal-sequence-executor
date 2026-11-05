@@ -1,6 +1,6 @@
 # A01 — Simulator foundation: implementation contract and native-build gates
 
-Status: **Python reference implemented and unit-tested pending CI. Native LabVIEW VIs NOT BUILT.**
+Status: **Python reference implemented; 21 total Python regression tests and A01 smoke test passed on GitHub Actions. Native LabVIEW VIs NOT BUILT.**
 Source baseline: VI Blueprint V0.3 / Batch Manifest A01, five application VIs.
 
 ## Purpose and scope
@@ -82,8 +82,10 @@ the team must intentionally package and version the evidence.
 Use a scratch LabVIEW project. Do not disguise empty VIs as implemented.
 Every new VI requires its own AIXML (or native scripting implementation),
 type and connector approval, native compile/load, functional tests, pane
-audit, icon read-back and post-icon tests. A01 does not yet have test case
-IDs in the master batch manifest; add IDs and traceability before acceptance.
+audit, icon read-back and post-icon tests. Reference cases A01-SIM-001..010 are recorded in
+\`baseline/tests/A01_Simulator_Reference_Test_Cases.csv\`. These are new
+reference-level cases, not additions to the approved master manifest; native
+status remains NOT_RUN until actual LabVIEW execution.
 
 ## Blockers before A01 native build can be accepted
 

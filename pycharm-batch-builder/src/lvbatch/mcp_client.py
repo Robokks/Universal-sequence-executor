@@ -79,7 +79,7 @@ def generate(batch: str, exe: Path, backend: str = "grpc", pane: str = "4815") -
                 "aiXmlFilePath": entry["xml"], "viPath": str(destination),
                 "panePattern": int(entry.get("connector_pattern", pane)), "backend": backend,
                 "openVI": False, "measurePane": True, "measureDiagram": False,
-                "cleanUpDiagram": False, "cleanUpPanel": False,
+                "cleanUpDiagram": True, "cleanUpPanel": True,
                 "timeoutSeconds": 180}))
             items.append({"name": entry["name"], "ok": success(result), "result": result,
                           "vi_exists": destination.exists()})

@@ -4,6 +4,9 @@ import unittest
 from pathlib import Path
 from lvbatch import core
 from lvbatch.mcp_client import success, _equal, _extract_value
+from lvbatch.layout import assign_connector, composer_pane_directive, native_subdir
+from lvbatch.icon_catalog import icon_spec
+import xml.etree.ElementTree as ET
 
 
 class BatchContractTests(unittest.TestCase):
@@ -47,6 +50,36 @@ class BatchContractTests(unittest.TestCase):
             self.assertIn('INTENT:', desc)
             self.assertIn('REQUIREMENTS:', desc)
             self.assertTrue((core.project_root()/'outputs/U01/vi_docs'/f'{Path(row["name"]).stem}.md').is_file())
+
+    def test_connector_panes_put_inputs_left_and_outputs_right(self):
+        catalog = core.load_catalog()
+        samples = [
+            ("UE_Ms_To_Seconds", 4801, [1], [0]),
+            ("UE_Relative_Target", 4802, [2, 1], [0]),
+            ("UE_Clamp_To_Limits", 4810, [5, 4, 3], [2, 1]),
+            ("UE_Command_Permitted", 4815, [11, 10, 9, 8], [3]),
+        ]
+        for name, pattern_expected, left, right in samples:
+            entry = catalog[name]
+            root = ET.parse(core.project_root() / 'baseline' / entry['path']).getroot()
+            pattern, mapping = assign_connector(root, entry, 'compact', '4815')
+            self.assertEqual(pattern, pattern_expected)
+            self.assertEqual([mapping[x['name']] for x in entry['inputs']], left)
+            self.assertEqual([mapping[x['name']] for x in entry['outputs']], right)
+            self.assertEqual(len(mapping), len(set(mapping.values())))
+
+    def test_pane_directive_and_output_path_safety(self):
+        self.assertEqual(composer_pane_directive(4802), '\\n<?lvmcp pane="4802"?>\\n')
+        self.assertEqual(native_subdir('native_refined'), 'native_refined')
+        for wrong in ('../native', 'C:/native', '.git', 'outputs/nested'):
+            with self.assertRaises(ValueError):
+                native_subdir(wrong)
+
+    def test_icon_lines_fit_labview_32px_limit(self):
+        for name in core.load_catalog():
+            value = icon_spec(name)
+            self.assertEqual(value['line1'], 'UE')
+            self.assertTrue(all(len(v) <= 5 for v in value.values()))
 
     def test_offline_lint_rejects_bad_nets(self):
         with tempfile.TemporaryDirectory() as tmp:

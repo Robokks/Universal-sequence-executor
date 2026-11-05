@@ -100,6 +100,7 @@ class SimSession:
     faults: set[Fault] = field(default_factory=set)
     _scheduled: list[FaultTrigger] = field(default_factory=list)
     _last_good_timestamp: int = 0
+    _last_good_values: tuple[float, float, float] | None = None
 
     def __post_init__(self):
         if not self.run_id or not isinstance(self.run_id, str):
@@ -201,15 +202,19 @@ class SimSession:
                     "sample_ms": self._last_good_timestamp,
                     "quality": "INVALID", "synthetic": True,
                     "pressure_bar": None, "flow_lpm": None, "lever_mm": None}
+        q = self.model.sensor_resolution
         if Fault.SENSOR_STALE in self.faults:
             stamp = self._last_good_timestamp
-            quality = "STALE" if now - stamp > self.model.freshness_limit_ms else "GOOD"
+            numbers = self._last_good_values
+            quality = ("INVALID" if numbers is None else
+                       "STALE" if now - stamp > self.model.freshness_limit_ms else "GOOD")
         else:
             stamp, quality = now, "GOOD"
+            numbers = tuple(round(v / q) * q for v in self._actual)
             self._last_good_timestamp = now
-        q = self.model.sensor_resolution
-        numbers = [round(v / q) * q for v in self._actual]
+            self._last_good_values = numbers
         return {"run_id": self.run_id, "at_ms": now, "sample_ms": stamp,
                 "quality": quality, "synthetic": True,
-                "pressure_bar": numbers[0], "flow_lpm": numbers[1],
-                "lever_mm": numbers[2]}
+                "pressure_bar": None if numbers is None else numbers[0],
+                "flow_lpm": None if numbers is None else numbers[1],
+                "lever_mm": None if numbers is None else numbers[2]}

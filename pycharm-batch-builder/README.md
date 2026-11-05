@@ -85,3 +85,14 @@ ACKs, controlled time, first-order plant response and fault scenarios.
 Run `python -m lvbatch sim-smoke` to generate a local synthetic evidence report
 under `outputs/A01/evidence/sim_reference.json`. This builds **zero**
 native LabVIEW VIs and cannot reach physical I/O.
+
+## First native A01 application VI — Sim_Clock
+
+After the A01 Python simulator smoke test passes, the first native target
+is `Sim_Clock.vi`. Follow the
+[A01 native clock runbook](docs/A01_CLOCK_NATIVE_RUNBOOK.md). Use
+`a01-clock-prepare`, `check --batch A01`, `compose --batch A01`,
+`a01-clock-test`, `mcp-pane-audit` and then `mcp-icons` and retest.
+The candidate uses I64 timestamps and rejects invalid time advances and
+integer overflow. It is **not yet LabVIEW-verified**. Only this one VI is
+staged; the other four A01 native VIs still need designs.

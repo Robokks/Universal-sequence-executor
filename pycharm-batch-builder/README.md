@@ -74,3 +74,14 @@ after generating and behaviorally testing each reviewed batch. The `mcp-icons`
 command backs up native files before applying icons. Each changed VI must be
 tested again. Changing terminal indices or pane patterns is an interface change
 for any callers; do not silently replace project-linked VIs.
+
+## A01 simulator foundation — software-only behavioral reference
+
+The five planned simulator VIs in A01 require native stateful LabVIEW
+implementation; they are not equivalent to the 28 compiled utility designs.
+The new [A01 simulator design and native gates](docs/A01_SIMULATOR_DESIGN.md)
+provides a deterministic pure-Python behavior reference for simulation runs,
+ACKs, controlled time, first-order plant response and fault scenarios.
+Run `python -m lvbatch sim-smoke` to generate a local synthetic evidence report
+under `outputs/A01/evidence/sim_reference.json`. This builds **zero**
+native LabVIEW VIs and cannot reach physical I/O.

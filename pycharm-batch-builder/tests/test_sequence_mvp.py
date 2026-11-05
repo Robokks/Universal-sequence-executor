@@ -86,10 +86,10 @@ class SequenceDemoTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 LabviewComparator(None, Path(folder))
 
-    def test_invalid_quality_never_passes_as_measurement(self):
-        # Reject any nonfinite target *before* a simulation is run.
-        with self.assertRaises(ValueError):
-            load_plan(Path("does_not_exist.json"))
+    def test_missing_plan_is_not_silently_replaced(self):
+        with tempfile.TemporaryDirectory() as folder:
+            with self.assertRaises(FileNotFoundError):
+                load_plan(Path(folder) / "no_sequence.json")
 
 
 if __name__ == "__main__":

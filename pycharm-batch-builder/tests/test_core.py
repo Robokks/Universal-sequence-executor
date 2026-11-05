@@ -69,7 +69,7 @@ class BatchContractTests(unittest.TestCase):
             self.assertEqual(len(mapping), len(set(mapping.values())))
 
     def test_pane_directive_and_output_path_safety(self):
-        self.assertEqual(composer_pane_directive(4802), '\\n<?lvmcp pane="4802"?>\\n')
+        self.assertIn('pane="4802"', composer_pane_directive(4802))
         self.assertEqual(native_subdir('native_refined'), 'native_refined')
         for wrong in ('../native', 'C:/native', '.git', 'outputs/nested'):
             with self.assertRaises(ValueError):

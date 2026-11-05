@@ -13,6 +13,7 @@ import shutil
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from pathlib import Path
+from .layout import assign_connector, composer_pane_directive, native_subdir
 
 
 def project_root() -> Path:
@@ -108,9 +109,11 @@ def check_aixml(path: Path, expected_name: str | None = None) -> dict:
     return result
 
 
-def prepare_batch(batch_id: str, pane: str = "4815", root: Path | None = None) -> dict:
+def prepare_batch(batch_id: str, pane: str = "4815", root: Path | None = None,
+                  layout: str = "compact", native_dir: str = "native") -> dict:
     root = root or project_root()
     batch = get_batch(batch_id, root)
+    native_dir = native_subdir(native_dir)
     catalog = load_catalog(root, pane)
     out = root / "outputs" / batch_id.upper()
     staged = out / "staged_aixml"
@@ -128,14 +131,22 @@ def prepare_batch(batch_id: str, pane: str = "4815", root: Path | None = None) -
         old_description = current.get("description") or ""
         doc = vi_intent(entry, old_description)
         current.set("description", doc)
+        connector_pattern, connector_map = assign_connector(current, entry, layout, pane)
         target = staged / f"{stem}.xml"
         ET.ElementTree(current).write(target, encoding="utf-8", xml_declaration=True)
+        # Pin the native pattern: pylabview otherwise inherits the local default pane.
+        with target.open("a", encoding="utf-8") as stream:
+            stream.write(composer_pane_directive(connector_pattern))
         if not check_aixml(target, name)["ok"]:
             raise ValueError(f"Offline AIXML check failed for {target}")
         examples = [t for t in get_tests(root) if t["VI Name"] == stem]
         txt = [f"# {name}", "", "## VI intent", old_description, "", "## LabVIEW VI description", doc,
                "", "## Input connector terminals", ""]
         txt += [f"- `{x['name']}` — `{x['type']}`" for x in entry["inputs"]]
+        txt += ["", "## Native connector pane", "",
+                f"Pattern: `{connector_pattern}` (layout: `{layout}`)", "",
+                "Inputs on left, outputs on right:", ""]
+        txt += [f"- `{name}`: connector index `{idx}`" for name, idx in connector_map.items()]
         txt += ["", "## Output connector terminals", ""]
         txt += [f"- `{x['name']}` — `{x['type']}`" for x in entry["outputs"]]
         txt += ["", "## Engineering assumptions / error handling", entry["notes"], "",
@@ -146,10 +157,12 @@ def prepare_batch(batch_id: str, pane: str = "4815", root: Path | None = None) -
                 "- Native LabVIEW executable state: **NOT RUN**", "- Native behavior tests: **NOT RUN**",
                 "- Container MassCompile: **NOT RUN**", "- Hardware acceptance: **NOT RUN**", ""]
         (docs / f"{stem}.md").write_text("\n".join(txt), encoding="utf-8")
-        rows.append({"name": name, "xml": str(target), "native_vi": str(out / "native" / name),
+        rows.append({"name": name, "xml": str(target), "native_vi": str(out / native_dir / name),
                      "sha256": sha256(target), "tests": [x["Test ID"] for x in examples],
-                     "inputs": entry["inputs"], "outputs": entry["outputs"]})
-    payload = {"batch": batch_id.upper(), "pane": pane, "created_utc": datetime.now(timezone.utc).isoformat(),
+                     "inputs": entry["inputs"], "outputs": entry["outputs"],
+                     "connector_pattern": connector_pattern, "connector_map": connector_map})
+    payload = {"batch": batch_id.upper(), "pane": pane, "layout": layout, "native_dir": native_dir,
+               "created_utc": datetime.now(timezone.utc).isoformat(),
                "state": "AIXML PREPARED: no native LabVIEW verification", "items": rows}
     (out / "stage_manifest.json").write_text(json.dumps(payload, indent=2), encoding="utf-8")
     return payload

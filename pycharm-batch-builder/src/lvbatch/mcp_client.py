@@ -5,9 +5,12 @@ Requires pip install -e '.[mcp]'. This is not a substitute for reviewing native 
 from __future__ import annotations
 import asyncio
 import json
+import shutil
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
-from .core import load_stage, get_tests, record
+from .core import load_stage, get_tests, record, project_root
+from .icon_catalog import icon_spec, BANNER_COLORS
 
 
 def unpack(response: Any) -> dict:
@@ -74,7 +77,7 @@ def generate(batch: str, exe: Path, backend: str = "grpc", pane: str = "4815") -
             # execution-state/pane checks, so do not treat offline output as native-pass.
             result = unpack(await client.call_tool("lvai_generate_vi", {
                 "aiXmlFilePath": entry["xml"], "viPath": str(destination),
-                "panePattern": int(pane), "backend": backend,
+                "panePattern": int(entry.get("connector_pattern", pane)), "backend": backend,
                 "openVI": False, "measurePane": True, "measureDiagram": False,
                 "cleanUpDiagram": False, "cleanUpPanel": False,
                 "timeoutSeconds": 180}))
@@ -87,6 +90,89 @@ def generate(batch: str, exe: Path, backend: str = "grpc", pane: str = "4815") -
                 "ok": len(items) == len(stage["items"]) and all(x["ok"] for x in items)}
     result = asyncio.run(_with_server(exe, runner))
     record(batch, "mcp_generation", result)
+    return result
+
+
+
+def set_batch_icons(batch: str, exe: Path, backend: str = "grpc") -> dict:
+    """Apply per-VI 32x32 icons to generated scratch VIs, with local backups.
+
+    AIXML composition cannot encode icons. Icons are a deliberately separate
+    finishing step, after native tests, because recomposition erases them.
+    """
+    stage = load_stage(batch)
+    root = (project_root() / "outputs" / batch.upper()).resolve()
+    items = stage["items"]
+    icons = []
+    for item in items:
+        vi = Path(item["native_vi"]).resolve()
+        if not vi.is_relative_to(root) or not vi.is_file():
+            raise ValueError(f"Refusing to modify a missing or non-scratch VI: {vi}")
+        icons.append({"viPath": str(vi), **icon_spec(vi.stem)})
+
+    # Snapshot ALL native VI files before any icon mutation, for rollback.
+    folder = root / "icon_backups" / datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
+    folder.mkdir(parents=True, exist_ok=False)
+    for item in items:
+        vi = Path(item["native_vi"]).resolve()
+        shutil.copy2(vi, folder / vi.name)
+
+    async def runner(client):
+        response = await client.call_tool("lvai_set_vi_icon", {
+            "iconsJson": json.dumps(icons),
+            "backend": backend,
+            "bannerColor": BANNER_COLORS.get(batch.upper(), "006699"),
+            "backgroundColor": "FFFFFF",
+            "borderColor": "000000",
+            "timeoutSeconds": 300,
+        })
+        answer = unpack(response)
+        return {
+            "batch": batch.upper(),
+            "backup_dir": str(folder),
+            "requested": len(icons),
+            "ok": answer.get("ok") is True and not answer.get("failed"),
+            "response": answer,
+        }
+
+    result = asyncio.run(_with_server(exe, runner))
+    record(batch, "native_icons", result)
+    return result
+
+
+def audit_batch_panes(batch: str, exe: Path, backend: str = "grpc") -> dict:
+    """Record actual connector geometry from the LabVIEW MCP read-only tool.
+
+    A functional VI test does not prove a usable connector pane. The raw
+    geometry/style verdict is preserved for a reviewer; it is not silently
+    converted into a 'passed' result.
+    """
+    stage = load_stage(batch)
+    root = (project_root() / "outputs" / batch.upper()).resolve()
+
+    async def runner(client):
+        rows = []
+        for item in stage["items"]:
+            vi = Path(item["native_vi"]).resolve()
+            if not vi.is_relative_to(root) or not vi.is_file():
+                rows.append({"name": item["name"], "error": "Missing or unsafe VI path"})
+                continue
+            response = await client.call_tool("lvai_connector_pane", {
+                "viPath": str(vi), "backend": backend, "timeoutSeconds": 120
+            })
+            text_items = [part.text for part in getattr(response, "content", [])
+                          if getattr(part, "type", None) == "text"]
+            rows.append({
+                "name": item["name"],
+                "expected_pattern": item.get("connector_pattern"),
+                "expected_connectors": item.get("connector_map", {}),
+                "tool_error": bool(getattr(response, "isError", False)),
+                "raw_observation": "\n".join(text_items),
+            })
+        return {"batch": batch.upper(), "audit_only": True, "items": rows}
+
+    result = asyncio.run(_with_server(exe, runner))
+    record(batch, "native_panes", result)
     return result
 
 

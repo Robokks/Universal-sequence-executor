@@ -1,0 +1,11 @@
+test_id,vi_owner,scenario,expected,python_test,native_status
+A01-SIM-001,Sim_Main.vi,Start one synthetic session,simulation_only true and synthetic tagged events,test_sim_main_is_software_only_and_identifies_every_event,NOT_RUN
+A01-SIM-002,Sim_Clock.vi,Advance virtual time and reject invalid updates,nonnegative deterministic ms and overflow guard,test_sim_clock_deterministic_and_rejects_backward_time,NOT_RUN
+A01-SIM-003,Sim_IO_Adapter.vi,Duplicate ID foreign run ID invalid value and physical transport,duplicate and mismatched IDs rejected hardware forbidden,test_io_adapter_accepts_once_and_rejects_physical_transport,NOT_RUN
+A01-SIM-004,Sim_IO_Adapter.vi,Delayed applied acknowledgement,APPLIED event exactly at virtual deadline,test_applied_ack_exact_virtual_time,NOT_RUN
+A01-SIM-005,Sim_VTU_Plant.vi,First order bounded hydraulic sample,repeatable and clipped synthetic response,test_first_order_feedback_is_deterministic_and_bounded,NOT_RUN
+A01-SIM-006,Sim_Fault_Injection.vi,Stuck actuator from fault timestamp,feedback freezes after trigger,test_fault_trigger_stops_actuator_at_exact_virtual_time,NOT_RUN
+A01-SIM-007,Sim_Fault_Injection.vi,Sensor staleness and dropout,stale sample retains timestamp dropout INVALID,test_sensor_staleness_and_dropout_are_invalid_for_progress,NOT_RUN
+A01-SIM-008,Sim_Fault_Injection.vi,Lost ACK and host disconnect,ack suppressed and future commands rejected,test_lost_ack_and_host_disconnect,NOT_RUN
+A01-SIM-009,Sim_VTU_Plant.vi,Synthetic saturation and invalid model parameters,saturation bounded invalid config rejected,test_saturation_and_invalid_model_values,NOT_RUN
+A01-SIM-010,Sim_Clock.vi,Past fault timestamp is illegal,past scheduled injection rejected,test_simulation_faults_cannot_be_scheduled_in_the_past,NOT_RUN

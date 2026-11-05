@@ -69,6 +69,18 @@ After offline composition: first preview, then apply on explicit request.
 
     python -m lvbatch native-cleanup --batch A01 --apply --exe "C:\LabVIEWTools\labview-mcp-v2.4.1\bin\LabVIEWMCP.exe"
 
+For any freshly staged, non-existing VI outputs on a Windows LabVIEW
+machine, composing and cleaning can now be chained in a single command:
+
+    python -m lvbatch compose --batch A01 --year 2026 --mcp-checkout "C:\LabVIEWTools\labview-mcp-offline" --finish-exe "C:\LabVIEWTools\labview-mcp-v2.4.1\bin\LabVIEWMCP.exe"
+
+The composer deliberately refuses to overwrite existing VIs. Prepare a
+fresh scratch native directory before a repeat attempt. The --finish-exe
+option runs only when every VI has just been composed, backs up each binary
+and applies NI-style diagram cleanup via the live LabVIEW MCP service. It
+does not bypass the later pane, icon and execution gates. Do NOT re-run
+this command against existing A01 native_clock_v2 files.
+
 The command accepts only staged scratch native VI paths, backs up originals
 before mutation in outputs/A01/cleanup_backups, verifies diagram changes,
 and writes outputs/A01/evidence/native_cleanup.json.

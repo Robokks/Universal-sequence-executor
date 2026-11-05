@@ -62,3 +62,15 @@ Default: official Linux `nationalinstruments/labview:latest-linux`, LabVIEWCLI `
 - Application acceptance: later requires integration, RT and hardware tests, and independent safety verification.
 
 This project neither modifies GitHub repositories nor installs Docker, LabVIEW or any proprietary third-party binaries. The 124 application VIs and unimplemented Actor Framework actors remain in the reference design documents.
+
+## Connector-pane and icon finishing (LabVIEW 2026)
+
+For compact connector panes (inputs left, outputs right) and consistent per-VI
+32x32 icons, follow [Connector and icon runbook](docs/CONNECTOR_ICONS_RUNBOOK.md).
+Run `python -m unittest discover -s tests -v` before preparing the reviewed
+variants, then use `--layout compact --native-dir native_refined` to preserve the
+previously tested `native/` files. Run `mcp-pane-audit` and `mcp-icons` only
+after generating and behaviorally testing each reviewed batch. The `mcp-icons`
+command backs up native files before applying icons. Each changed VI must be
+tested again. Changing terminal indices or pane patterns is an interface change
+for any callers; do not silently replace project-linked VIs.

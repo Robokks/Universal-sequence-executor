@@ -113,8 +113,12 @@ class SimSession:
         trigger = FaultTrigger(at_ms, fault)
         if at_ms < self.clock.now_ms:
             raise ValueError("Cannot schedule fault in the past")
-        self._scheduled.append(trigger)
-        self._scheduled.sort(key=lambda t: t.at_ms)
+        if at_ms == self.clock.now_ms:
+            self.faults.add(fault)
+            self._event("FAULT_INJECTED", fault.value)
+        else:
+            self._scheduled.append(trigger)
+            self._scheduled.sort(key=lambda t: t.at_ms)
 
     def clear_fault(self, fault: Fault) -> None:
         self.faults.discard(fault)
@@ -166,30 +170,28 @@ class SimSession:
         target = self.clock.now_ms + delta_ms
         if target >= 2**63:
             raise OverflowError("Virtual clock exhausted 63-bit range")
-        # Split on exact fault trigger timestamps so a scheduled fault is
-        # applied to subsequent plant evolution, never retroactively.
+        # Split on faults and ACK deadlines for exact, deterministic timestamps.
         while True:
             while self._scheduled and self._scheduled[0].at_ms == self.clock.now_ms:
                 trig = self._scheduled.pop(0)
                 self.faults.add(trig.fault)
                 self._event("FAULT_INJECTED", trig.fault.value)
+            due_acks = [row for row in self._ack_pending if row[0] <= self.clock.now_ms]
+            self._ack_pending = [row for row in self._ack_pending
+                                 if row[0] > self.clock.now_ms]
+            for _, command_id in due_acks:
+                kind = "ACK_SUPPRESSED" if Fault.LOST_ACK in self.faults else "APPLIED"
+                self._event(kind, command_id)
             if self.clock.now_ms >= target:
                 break
-            due = self._scheduled[0].at_ms if self._scheduled else target
-            next_time = min(due, target)
+            fault_at = self._scheduled[0].at_ms if self._scheduled else target
+            ack_at = min((due for due, _ in self._ack_pending), default=target)
+            next_time = min(fault_at, ack_at, target)
             segment = next_time - self.clock.now_ms
+            if segment <= 0:
+                raise RuntimeError("Scheduled simulation event failed to advance")
             self._tick_plant(segment)
             self.clock.advance(segment)
-        remaining = []
-        for deadline, command_id in self._ack_pending:
-            if deadline <= self.clock.now_ms:
-                if Fault.LOST_ACK in self.faults:
-                    self._event("ACK_SUPPRESSED", command_id)
-                else:
-                    self._event("APPLIED", command_id)
-            else:
-                remaining.append((deadline, command_id))
-        self._ack_pending = remaining
         return self.clock.now_ms
 
     def feedback(self) -> dict:

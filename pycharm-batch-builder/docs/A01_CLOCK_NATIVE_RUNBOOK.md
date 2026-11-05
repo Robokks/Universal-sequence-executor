@@ -34,13 +34,29 @@ cd pycharm-batch-builder
 
 python -m unittest discover -s tests -v
 python -m lvbatch sim-smoke
-python -m lvbatch a01-clock-prepare
+python -m lvbatch a01-clock-prepare --native-dir native_clock_v2
 python -m lvbatch check --batch A01
 ```
 
 Do not use generic `prepare --batch A01`: the other four A01 native AIXML
 designs are not yet written. `a01-clock-prepare` deliberately stages only
 `Sim_Clock.vi`.
+
+### Recovery from pylabview's 64-bit constant packing error
+
+In the initial revision, the composer failed with
+`struct.error: 'q' format requires -9223372036854775808 <= number <= 9223372036854775807`.
+The bundled pylabview composer converts integer literals through
+`int(float(value))`, which rounds literal `I64_MAX` up to `2^63`.
+The AIXML now constructs the exact I64 maximum as
+`(2^62 - 1) + 2^62`, where the large source literal is exactly
+representable as binary64 and the final arithmetic is in I64.
+
+**After updating Git, use `--native-dir native_clock_v2`** to keep the
+failed attempt separate. Rerun `a01-clock-prepare` and
+`check --batch A01` before composition. If the generated VI still fails,
+keep the full error output for debugging; do not edit the installed LabVIEW
+or bundled Zuehlke composer files.
 
 Then compose only the scratch candidate (no running LabVIEW required):
 

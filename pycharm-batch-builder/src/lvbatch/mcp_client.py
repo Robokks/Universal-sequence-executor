@@ -201,6 +201,14 @@ def _equal(actual, expected) -> bool:
 def native_test(batch: str, exe: Path, backend: str = "grpc") -> dict:
     stage = load_stage(batch)
     examples = get_tests()
+    names = {Path(ent["native_vi"]).stem for ent in stage["items"]}
+    covered = {e["VI Name"] for e in examples}
+    if not names or not names.issubset(covered):
+        raise ValueError(
+            "Generic mcp-test has no test vectors for some staged VIs. "
+            "For A01 Sim_Clock, use: python -m lvbatch a01-clock-test "
+            '--exe "C:\\LabVIEWTools\\labview-mcp-v2.4.1\\bin\\LabVIEWMCP.exe"'
+        )
     async def runner(client):
         rows = []
         for entry in stage["items"]:

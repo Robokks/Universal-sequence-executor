@@ -2,6 +2,7 @@
 import json
 import tempfile
 import unittest
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from lvbatch.a01_clock import (compare_native_clock_values, prepare_sim_clock,
@@ -19,6 +20,31 @@ class SimClockNativeCandidateTests(unittest.TestCase):
         self.assertIn('type="int64"', raw)
         self.assertIn("In Range and Coerce", raw)
         self.assertIn("9223372036854775807", raw)
+
+    def test_i64_constants_are_exact_for_pylabview_float_conversion(self):
+        # The 2026 bundled composer currently uses int(float(value)) when
+        # packing I64 constants. A literal I64_MAX rounds up to 2^63.
+        # Protect this AIXML against accidentally reintroducing that bug.
+        source = project_root() / "baseline/aixml/app/Sim_Clock.xml"
+        root = ET.parse(source).getroot()
+        literals = [int(node.get("value"))
+                    for node in root.findall("Constant")
+                    if node.get("type") == "int64"]
+        self.assertTrue(literals)
+        self.assertTrue(all(int(float(n)) == n and -(2**63) <= int(float(n)) < 2**63
+                            for n in literals))
+        half = next(node for node in root.findall("Constant")
+                    if node.get("_name") == "2^62 I64")
+        one = next(node for node in root.findall("Constant")
+                   if node.get("_name") == "One I64")
+        self.assertEqual((int(half.get("value")) - int(one.get("value"))) +
+                         int(half.get("value")), 2**63-1)
+        # The overflow guard must consume the derived exact max.
+        nodes = {n.get("uid"): n for n in root.findall("Node")}
+        self.assertEqual(nodes["118"].get("_name"), "Add")
+        self.assertIn("118.x+y", nodes["107"].get("inputs"))
+        self.assertIn("118.x+y", nodes["105"].get("inputs"))
+        self.assertIn("118.x+y", nodes["106"].get("inputs"))
 
     def test_clock_prepare_isolated_and_connector_positions(self):
         with tempfile.TemporaryDirectory() as temp:

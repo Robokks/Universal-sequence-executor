@@ -26,6 +26,9 @@ jobs:
       - name: Test layouts, manifests and documentation
         working-directory: pycharm-batch-builder
         run: python -m unittest discover -s tests -v
+      - name: A01 deterministic simulator smoke (software only)
+        working-directory: pycharm-batch-builder
+        run: python -m lvbatch sim-smoke
       - name: Stage U02 with measured connector layouts
         working-directory: pycharm-batch-builder
         run: python -m lvbatch prepare --batch U02 --pane 4815 --layout compact --native-dir native_ci

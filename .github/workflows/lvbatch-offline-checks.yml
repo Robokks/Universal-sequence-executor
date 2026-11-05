@@ -29,6 +29,12 @@ jobs:
       - name: A01 deterministic simulator smoke (software only)
         working-directory: pycharm-batch-builder
         run: python -m lvbatch sim-smoke
+      - name: Stage isolated native A01 Sim_Clock candidate
+        working-directory: pycharm-batch-builder
+        run: python -m lvbatch a01-clock-prepare
+      - name: Validate A01 clock AIXML without LabVIEW
+        working-directory: pycharm-batch-builder
+        run: python -m lvbatch check --batch A01
       - name: Stage U02 with measured connector layouts
         working-directory: pycharm-batch-builder
         run: python -m lvbatch prepare --batch U02 --pane 4815 --layout compact --native-dir native_ci

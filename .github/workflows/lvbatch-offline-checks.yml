@@ -29,6 +29,9 @@ jobs:
       - name: A01 deterministic simulator smoke (software only)
         working-directory: pycharm-batch-builder
         run: python -m lvbatch sim-smoke
+      - name: Execute the complete MVP simulation-only sequence
+        working-directory: pycharm-batch-builder
+        run: python -m lvbatch demo-run --backend mock
       - name: Stage isolated native A01 Sim_Clock candidate
         working-directory: pycharm-batch-builder
         run: python -m lvbatch a01-clock-prepare

@@ -102,6 +102,46 @@ The icon command backs up the native VI, writes a descriptive SIM icon,
 and records read-back evidence. Do not claim completion until icon
 verification reports `ok: true` and the final eight native tests all pass.
 
+## I64 precision warning from LabVIEW MCP v2.4.1
+
+The default gRPC `lvai_run_vi_and_read_values` typed helper calls LabVIEW's
+`Fract/Exp String To Number` in its `Digital` input case, then writes that
+floating-point number to an I64 control. Exact integers beyond 2^53 can
+therefore be rounded; on input near 2^63 the result may be clamped.
+The `pylabview` backend is **not** an exact-I64 workaround: its current
+ActiveX `ComValues.Integer` also uses `(double)value` for values outside
+the I32 range.
+
+The first local native run reported 6/8 PASS. A01-CLK-005 and A01-CLK-008
+failed at the I64 upper boundary. Both failures are consistent with input
+transport rounding. This is **not proof** the VI logic itself is correct.
+Do not mark the two cases passed or change the input/expected values to
+make the test green.
+
+An exploratory **fail-closed** PowerShell ActiveX probe attempts to set the
+two exact I64 inputs using typed `[long]` COM arguments, and immediately
+reads them back. If the COM API returns rounded values or anything other
+than exact `System.Int64`, the probe reports `BLOCKED_INPUT_PRECISION`
+and does NOT execute a claimed valid boundary test. Some LabVIEW COM
+versions may refuse signed 64-bit variants entirely; a refusal is an
+honest blocker rather than proof of a VI defect.
+
+**Keep LabVIEW running** and run from the `pycharm-batch-builder` folder:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File ".\scripts\a01_clock_i64_com_probe.ps1"
+```
+
+This uses only `outputs\A01\native_clock_v2\Sim_Clock.vi`. It writes
+`outputs\A01\evidence\sim_clock_com_precision_probe.json` without
+saving changes to the VI file. The probe refuses a file outside the
+scratch A01 folder and refuses to start LabVIEW when the IDE is not
+running. If COM is unsupported or cannot preserve exact I64 values, the
+next option is a LabVIEW-native caller/harness that constructs exact I64
+inputs from smaller integers and calls the actual Sim_Clock subVI.
+Native boundary acceptance stays **PENDING** until either test path
+demonstrates the exact inputs and expected results.
+
 ## Evidence files
 
 - `outputs/A01/evidence/sim_reference.json`: Python model, not LabVIEW.

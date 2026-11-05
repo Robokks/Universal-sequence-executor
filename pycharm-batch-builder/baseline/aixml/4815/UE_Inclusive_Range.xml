@@ -1,0 +1,7 @@
+<VI _name="UE_Inclusive_Range.vi" description="Evaluate a closed engineering range with both boundaries included">
+  <Control _name="value" conIdx="11" connection="required" outputs="value:101.value" type="double" uid="101" uid_parent="root" value="0" />
+  <Control _name="minimum" conIdx="10" connection="required" outputs="value:102.value" type="double" uid="102" uid_parent="root" value="0" />
+  <Control _name="maximum" conIdx="9" connection="required" outputs="value:103.value" type="double" uid="103" uid_parent="root" value="0" />
+  <Node _name="In Range and Coerce" inputs="upper limit:103.value,x:101.value,lower limit:102.value" outputs="coerced(x):104.coerced(x),In Range?:104.In Range?" uid="104" uid_parent="root" includeLow="true" includeHigh="true" />
+  <Indicator _name="in_range" conIdx="3" connection="recommended" inputs="value:104.In Range?" type="bool" uid="105" uid_parent="root" value="false" />
+</VI>

@@ -1,0 +1,8 @@
+<VI _name="UE_Hydraulic_Power_kW.vi" description="Calculate ideal hydraulic power from pressure bar and volumetric flow L/min">
+  <Control _name="pressure_bar" conIdx="11" connection="required" outputs="value:101.value" type="double" uid="101" uid_parent="root" value="0" />
+  <Control _name="flow_lpm" conIdx="10" connection="required" outputs="value:102.value" type="double" uid="102" uid_parent="root" value="0" />
+  <Node _name="Multiply" inputs="x:101.value,y:102.value" outputs="x*y:103.x*y" uid="103" uid_parent="root" />
+  <Constant _name="Constant" outputs="value:104.value" type="double" uid="104" uid_parent="root" value="600" />
+  <Node _name="Divide" inputs="x:103.x*y,y:104.value" outputs="x/y:105.x/y" uid="105" uid_parent="root" />
+  <Indicator _name="hydraulic_kw" conIdx="3" connection="recommended" inputs="value:105.x/y" type="double" uid="106" uid_parent="root" value="0" />
+</VI>

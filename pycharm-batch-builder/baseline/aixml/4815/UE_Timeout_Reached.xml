@@ -1,0 +1,6 @@
+<VI _name="UE_Timeout_Reached.vi" description="True when elapsed duration equals or exceeds timeout">
+  <Control _name="elapsed_ms" conIdx="11" connection="required" outputs="value:101.value" type="double" uid="101" uid_parent="root" value="0" />
+  <Control _name="threshold_ms" conIdx="10" connection="required" outputs="value:102.value" type="double" uid="102" uid_parent="root" value="0" />
+  <Node _name="Greater Or Equal?" inputs="x:101.value,y:102.value" outputs="x &gt;= y?:103.x &gt;= y?" uid="103" uid_parent="root" />
+  <Indicator _name="reached" conIdx="3" connection="recommended" inputs="value:103.x &gt;= y?" type="bool" uid="104" uid_parent="root" value="false" />
+</VI>

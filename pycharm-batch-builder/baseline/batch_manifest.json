@@ -1,0 +1,704 @@
+{
+  "title": "Universal LabVIEW Executor V0.5 batch build plan",
+  "status": "PLAN ONLY: no LabVIEW native generation or native tests performed",
+  "source": "Robokks/labview-ai-training- existing graph/parser/test-provenance approach and Zuehlke/labview-mcp",
+  "application_vi_count": 124,
+  "utility_vi_count": 28,
+  "unique_vi_total_if_unmerged": 152,
+  "connector_panes": [
+    "4815",
+    "4833"
+  ],
+  "selected_pane": null,
+  "app_test_case_count": 82,
+  "app_vi_with_explicit_test_ids": 62,
+  "app_vi_missing_explicit_test_ids": 62,
+  "utility_test_vectors": 66,
+  "batches": [
+    {
+      "batch": "U01",
+      "label": "Arithmetic and timing",
+      "kind": "aixml-utility",
+      "mode": "native-mcp-validation",
+      "vi_names": [
+        "UE_Relative_Target.vi",
+        "UE_Measured_Displacement.vi",
+        "UE_Elapsed_Ms.vi",
+        "UE_Ms_To_Seconds.vi",
+        "UE_Target_Error.vi",
+        "UE_Cycle_Event_Duration.vi"
+      ],
+      "test_case_ids": [
+        "AIX-UT-001",
+        "AIX-UT-002",
+        "AIX-UT-003",
+        "AIX-UT-004",
+        "AIX-UT-005",
+        "AIX-UT-006",
+        "AIX-UT-007",
+        "AIX-UT-008",
+        "AIX-UT-018",
+        "AIX-UT-019",
+        "AIX-UT-065",
+        "AIX-UT-066"
+      ],
+      "prerequisites": [
+        "MCP online",
+        "connector pane discovered",
+        "scratch project only",
+        "offline checker passes"
+      ]
+    },
+    {
+      "batch": "U02",
+      "label": "Ranges and deadlines",
+      "kind": "aixml-utility",
+      "mode": "native-mcp-validation",
+      "vi_names": [
+        "UE_Inclusive_Range.vi",
+        "UE_Clamp_To_Limits.vi",
+        "UE_Within_Tolerance.vi",
+        "UE_Timeout_Reached.vi",
+        "UE_Stabilization_Reached.vi",
+        "UE_Dwell_Reached.vi",
+        "UE_Retry_Allowed.vi",
+        "UE_Cycles_Done.vi"
+      ],
+      "test_case_ids": [
+        "AIX-UT-009",
+        "AIX-UT-010",
+        "AIX-UT-011",
+        "AIX-UT-012",
+        "AIX-UT-013",
+        "AIX-UT-014",
+        "AIX-UT-015",
+        "AIX-UT-016",
+        "AIX-UT-017",
+        "AIX-UT-020",
+        "AIX-UT-021",
+        "AIX-UT-022",
+        "AIX-UT-023",
+        "AIX-UT-024",
+        "AIX-UT-025",
+        "AIX-UT-026",
+        "AIX-UT-027",
+        "AIX-UT-028",
+        "AIX-UT-029"
+      ],
+      "prerequisites": [
+        "MCP online",
+        "connector pane discovered",
+        "scratch project only",
+        "offline checker passes"
+      ]
+    },
+    {
+      "batch": "U03",
+      "label": "Execution and authorization",
+      "kind": "aixml-utility",
+      "mode": "native-mcp-validation",
+      "vi_names": [
+        "UE_Stop_Requested.vi",
+        "UE_Select_Setpoint.vi",
+        "UE_TriState_Condition.vi",
+        "UE_Command_Permitted.vi",
+        "UE_Capture_Acceptable.vi",
+        "UE_Operating_Point_Ready.vi",
+        "UE_Can_Advance_Step.vi",
+        "UE_Run_Id_Matches.vi"
+      ],
+      "test_case_ids": [
+        "AIX-UT-030",
+        "AIX-UT-031",
+        "AIX-UT-032",
+        "AIX-UT-033",
+        "AIX-UT-034",
+        "AIX-UT-035",
+        "AIX-UT-036",
+        "AIX-UT-037",
+        "AIX-UT-038",
+        "AIX-UT-039",
+        "AIX-UT-040",
+        "AIX-UT-041",
+        "AIX-UT-042",
+        "AIX-UT-055",
+        "AIX-UT-056",
+        "AIX-UT-057",
+        "AIX-UT-058",
+        "AIX-UT-059",
+        "AIX-UT-060",
+        "AIX-UT-061"
+      ],
+      "prerequisites": [
+        "MCP online",
+        "connector pane discovered",
+        "scratch project only",
+        "offline checker passes"
+      ]
+    },
+    {
+      "batch": "U04",
+      "label": "VTU calculations",
+      "kind": "aixml-utility",
+      "mode": "native-mcp-validation",
+      "vi_names": [
+        "UE_Relative_Target_Check.vi",
+        "UE_Sweep_Target.vi",
+        "UE_Hydraulic_Power_kW.vi",
+        "UE_Percent_Drop.vi",
+        "UE_Load_Fraction.vi",
+        "UE_Feedback_Freshness.vi"
+      ],
+      "test_case_ids": [
+        "AIX-UT-043",
+        "AIX-UT-044",
+        "AIX-UT-045",
+        "AIX-UT-046",
+        "AIX-UT-047",
+        "AIX-UT-048",
+        "AIX-UT-049",
+        "AIX-UT-050",
+        "AIX-UT-051",
+        "AIX-UT-052",
+        "AIX-UT-053",
+        "AIX-UT-054",
+        "AIX-UT-062",
+        "AIX-UT-063",
+        "AIX-UT-064"
+      ],
+      "prerequisites": [
+        "MCP online",
+        "connector pane discovered",
+        "scratch project only",
+        "offline checker passes"
+      ]
+    },
+    {
+      "batch": "A01",
+      "label": "Simulator foundation",
+      "kind": "application-simulation",
+      "mode": "native-build-assisted",
+      "vi_names": [
+        "Sim_Main.vi",
+        "Sim_IO_Adapter.vi",
+        "Sim_VTU_Plant.vi",
+        "Sim_Fault_Injection.vi",
+        "Sim_Clock.vi"
+      ],
+      "test_case_ids": [],
+      "prerequisites": [
+        "prior batch interfaces frozen",
+        "native compile gate",
+        "simulation-only until HIL approval"
+      ]
+    },
+    {
+      "batch": "A02",
+      "label": "Configuration file and validation",
+      "kind": "application-logic",
+      "mode": "native-build-assisted",
+      "vi_names": [
+        "Config_Encode.vi",
+        "Config_File_Read_Block.vi",
+        "Config_Decode.vi",
+        "Config_Validate_Target.vi",
+        "Config_Compile_Plan.vi",
+        "Config_Activate_Snapshot.vi",
+        "Config_Get_Active.vi",
+        "Config_Resolve_Plugins.vi"
+      ],
+      "test_case_ids": [
+        "UT-CFG-001",
+        "UT-CFG-002",
+        "UT-CFG-003",
+        "UT-CFG-004",
+        "UT-CFG-005",
+        "UT-CFG-006",
+        "UT-CFG-007",
+        "UT-CFG-010"
+      ],
+      "prerequisites": [
+        "prior batch interfaces frozen",
+        "native compile gate",
+        "simulation-only until HIL approval"
+      ]
+    },
+    {
+      "batch": "A03",
+      "label": "Parameter registry",
+      "kind": "application-logic",
+      "mode": "native-build-assisted",
+      "vi_names": [
+        "Registry_Init.vi",
+        "Registry_Update.vi",
+        "Registry_Get_Snapshot.vi",
+        "Registry_Resolve.vi",
+        "Registry_Stale_Scan.vi"
+      ],
+      "test_case_ids": [
+        "UT-CON-011",
+        "UT-CON-012"
+      ],
+      "prerequisites": [
+        "prior batch interfaces frozen",
+        "native compile gate",
+        "simulation-only until HIL approval"
+      ]
+    },
+    {
+      "batch": "A04",
+      "label": "Conditions and timers",
+      "kind": "application-logic",
+      "mode": "native-build-assisted",
+      "vi_names": [
+        "Condition_Evaluate.vi",
+        "Condition_Eval_Logic.vi",
+        "Condition_Compare.vi",
+        "Condition_Check_Quality.vi",
+        "Condition_Stabilize.vi",
+        "Timer_Create.vi",
+        "Timer_Check.vi"
+      ],
+      "test_case_ids": [
+        "UT-CON-001",
+        "UT-CON-002",
+        "UT-CON-003",
+        "UT-CON-004",
+        "UT-CON-005",
+        "UT-CON-006",
+        "UT-CON-007",
+        "UT-CON-008",
+        "UT-CON-009",
+        "UT-CON-010",
+        "UT-SEQ-001",
+        "UT-SEQ-003",
+        "VTU-011"
+      ],
+      "prerequisites": [
+        "prior batch interfaces frozen",
+        "native compile gate",
+        "simulation-only until HIL approval"
+      ]
+    },
+    {
+      "batch": "A05",
+      "label": "Profiles cycles and result arithmetic",
+      "kind": "application-logic",
+      "mode": "native-build-assisted",
+      "vi_names": [
+        "Profile_Expand_Points.vi",
+        "Profile_Get_Next_Point.vi",
+        "Cycle_Begin.vi",
+        "Cycle_Finish.vi",
+        "Result_Calculate.vi",
+        "Result_Resolve_Reference.vi"
+      ],
+      "test_case_ids": [
+        "UT-CFG-008",
+        "UT-CFG-009",
+        "UT-SEQ-008",
+        "UT-SEQ-009",
+        "VTU-001",
+        "VTU-002",
+        "VTU-007",
+        "VTU-008",
+        "VTU-011"
+      ],
+      "prerequisites": [
+        "prior batch interfaces frozen",
+        "native compile gate",
+        "simulation-only until HIL approval"
+      ]
+    },
+    {
+      "batch": "A06",
+      "label": "Step lifecycle and operator ACK",
+      "kind": "application-engine",
+      "mode": "native-build-assisted",
+      "vi_names": [
+        "Step_Begin.vi",
+        "Step_Tick.vi",
+        "Step_Enter_Phase.vi",
+        "Step_On_Timeout.vi",
+        "Step_Cancel.vi",
+        "Popup_Begin.vi",
+        "Popup_Check_ACK.vi"
+      ],
+      "test_case_ids": [
+        "UT-SEQ-002",
+        "UT-SEQ-003",
+        "UT-SEQ-004",
+        "UT-SEQ-010",
+        "UT-SEQ-011",
+        "UT-SEQ-012",
+        "UT-SEQ-013"
+      ],
+      "prerequisites": [
+        "prior batch interfaces frozen",
+        "native compile gate",
+        "simulation-only until HIL approval"
+      ]
+    },
+    {
+      "batch": "A07",
+      "label": "Scheduler and execution loop",
+      "kind": "application-engine",
+      "mode": "native-build-assisted",
+      "vi_names": [
+        "Executor_Loop.vi",
+        "Executor_Begin_Group.vi",
+        "Scheduler_Find_Ready.vi",
+        "Scheduler_Claim_Resources.vi",
+        "Scheduler_Join_Branches.vi",
+        "Scheduler_Advance.vi"
+      ],
+      "test_case_ids": [
+        "UT-SEQ-005",
+        "UT-SEQ-006",
+        "UT-SEQ-007",
+        "UT-SEQ-014"
+      ],
+      "prerequisites": [
+        "prior batch interfaces frozen",
+        "native compile gate",
+        "simulation-only until HIL approval"
+      ]
+    },
+    {
+      "batch": "A08",
+      "label": "Bridge command arbitration",
+      "kind": "application-service",
+      "mode": "native-build-assisted",
+      "vi_names": [
+        "Bridge_Loop.vi",
+        "Bridge_Validate_Command.vi",
+        "Bridge_Acquire_Lease.vi",
+        "Bridge_Release_Lease.vi",
+        "Bridge_Dispatch.vi",
+        "Bridge_Process_ACK.vi",
+        "Bridge_Preempt.vi",
+        "Bridge_Read_Status.vi"
+      ],
+      "test_case_ids": [
+        "UT-BRG-001",
+        "UT-BRG-002",
+        "UT-BRG-003",
+        "UT-BRG-004",
+        "UT-BRG-005",
+        "UT-BRG-006",
+        "UT-BRG-007",
+        "UT-BRG-008",
+        "UT-BRG-009",
+        "UT-BRG-010",
+        "UT-SEQ-010"
+      ],
+      "prerequisites": [
+        "prior batch interfaces frozen",
+        "native compile gate",
+        "simulation-only until HIL approval"
+      ]
+    },
+    {
+      "batch": "A09",
+      "label": "Event and measurement logging",
+      "kind": "application-service",
+      "mode": "native-build-assisted",
+      "vi_names": [
+        "Event_Log_Loop.vi",
+        "Event_Log_Append.vi",
+        "Capture_Loop.vi",
+        "Capture_Start.vi",
+        "Capture_Process_Sample.vi"
+      ],
+      "test_case_ids": [
+        "UT-DAT-001",
+        "UT-DAT-004",
+        "UT-DAT-005",
+        "UT-DAT-006",
+        "UT-DAT-009",
+        "VTU-007"
+      ],
+      "prerequisites": [
+        "prior batch interfaces frozen",
+        "native compile gate",
+        "simulation-only until HIL approval"
+      ]
+    },
+    {
+      "batch": "A10",
+      "label": "Capture checkpoints and reports",
+      "kind": "application-service",
+      "mode": "native-build-assisted",
+      "vi_names": [
+        "Capture_Finalize.vi",
+        "Capture_Abort.vi",
+        "Checkpoint_Write.vi",
+        "Checkpoint_Read.vi",
+        "Report_Export.vi"
+      ],
+      "test_case_ids": [
+        "UT-DAT-002",
+        "UT-DAT-003",
+        "UT-DAT-007",
+        "UT-DAT-008",
+        "VTU-008",
+        "VTU-012"
+      ],
+      "prerequisites": [
+        "prior batch interfaces frozen",
+        "native compile gate",
+        "simulation-only until HIL approval"
+      ]
+    },
+    {
+      "batch": "A11",
+      "label": "Runtime supervisor lifecycle",
+      "kind": "application-actor",
+      "mode": "native-build-assisted",
+      "vi_names": [
+        "Target_Main.vi",
+        "Runtime_Initialize.vi",
+        "Supervisor_Loop.vi",
+        "Supervisor_Handle_Event.vi",
+        "Supervisor_Set_Mode.vi",
+        "Supervisor_Start_Test.vi"
+      ],
+      "test_case_ids": [
+        "UT-SUP-001",
+        "UT-SUP-002",
+        "UT-SUP-013"
+      ],
+      "prerequisites": [
+        "prior batch interfaces frozen",
+        "native compile gate",
+        "simulation-only until HIL approval"
+      ]
+    },
+    {
+      "batch": "A12",
+      "label": "Supervisor fault and shutdown",
+      "kind": "application-actor",
+      "mode": "native-build-assisted",
+      "vi_names": [
+        "Supervisor_Stop_Test.vi",
+        "Supervisor_Enter_Fault.vi",
+        "Supervisor_Fault_Procedure.vi",
+        "Supervisor_Shutdown_Procedure.vi",
+        "Supervisor_Finalize_Run.vi",
+        "Runtime_Close.vi"
+      ],
+      "test_case_ids": [
+        "UT-SUP-004",
+        "UT-SUP-005",
+        "UT-SUP-012",
+        "VTU-014"
+      ],
+      "prerequisites": [
+        "prior batch interfaces frozen",
+        "native compile gate",
+        "simulation-only until HIL approval"
+      ]
+    },
+    {
+      "batch": "A13",
+      "label": "Plugin manager",
+      "kind": "application-actor",
+      "mode": "native-build-assisted",
+      "vi_names": [
+        "Plugin_Manager.vi",
+        "Plugin_Validate_Manifest.vi",
+        "Plugin_Start.vi",
+        "Plugin_Poll.vi",
+        "Plugin_Cancel.vi"
+      ],
+      "test_case_ids": [
+        "UT-SUP-006",
+        "UT-SUP-007",
+        "UT-SUP-008",
+        "UT-SUP-009"
+      ],
+      "prerequisites": [
+        "prior batch interfaces frozen",
+        "native compile gate",
+        "simulation-only until HIL approval"
+      ]
+    },
+    {
+      "batch": "A14",
+      "label": "Plugin result and VTU hooks",
+      "kind": "application-service",
+      "mode": "native-build-assisted",
+      "vi_names": [
+        "Plugin_Collect_Result.vi",
+        "Plugin_Worker_Template.vi",
+        "VTU_Sensitivity_Calc.vi",
+        "VTU_Reference_Load_Calc.vi"
+      ],
+      "test_case_ids": [
+        "UT-SUP-008",
+        "UT-SUP-010",
+        "VTU-005"
+      ],
+      "prerequisites": [
+        "prior batch interfaces frozen",
+        "native compile gate",
+        "simulation-only until HIL approval"
+      ]
+    },
+    {
+      "batch": "A15",
+      "label": "Host target transport",
+      "kind": "application-service",
+      "mode": "native-build-assisted",
+      "vi_names": [
+        "Transport_Init.vi",
+        "Transport_Send_Command.vi",
+        "Transport_Receive_Command.vi",
+        "Transport_Send_Event.vi",
+        "Transport_Receive_Event.vi",
+        "Transport_Heartbeat.vi",
+        "Transport_Reconnect.vi",
+        "Transport_Close.vi"
+      ],
+      "test_case_ids": [
+        "UT-SUP-003",
+        "UT-SUP-011"
+      ],
+      "prerequisites": [
+        "prior batch interfaces frozen",
+        "native compile gate",
+        "simulation-only until HIL approval"
+      ]
+    },
+    {
+      "batch": "A16",
+      "label": "Host UI shell",
+      "kind": "application-ui",
+      "mode": "native-build-assisted",
+      "vi_names": [
+        "Host_Main.vi",
+        "Host_Event_Loop.vi",
+        "Host_Message_Loop.vi",
+        "Host_State_Update.vi",
+        "Host_Close.vi"
+      ],
+      "test_case_ids": [],
+      "prerequisites": [
+        "prior batch interfaces frozen",
+        "native compile gate",
+        "simulation-only until HIL approval"
+      ]
+    },
+    {
+      "batch": "A17",
+      "label": "Rig and sequence editor",
+      "kind": "application-ui",
+      "mode": "native-build-assisted",
+      "vi_names": [
+        "Rig_Editor.vi",
+        "Test_Editor.vi",
+        "Group_Editor.vi",
+        "Step_Editor.vi",
+        "Profile_Editor.vi"
+      ],
+      "test_case_ids": [],
+      "prerequisites": [
+        "prior batch interfaces frozen",
+        "native compile gate",
+        "simulation-only until HIL approval"
+      ]
+    },
+    {
+      "batch": "A18",
+      "label": "Advanced editing and publication",
+      "kind": "application-ui",
+      "mode": "native-build-assisted",
+      "vi_names": [
+        "Condition_Editor.vi",
+        "Plugin_Editor.vi",
+        "Host_Validate_Config.vi",
+        "Host_Publish_Config.vi"
+      ],
+      "test_case_ids": [],
+      "prerequisites": [
+        "prior batch interfaces frozen",
+        "native compile gate",
+        "simulation-only until HIL approval"
+      ]
+    },
+    {
+      "batch": "A19",
+      "label": "Host monitoring and reports",
+      "kind": "application-ui",
+      "mode": "native-build-assisted",
+      "vi_names": [
+        "Host_Runtime_Monitor.vi",
+        "Host_Popup_Manager.vi",
+        "Host_Manual_Control.vi",
+        "Host_Report_Viewer.vi"
+      ],
+      "test_case_ids": [
+        "VTU-010"
+      ],
+      "prerequisites": [
+        "prior batch interfaces frozen",
+        "native compile gate",
+        "simulation-only until HIL approval"
+      ]
+    },
+    {
+      "batch": "A20",
+      "label": "RT physical controller adapters",
+      "kind": "application-hardware",
+      "mode": "hardware-isolated-first",
+      "vi_names": [
+        "RT_Main.vi",
+        "RT_IO_Acquisition_Loop.vi",
+        "RT_Servo_Controller_Loop.vi",
+        "RT_Flow_PID_Loop.vi",
+        "RT_Pressure_PID_Loop.vi",
+        "RT_VFD_Adapter.vi",
+        "RT_PRV_AO_Adapter.vi",
+        "RT_Servo_IO_Adapter.vi"
+      ],
+      "test_case_ids": [
+        "VTU-001",
+        "VTU-002",
+        "VTU-003",
+        "VTU-004",
+        "VTU-005",
+        "VTU-006"
+      ],
+      "prerequisites": [
+        "prior batch interfaces frozen",
+        "native compile gate",
+        "simulation-only until HIL approval"
+      ]
+    },
+    {
+      "batch": "A21",
+      "label": "RT protection and remaining adapters",
+      "kind": "application-hardware",
+      "mode": "hardware-isolated-first",
+      "vi_names": [
+        "RT_Actuator_Adapter.vi",
+        "RT_PROFINET_Adapter.vi",
+        "RT_Fault_Checker.vi",
+        "RT_Watchdog.vi",
+        "RT_Protective_Response.vi",
+        "RT_Status_Publish.vi",
+        "RT_Close.vi"
+      ],
+      "test_case_ids": [
+        "UT-SUP-003",
+        "VTU-009",
+        "VTU-013"
+      ],
+      "prerequisites": [
+        "prior batch interfaces frozen",
+        "native compile gate",
+        "simulation-only until HIL approval"
+      ]
+    }
+  ]
+}

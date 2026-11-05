@@ -1,0 +1,9 @@
+<VI _name="UE_Within_Tolerance.vi" description="Check actual within target plus or minus configured nonnegative tolerance">
+  <Control _name="actual" conIdx="11" connection="required" outputs="value:101.value" type="double" uid="101" uid_parent="root" value="0" />
+  <Control _name="target" conIdx="10" connection="required" outputs="value:102.value" type="double" uid="102" uid_parent="root" value="0" />
+  <Control _name="tolerance" conIdx="9" connection="required" outputs="value:103.value" type="double" uid="103" uid_parent="root" value="0" />
+  <Node _name="Subtract" inputs="x:102.value,y:103.value" outputs="x-y:104.x-y" uid="104" uid_parent="root" />
+  <Node _name="Add" inputs="x:102.value,y:103.value" outputs="x+y:105.x+y" uid="105" uid_parent="root" />
+  <Node _name="In Range and Coerce" inputs="upper limit:105.x+y,x:101.value,lower limit:104.x-y" outputs="coerced(x):106.coerced(x),In Range?:106.In Range?" uid="106" uid_parent="root" includeLow="true" includeHigh="true" />
+  <Indicator _name="within_tolerance" conIdx="3" connection="recommended" inputs="value:106.In Range?" type="bool" uid="107" uid_parent="root" value="false" />
+</VI>

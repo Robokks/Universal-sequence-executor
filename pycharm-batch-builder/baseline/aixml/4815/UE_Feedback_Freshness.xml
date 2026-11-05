@@ -1,0 +1,14 @@
+<VI _name="UE_Feedback_Freshness.vi" description="Measure feedback age using monotonic clock and check nonnegative age not exceeding maximum">
+  <Control _name="now_ms" conIdx="11" connection="required" outputs="value:101.value" type="double" uid="101" uid_parent="root" value="0" />
+  <Control _name="sample_ms" conIdx="10" connection="required" outputs="value:102.value" type="double" uid="102" uid_parent="root" value="0" />
+  <Control _name="max_age_ms" conIdx="9" connection="required" outputs="value:103.value" type="double" uid="103" uid_parent="root" value="0" />
+  <Node _name="Subtract" inputs="x:101.value,y:102.value" outputs="x-y:104.x-y" uid="104" uid_parent="root" />
+  <Constant _name="Constant" outputs="value:105.value" type="double" uid="105" uid_parent="root" value="0" />
+  <Node _name="Greater Or Equal?" inputs="x:104.x-y,y:105.value" outputs="x &gt;= y?:106.x &gt;= y?" uid="106" uid_parent="root" />
+  <Constant _name="Constant" outputs="value:107.value" type="double" uid="107" uid_parent="root" value="0" />
+  <Node _name="In Range and Coerce" inputs="upper limit:103.value,x:104.x-y,lower limit:107.value" outputs="coerced(x):108.coerced(x),In Range?:108.In Range?" uid="108" uid_parent="root" includeLow="true" includeHigh="true" />
+  <Constant _name="Constant" outputs="value:109.value" type="bool" uid="109" uid_parent="root" value="false" />
+  <Node _name="Select" inputs="t:108.In Range?,s:106.x &gt;= y?,f:109.value" outputs="s? t\3Af:110.s? t\3Af" uid="110" uid_parent="root" />
+  <Indicator _name="age_ms" conIdx="3" connection="recommended" inputs="value:104.x-y" type="double" uid="111" uid_parent="root" value="0" />
+  <Indicator _name="fresh" conIdx="2" connection="recommended" inputs="value:110.s? t\3Af" type="bool" uid="112" uid_parent="root" value="false" />
+</VI>

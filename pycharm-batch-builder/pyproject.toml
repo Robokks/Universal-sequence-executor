@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "universal-labview-batch-builder"
+version = "0.6.0"
+description = "PyCharm-first, audit-friendly offline AIXML batches, LabVIEW MCP conversion, and optional NI Docker CI gates"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+mcp = ["mcp>=1.0"]
+dev = ["pytest>=8.0", "ruff>=0.6"]
+
+[project.scripts]
+lvbatch = "lvbatch.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100

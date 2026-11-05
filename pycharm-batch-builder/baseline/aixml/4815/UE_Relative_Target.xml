@@ -1,0 +1,6 @@
+<VI _name="UE_Relative_Target.vi" description="Calculate PC lever target from measured servo position and configurable relative displacement">
+  <Control _name="reference_mm" conIdx="11" connection="required" outputs="value:101.value" type="double" uid="101" uid_parent="root" value="0" />
+  <Control _name="offset_mm" conIdx="10" connection="required" outputs="value:102.value" type="double" uid="102" uid_parent="root" value="0" />
+  <Node _name="Add" inputs="x:101.value,y:102.value" outputs="x+y:103.x+y" uid="103" uid_parent="root" />
+  <Indicator _name="target_mm" conIdx="3" connection="recommended" inputs="value:103.x+y" type="double" uid="104" uid_parent="root" value="0" />
+</VI>

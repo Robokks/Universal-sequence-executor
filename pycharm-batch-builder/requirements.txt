@@ -1,0 +1,2 @@
+# PyCharm: install -e ".[dev]" for offline development. MCP optional: -e ".[mcp,dev]"
+-e .[dev]

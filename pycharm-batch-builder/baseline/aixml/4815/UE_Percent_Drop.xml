@@ -1,0 +1,16 @@
+<VI _name="UE_Percent_Drop.vi" description="Compute 100 times (initial minus final) divided by initial only for initial &gt; 0">
+  <Control _name="initial" conIdx="11" connection="required" outputs="value:101.value" type="double" uid="101" uid_parent="root" value="0" />
+  <Control _name="final" conIdx="10" connection="required" outputs="value:102.value" type="double" uid="102" uid_parent="root" value="0" />
+  <Constant _name="Constant" outputs="value:103.value" type="double" uid="103" uid_parent="root" value="0" />
+  <Node _name="Greater?" inputs="x:101.value,y:103.value" outputs="x &gt; y?:104.x &gt; y?" uid="104" uid_parent="root" />
+  <Constant _name="Constant" outputs="value:105.value" type="double" uid="105" uid_parent="root" value="1" />
+  <Node _name="Select" inputs="t:101.value,s:104.x &gt; y?,f:105.value" outputs="s? t\3Af:106.s? t\3Af" uid="106" uid_parent="root" />
+  <Node _name="Subtract" inputs="x:101.value,y:102.value" outputs="x-y:107.x-y" uid="107" uid_parent="root" />
+  <Node _name="Divide" inputs="x:107.x-y,y:106.s? t\3Af" outputs="x/y:108.x/y" uid="108" uid_parent="root" />
+  <Constant _name="Constant" outputs="value:109.value" type="double" uid="109" uid_parent="root" value="100" />
+  <Node _name="Multiply" inputs="x:108.x/y,y:109.value" outputs="x*y:110.x*y" uid="110" uid_parent="root" />
+  <Constant _name="Constant" outputs="value:111.value" type="double" uid="111" uid_parent="root" value="0" />
+  <Node _name="Select" inputs="t:110.x*y,s:104.x &gt; y?,f:111.value" outputs="s? t\3Af:112.s? t\3Af" uid="112" uid_parent="root" />
+  <Indicator _name="percent_drop" conIdx="3" connection="recommended" inputs="value:112.s? t\3Af" type="double" uid="113" uid_parent="root" value="0" />
+  <Indicator _name="valid" conIdx="2" connection="recommended" inputs="value:104.x &gt; y?" type="bool" uid="114" uid_parent="root" value="false" />
+</VI>

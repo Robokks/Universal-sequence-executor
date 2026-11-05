@@ -1,0 +1,6 @@
+<VI _name="UE_Ms_To_Seconds.vi" description="Convert milliseconds to seconds">
+  <Control _name="milliseconds" conIdx="0" connection="required" outputs="value:101.value" type="double" uid="101" uid_parent="root" value="0" />
+  <Constant _name="Constant" outputs="value:102.value" type="double" uid="102" uid_parent="root" value="1000" />
+  <Node _name="Divide" inputs="x:101.value,y:102.value" outputs="x/y:103.x/y" uid="103" uid_parent="root" />
+  <Indicator _name="seconds" conIdx="4" connection="recommended" inputs="value:103.x/y" type="double" uid="104" uid_parent="root" value="0" />
+</VI>

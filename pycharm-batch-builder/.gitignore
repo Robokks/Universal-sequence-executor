@@ -1,0 +1,10 @@
+.venv/
+.idea/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.py[cod]
+outputs/
+*.egg-info/
+mcp_temp/
+.env

@@ -1,0 +1,6 @@
+<VI _name="UE_Stop_Requested.vi" description="Combine operator stop request and global fault request">
+  <Control _name="operator_stop" conIdx="11" connection="required" outputs="value:101.value" type="bool" uid="101" uid_parent="root" value="false" />
+  <Control _name="global_fault" conIdx="10" connection="required" outputs="value:102.value" type="bool" uid="102" uid_parent="root" value="false" />
+  <Node _name="Or" inputs="x:101.value,y:102.value" outputs="x .or. y?:103.x .or. y?" uid="103" uid_parent="root" />
+  <Indicator _name="must_stop" conIdx="3" connection="recommended" inputs="value:103.x .or. y?" type="bool" uid="104" uid_parent="root" value="false" />
+</VI>

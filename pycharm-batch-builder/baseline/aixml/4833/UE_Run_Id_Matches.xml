@@ -1,0 +1,6 @@
+<VI _name="UE_Run_Id_Matches.vi" description="Reject a stale command or result whose integer demonstration run identifier differs">
+  <Control _name="incoming_run_id" conIdx="0" connection="required" outputs="value:101.value" type="int32" uid="101" uid_parent="root" value="0" />
+  <Control _name="active_run_id" conIdx="5" connection="required" outputs="value:102.value" type="int32" uid="102" uid_parent="root" value="0" />
+  <Node _name="Equal?" inputs="x:101.value,y:102.value" outputs="x = y?:103.x = y?" uid="103" uid_parent="root" />
+  <Indicator _name="same_run" conIdx="4" connection="recommended" inputs="value:103.x = y?" type="bool" uid="104" uid_parent="root" value="false" />
+</VI>

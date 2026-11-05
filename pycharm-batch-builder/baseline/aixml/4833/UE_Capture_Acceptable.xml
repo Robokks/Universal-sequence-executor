@@ -1,0 +1,10 @@
+<VI _name="UE_Capture_Acceptable.vi" description="Accept a completed capture only when samples exist\2C feedback is valid and buffer succeeded">
+  <Control _name="samples_present" conIdx="0" connection="required" outputs="value:101.value" type="bool" uid="101" uid_parent="root" value="false" />
+  <Control _name="feedback_valid" conIdx="5" connection="required" outputs="value:102.value" type="bool" uid="102" uid_parent="root" value="false" />
+  <Control _name="buffer_ok" conIdx="7" connection="required" outputs="value:103.value" type="bool" uid="103" uid_parent="root" value="false" />
+  <Constant _name="Constant" outputs="value:104.value" type="bool" uid="104" uid_parent="root" value="false" />
+  <Node _name="Select" inputs="t:102.value,s:101.value,f:104.value" outputs="s? t\3Af:105.s? t\3Af" uid="105" uid_parent="root" />
+  <Constant _name="Constant" outputs="value:106.value" type="bool" uid="106" uid_parent="root" value="false" />
+  <Node _name="Select" inputs="t:103.value,s:105.s? t\3Af,f:106.value" outputs="s? t\3Af:107.s? t\3Af" uid="107" uid_parent="root" />
+  <Indicator _name="acceptable" conIdx="4" connection="recommended" inputs="value:107.s? t\3Af" type="bool" uid="108" uid_parent="root" value="false" />
+</VI>

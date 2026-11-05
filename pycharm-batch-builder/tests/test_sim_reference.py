@@ -82,11 +82,15 @@ class SimulatorContractTests(unittest.TestCase):
         sim = SimSession("sim", model=SimModel(freshness_limit_ms=250))
         sim.submit(cmd(sim))
         sim.advance(50)
-        sim.feedback()
+        last_good = sim.feedback()
         sim.schedule_fault(Fault.SENSOR_STALE, 100)
         sim.advance(400)
-        self.assertEqual(sim.feedback()["quality"], "STALE")
-        self.assertEqual(sim.feedback()["sample_ms"], 50)
+        frozen = sim.feedback()
+        self.assertEqual(frozen["quality"], "STALE")
+        self.assertEqual(frozen["sample_ms"], 50)
+        for key in ("pressure_bar", "flow_lpm", "lever_mm"):
+            self.assertEqual(frozen[key], last_good[key],
+                             f"Stale {key} must keep last sample, not a new physical value")
         sim.schedule_fault(Fault.SENSOR_DROPOUT, sim.clock.now_ms)
         result = sim.feedback()
         self.assertEqual(result["quality"], "INVALID")

@@ -10,6 +10,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(prog="lvbatch", description="Safe batch-wise AIXML / VI build")
     sub = parser.add_subparsers(dest="action", required=True)
     sub.add_parser("list", help="Show batch plan")
+    sub.add_parser("sim-smoke", help="A01 deterministic reference simulator demo (no LabVIEW or hardware)")
     prep = sub.add_parser("prepare", help="Stage VI AIXML with embedded documentation")
     prep.add_argument("--batch", default="U01"); prep.add_argument("--pane", choices=["4815", "4833"], default="4815")
     prep.add_argument("--layout", choices=["compact", "fixed"], default="compact",
@@ -37,6 +38,28 @@ def main(argv=None):
     dock = sub.add_parser("docker-compile", help="NI headless MassCompile, real Docker run")
     dock.add_argument("--batch", default="U01")
     args = parser.parse_args(argv)
+    if args.action == "sim-smoke":
+        from .sim_reference import SimSession, SimModel, Command, Fault
+        simulator = SimSession("SIM-SMOKE-1", model=SimModel())
+        accepted = simulator.submit(Command("C1", simulator.run_id,
+                                             pressure_bar=50, flow_lpm=20, lever_mm=100))
+        simulator.advance(100)
+        normal = simulator.feedback()
+        simulator.schedule_fault(Fault.SENSOR_STALE, 100)
+        simulator.advance(300)
+        stale = simulator.feedback()
+        simulator.schedule_fault(Fault.SENSOR_DROPOUT, 400)
+        dropout = simulator.feedback()
+        output = {"phase": "A01_PYTHON_REFERENCE_ONLY", "simulation_only": True,
+                  "native_vis_built": 0, "accepted": accepted, "normal": normal,
+                  "stale": stale, "dropout": dropout, "events": simulator.events}
+        ok = (accepted["type"] == "ACCEPTED" and normal["quality"] == "GOOD"
+              and stale["quality"] == "STALE" and dropout["quality"] == "INVALID"
+              and simulator.simulation_only)
+        output["status"] = "PASS" if ok else "FAIL"
+        record("A01", "sim_reference", output)
+        print(json.dumps(output, indent=2))
+        return 0 if ok else 2
     if args.action == "list":
         data = load_batches()
         for item in data["batches"]:

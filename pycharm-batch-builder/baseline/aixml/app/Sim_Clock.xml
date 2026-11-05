@@ -2,10 +2,17 @@
   <Control _name="current_ms" conIdx="3" connection="required" outputs="value:101.value" type="int64" uid="101" uid_parent="root" value="0" />
   <Control _name="advance_ms" conIdx="2" connection="required" outputs="value:102.value" type="int64" uid="102" uid_parent="root" value="0" />
   <Constant _name="Zero I64" outputs="value:103.value" type="int64" uid="103" uid_parent="root" value="0" />
-  <Constant _name="Maximum I64" outputs="value:104.value" type="int64" uid="104" uid_parent="root" value="9223372036854775807" />
-  <Node _name="In Range and Coerce" inputs="x:101.value,lower limit:103.value,upper limit:104.value" outputs="coerced(x):105.coerced(x),In Range?:105.In Range?" uid="105" uid_parent="root" includeLow="true" includeHigh="true" />
-  <Node _name="In Range and Coerce" inputs="x:102.value,lower limit:103.value,upper limit:104.value" outputs="coerced(x):106.coerced(x),In Range?:106.In Range?" uid="106" uid_parent="root" includeLow="true" includeHigh="true" />
-  <Node _name="Subtract" inputs="x:104.value,y:101.value" outputs="x-y:107.x-y" uid="107" uid_parent="root" />
+  <!-- pylabview currently parses int64 constants through float(value). I64_MAX rounds
+       to 2^63 and fails struct.pack. Compose the exact I64_MAX using 2^62
+       (exactly representable in binary64) and small integral arithmetic:
+       (2^62 - 1) + 2^62 = 9223372036854775807, no intermediate overflow. -->
+  <Constant _name="2^62 I64" outputs="value:104.value" type="int64" uid="104" uid_parent="root" value="4611686018427387904" />
+  <Constant _name="One I64" outputs="value:116.value" type="int64" uid="116" uid_parent="root" value="1" />
+  <Node _name="Subtract" inputs="x:104.value,y:116.value" outputs="x-y:117.x-y" uid="117" uid_parent="root" />
+  <Node _name="Add" inputs="x:104.value,y:117.x-y" outputs="x+y:118.x+y" uid="118" uid_parent="root" />
+  <Node _name="In Range and Coerce" inputs="x:101.value,lower limit:103.value,upper limit:118.x+y" outputs="coerced(x):105.coerced(x),In Range?:105.In Range?" uid="105" uid_parent="root" includeLow="true" includeHigh="true" />
+  <Node _name="In Range and Coerce" inputs="x:102.value,lower limit:103.value,upper limit:118.x+y" outputs="coerced(x):106.coerced(x),In Range?:106.In Range?" uid="106" uid_parent="root" includeLow="true" includeHigh="true" />
+  <Node _name="Subtract" inputs="x:118.x+y,y:101.value" outputs="x-y:107.x-y" uid="107" uid_parent="root" />
   <Node _name="In Range and Coerce" inputs="x:102.value,lower limit:103.value,upper limit:107.x-y" outputs="coerced(x):108.coerced(x),In Range?:108.In Range?" uid="108" uid_parent="root" includeLow="true" includeHigh="true" />
   <Constant _name="Boolean False" outputs="value:109.value" type="bool" uid="109" uid_parent="root" value="false" />
   <Node _name="Select" inputs="s:105.In Range?,t:106.In Range?,f:109.value" outputs="s? t\3Af:110.s? t\3Af" uid="110" uid_parent="root" />

@@ -18,6 +18,10 @@ def main(argv=None):
     gui = sub.add_parser("demo-gui", help="Start simulation-only desktop operator UI")
     gui.add_argument("--exe", type=Path, default=None)
     gui.add_argument("--native-dir", type=Path, default=None)
+    finish = sub.add_parser("native-cleanup", help="Plan or perform backup-first LabVIEW VI block-diagram cleanup")
+    finish.add_argument("--batch", required=True, choices=["U01", "U02", "U03", "U04", "A01"])
+    finish.add_argument("--exe", required=True, type=Path)
+    finish.add_argument("--apply", action="store_true", help="Mutate scratch VIs after backup; default: dry-run")
     sub.add_parser("sim-smoke", help="A01 deterministic reference simulator demo (no LabVIEW or hardware)")
     a01prep = sub.add_parser("a01-clock-prepare", help="Stage only native Sim_Clock.vi in scratch output")
     a01prep.add_argument("--native-dir", default="native_clock_v1")
@@ -66,6 +70,11 @@ def main(argv=None):
         from .sequence_gui import launch
         launch(args.exe, args.native_dir)
         return 0
+    if args.action == "native-cleanup":
+        from .native_cleanup import cleanup_batch
+        out = cleanup_batch(args.batch, args.exe, args.apply)
+        print(json.dumps(out, indent=2))
+        return 0 if out.get("ok") is True else 2
     if args.action == "a01-clock-prepare":
         from .a01_clock import prepare_sim_clock
         output = prepare_sim_clock(args.native_dir)

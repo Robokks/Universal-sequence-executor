@@ -96,3 +96,25 @@ is `Sim_Clock.vi`. Follow the
 The candidate uses I64 timestamps and rejects invalid time advances and
 integer overflow. It is **not yet LabVIEW-verified**. Only this one VI is
 staged; the other four A01 native VIs still need designs.
+
+
+## Runnable operator vertical slice (simulation only)
+
+The [MVP sequence-runner guide](docs/MVP_VERTICAL_SLICE.md) describes the
+working Python operator desktop, three-step synthetic sequence, PASS/FAIL,
+dwell/timeout, STOP/PAUSE, and JSON+CSV evidence. It also offers an opt-in
+NI gRPC decision backend using existing U02 native utility VIs.
+
+From the Windows PyCharm terminal:
+
+    python -m lvbatch demo-run --backend mock
+    python -m lvbatch demo-gui
+
+To use existing NI LabVIEW utility VIs for decisions, consult the guide
+for the --backend grpc, --exe and --native-dir arguments.
+
+NI-style block diagram and panel cleanup are requested during fresh
+MCP native generation. For offline-composed VIs, use native-cleanup with
+a safe dry run first, then --apply, and redo native tests. Originals
+are backed up. This operator interface is Tkinter, NOT a completed
+LabVIEW native application. No physical equipment connection exists.

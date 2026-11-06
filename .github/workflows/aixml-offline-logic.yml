@@ -1,0 +1,35 @@
+name: AIXML Offline Logic Tests (no LabVIEW)
+on:
+  push:
+    paths:
+      - 'pycharm-batch-builder/baseline/aixml/**'
+      - 'pycharm-batch-builder/baseline/manifest.json'
+      - 'pycharm-batch-builder/baseline/tests/**'
+      - '.github/workflows/aixml-offline-logic.yml'
+  pull_request:
+    paths:
+      - 'pycharm-batch-builder/baseline/**'
+      - '.github/workflows/aixml-offline-logic.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  xml-graph-simulation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Prepare evidence directory
+        run: mkdir -p pycharm-batch-builder/baseline/results
+      - name: Run AIXML graph validation and expected-output vectors
+        working-directory: pycharm-batch-builder
+        run: python baseline/tests/validate_offline.py
+      - name: Upload offline evidence (not native VI verification)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: AIXML-offline-graph-tests-not-LabVIEW
+          path: pycharm-batch-builder/baseline/results/offline_validation.json

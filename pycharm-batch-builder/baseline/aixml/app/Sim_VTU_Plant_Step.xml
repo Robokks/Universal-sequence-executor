@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VI _name="Sim_VTU_Plant_Step.vi" description="A01 software-only scalar first-order plant step. Call independently for pressure, flow and lever with PRECLAMPED synthetic targets. next = current + (1 - exp(-dt_ms / time_constant_ms)) * (target - current). A negative dt_ms or nonpositive time_constant_ms is rejected with valid=false and next=current. The caller implements state ownership, saturation, stuck-servo behavior, run identity and fault scheduling. Inputs current and target must be finite. Not suitable for physical actuators.">
+  <Control _name="current" conIdx="11" connection="required" outputs="value:101.value" type="double" uid="101" uid_parent="root" value="0" />
+  <Control _name="target" conIdx="10" connection="required" outputs="value:102.value" type="double" uid="102" uid_parent="root" value="0" />
+  <Control _name="dt_ms" conIdx="9" connection="required" outputs="value:103.value" type="double" uid="103" uid_parent="root" value="0" />
+  <Control _name="time_constant_ms" conIdx="8" connection="required" outputs="value:104.value" type="double" uid="104" uid_parent="root" value="500" />
+  <Constant _name="Zero" outputs="value:105.value" type="double" uid="105" uid_parent="root" value="0" />
+  <Constant _name="One" outputs="value:106.value" type="double" uid="106" uid_parent="root" value="1" />
+  <Constant _name="False" outputs="value:118.value" type="bool" uid="118" uid_parent="root" value="false" />
+  <Node _name="Greater Or Equal To 0?" inputs="x:103.value" outputs="x >= 0?:107.x >= 0?" uid="107" uid_parent="root" />
+  <Node _name="Greater Than 0?" inputs="x:104.value" outputs="x > 0?:108.x > 0?" uid="108" uid_parent="root" />
+  <Node _name="Select" inputs="s:108.x > 0?,t:104.value,f:106.value" outputs="s? t\3Af:109.s? t\3Af" uid="109" uid_parent="root" />
+  <Node _name="Select" inputs="s:107.x >= 0?,t:103.value,f:105.value" outputs="s? t\3Af:110.s? t\3Af" uid="110" uid_parent="root" />
+  <Node _name="Divide" inputs="x:110.s? t\3Af,y:109.s? t\3Af" outputs="x/y:111.x/y" uid="111" uid_parent="root" />
+  <Node _name="Subtract" inputs="x:105.value,y:111.x/y" outputs="x-y:112.x-y" uid="112" uid_parent="root" />
+  <Node _name="Exponential" inputs="x:112.x-y" outputs="exp(x):113.exp(x)" uid="113" uid_parent="root" />
+  <Node _name="Subtract" inputs="x:106.value,y:113.exp(x)" outputs="x-y:114.x-y" uid="114" uid_parent="root" />
+  <Node _name="Subtract" inputs="x:102.value,y:101.value" outputs="x-y:115.x-y" uid="115" uid_parent="root" />
+  <Node _name="Multiply" inputs="x:114.x-y,y:115.x-y" outputs="x*y:116.x*y" uid="116" uid_parent="root" />
+  <Node _name="Add" inputs="x:101.value,y:116.x*y" outputs="x+y:117.x+y" uid="117" uid_parent="root" />
+  <Node _name="Select" inputs="s:108.x > 0?,t:107.x >= 0?,f:118.value" outputs="s? t\3Af:119.s? t\3Af" uid="119" uid_parent="root" />
+  <Node _name="Select" inputs="s:119.s? t\3Af,t:117.x+y,f:101.value" outputs="s? t\3Af:120.s? t\3Af" uid="120" uid_parent="root" />
+  <Indicator _name="next" conIdx="3" connection="recommended" inputs="value:120.s? t\3Af" type="double" uid="121" uid_parent="root" value="0" />
+  <Indicator _name="valid" conIdx="2" connection="recommended" inputs="value:119.s? t\3Af" type="bool" uid="122" uid_parent="root" value="false" />
+</VI>

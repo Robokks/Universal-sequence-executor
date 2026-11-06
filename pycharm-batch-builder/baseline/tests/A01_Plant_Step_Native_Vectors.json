@@ -1,0 +1,180 @@
+{
+  "kind": "native_LabVIEW_tests",
+  "vi": "Sim_VTU_Plant_Step.vi",
+  "status": "NOT_RUN",
+  "scope": "A01 scalar synthetic plant helper; not the full three-channel Sim_VTU_Plant.vi",
+  "inputs": [
+    "current",
+    "target",
+    "dt_ms",
+    "time_constant_ms"
+  ],
+  "outputs": [
+    "next",
+    "valid"
+  ],
+  "math": "next = current + (1-exp(-dt_ms/time_constant_ms))*(target-current); invalid dt_ms or tau returns current, false",
+  "limitations": "Caller must supply finite, preclamped target/current and handle physical limits, stuck faults, and three-channel orchestration; native tests are required.",
+  "vectors": [
+    {
+      "id": "A01-PLANT-001",
+      "current": 0,
+      "target": 100,
+      "dt_ms": 0,
+      "time_constant_ms": 500,
+      "next": 0,
+      "valid": true,
+      "focus": "zero time step"
+    },
+    {
+      "id": "A01-PLANT-002",
+      "current": 0,
+      "target": 100,
+      "dt_ms": 50,
+      "time_constant_ms": 500,
+      "next": 9.516258196404042,
+      "valid": true,
+      "focus": "50 ms pressure rise"
+    },
+    {
+      "id": "A01-PLANT-003",
+      "current": 0,
+      "target": 100,
+      "dt_ms": 500,
+      "time_constant_ms": 500,
+      "next": 63.212055882855765,
+      "valid": true,
+      "focus": "one time constant"
+    },
+    {
+      "id": "A01-PLANT-004",
+      "current": 0,
+      "target": 100,
+      "dt_ms": 2000,
+      "time_constant_ms": 500,
+      "next": 98.16843611112658,
+      "valid": true,
+      "focus": "four time constants"
+    },
+    {
+      "id": "A01-PLANT-005",
+      "current": 50,
+      "target": 100,
+      "dt_ms": 500,
+      "time_constant_ms": 500,
+      "next": 81.60602794142788,
+      "valid": true,
+      "focus": "nonzero previous state"
+    },
+    {
+      "id": "A01-PLANT-006",
+      "current": 80,
+      "target": 0,
+      "dt_ms": 500,
+      "time_constant_ms": 500,
+      "next": 29.430355293715387,
+      "valid": true,
+      "focus": "decay toward zero"
+    },
+    {
+      "id": "A01-PLANT-007",
+      "current": 40,
+      "target": 100,
+      "dt_ms": -1,
+      "time_constant_ms": 500,
+      "next": 40,
+      "valid": false,
+      "focus": "reject negative dt"
+    },
+    {
+      "id": "A01-PLANT-008",
+      "current": 40,
+      "target": 100,
+      "dt_ms": 50,
+      "time_constant_ms": 0,
+      "next": 40,
+      "valid": false,
+      "focus": "reject zero time constant"
+    },
+    {
+      "id": "A01-PLANT-009",
+      "current": 40,
+      "target": 100,
+      "dt_ms": 50,
+      "time_constant_ms": -200,
+      "next": 40,
+      "valid": false,
+      "focus": "reject negative time constant"
+    },
+    {
+      "id": "A01-PLANT-010",
+      "current": 40,
+      "target": 100,
+      "dt_ms": 0,
+      "time_constant_ms": 0,
+      "next": 40,
+      "valid": false,
+      "focus": "reject invalid tau even for zero dt"
+    },
+    {
+      "id": "A01-PLANT-011",
+      "current": 0,
+      "target": 100,
+      "dt_ms": 100000000,
+      "time_constant_ms": 500,
+      "next": 100,
+      "valid": true,
+      "focus": "large dt asymptote"
+    },
+    {
+      "id": "A01-PLANT-012",
+      "current": 100,
+      "target": 50,
+      "dt_ms": 100,
+      "time_constant_ms": 500,
+      "next": 90.9365376538991,
+      "valid": true,
+      "focus": "downward response"
+    },
+    {
+      "id": "A01-PLANT-013",
+      "current": 0,
+      "target": 50,
+      "dt_ms": 200,
+      "time_constant_ms": 500,
+      "next": 16.483997698218037,
+      "valid": true,
+      "focus": "preclamped half-limit target"
+    },
+    {
+      "id": "A01-PLANT-014",
+      "current": 70,
+      "target": 100,
+      "dt_ms": 0,
+      "time_constant_ms": 500,
+      "next": 70,
+      "valid": true,
+      "focus": "stuck-servo caller models dt=0"
+    },
+    {
+      "id": "A01-PLANT-015",
+      "current": 0,
+      "target": 100,
+      "dt_ms": 0.001,
+      "time_constant_ms": 500,
+      "next": 0.0001999998000001333,
+      "valid": true,
+      "focus": "small positive dt"
+    },
+    {
+      "id": "A01-PLANT-016",
+      "current": 0,
+      "target": 0,
+      "dt_ms": 300,
+      "time_constant_ms": 500,
+      "next": 0,
+      "valid": true,
+      "focus": "zero target steady state"
+    }
+  ]
+}

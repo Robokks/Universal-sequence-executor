@@ -86,6 +86,22 @@ Run `python -m lvbatch sim-smoke` to generate a local synthetic evidence report
 under `outputs/A01/evidence/sim_reference.json`. This builds **zero**
 native LabVIEW VIs and cannot reach physical I/O.
 
+## A01P -- new first-order plant-step helper (simulation only)
+
+The A01P helper `Sim_VTU_Plant_Step.vi` is a **scalar math helper**, not the
+complete 3-channel `Sim_VTU_Plant.vi` application. It is staged independently
+of `Sim_Clock.vi` so existing A01 results are safe. A native LabVIEW test
+suite contains **16 independent vectors**. GitHub CI tests the AIXML graph
+offline; it does NOT run LabVIEW.
+
+See [A01P native runbook](docs/A01_PLANT_STEP_NATIVE_RUNBOOK.md).
+Run `python -m lvbatch a01-plant-prepare --native-dir native_plant_v1`,
+`python -m lvbatch check --batch A01P` and then, with LabVIEW and
+the provisioned MCP bundle, `python -m lvbatch mcp-generate --batch A01P
+--pane 4815 --backend grpc --exe <path-to-LabVIEWMCP.exe>`.
+After success run `python -m lvbatch a01-plant-test --backend grpc
+--exe <path-to-LabVIEWMCP.exe>`. Do not regenerate U01-U04.
+
 ## First native A01 application VI — Sim_Clock
 
 After the A01 Python simulator smoke test passes, the first native target

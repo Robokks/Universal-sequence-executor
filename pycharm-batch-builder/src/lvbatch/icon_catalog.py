@@ -6,6 +6,7 @@ Apply only after native generation: regenerating from AIXML resets the icon.
 from __future__ import annotations
 
 ICON_LABELS = {
+    "Sim_VTU_Plant_Step": ("PLANT", "STEP"),
     "Sim_Clock": ("CLOCK", "MS"),
     "UE_Relative_Target": ("REL", "TGT"),
     "UE_Measured_Displacement": ("MEAS", "DISP"),

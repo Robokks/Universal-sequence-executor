@@ -5,6 +5,7 @@ Requires pip install -e '.[mcp]'. This is not a substitute for reviewing native 
 from __future__ import annotations
 import asyncio
 import json
+import os
 import shutil
 from datetime import datetime, timezone
 from pathlib import Path
@@ -34,12 +35,30 @@ def success(data: dict) -> bool:
     return False
 
 
+def mcp_stdio_env() -> dict[str, str] | None:
+    """Pass the separately provisioned pylabview bundle to the MCP subprocess.
+
+    The MCP stdio transport deliberately inherits only an allowlisted set of
+    environment variables. A parent-shell LABVIEWMCP_PYLABVIEW must therefore
+    be forwarded explicitly; env=None silently drops it.
+    """
+    configured = os.environ.get("LABVIEWMCP_PYLABVIEW", "").strip()
+    if not configured:
+        return None
+    bundle = Path(configured).expanduser()
+    if not (bundle / "python.exe").is_file():
+        raise FileNotFoundError(
+            f"LABVIEWMCP_PYLABVIEW has no python.exe at: {bundle}"
+        )
+    return {"LABVIEWMCP_PYLABVIEW": str(bundle)}
+
+
 async def _with_server(exe: Path, fn):
     from mcp import ClientSession, StdioServerParameters
     from mcp.client.stdio import stdio_client
     if not exe.is_file():
         raise FileNotFoundError(f"LabVIEW MCP executable missing: {exe}")
-    params = StdioServerParameters(command=str(exe), args=[], env=None)
+    params = StdioServerParameters(command=str(exe), args=[], env=mcp_stdio_env())
     async with stdio_client(params) as (reader, writer):
         async with ClientSession(reader, writer) as client:
             await client.initialize()

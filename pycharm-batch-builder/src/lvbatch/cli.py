@@ -25,6 +25,13 @@ def main(argv=None):
     sub.add_parser("sim-smoke", help="A01 deterministic reference simulator demo (no LabVIEW or hardware)")
     a01prep = sub.add_parser("a01-clock-prepare", help="Stage only native Sim_Clock.vi in scratch output")
     a01prep.add_argument("--native-dir", default="native_clock_v1")
+    a01plantprep = sub.add_parser("a01-plant-prepare",
+                                   help="Stage A01 per-channel synthetic plant helper, isolated from Sim_Clock")
+    a01plantprep.add_argument("--native-dir", default="native_plant_v1")
+    a01planttest = sub.add_parser("a01-plant-test",
+                                   help="Run native LabVIEW synthetic plant step test vectors")
+    a01planttest.add_argument("--exe", required=True, type=Path)
+    a01planttest.add_argument("--backend", choices=["grpc", "pylabview"], default="grpc")
     a01test = sub.add_parser("a01-clock-test", help="Execute exact signed-64-bit clock cases in LabVIEW")
     a01test.add_argument("--exe", required=True, type=Path)
     a01test.add_argument("--backend", choices=["grpc", "pylabview"], default="grpc")
@@ -77,6 +84,23 @@ def main(argv=None):
         out = cleanup_batch(args.batch, args.exe, args.apply)
         print(json.dumps(out, indent=2))
         return 0 if out.get("ok") is True else 2
+    if args.action == "a01-plant-prepare":
+        from .a01_plant import prepare_plant_step
+        output = prepare_plant_step(args.native_dir)
+        print(json.dumps({"batch": output["batch"], "component": output["component"],
+                          "connector": output["items"][0]["connector_map"],
+                          "connector_pattern": output["items"][0]["connector_pattern"],
+                          "native_vi": output["items"][0]["native_vi"],
+                          "native_vis_staged": output["native_vis_staged"],
+                          "native_vis_built": 0}, indent=2))
+        return 0
+    if args.action == "a01-plant-test":
+        from .a01_plant import test_native_plant_step
+        output = test_native_plant_step(args.exe, args.backend)
+        print(json.dumps(output, indent=2))
+        return 0 if (output["native_test_count"] == 16 and
+                     output["passes"] == 16 and output["failures"] == 0 and
+                     output["not_run"] == 0) else 2
     if args.action == "a01-clock-prepare":
         from .a01_clock import prepare_sim_clock
         output = prepare_sim_clock(args.native_dir)

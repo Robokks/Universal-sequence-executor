@@ -3,6 +3,9 @@
 **Snapshot: 2026-11-07, 16:30.** For any AI agent (Claude, Codex, DeepSeek, Antigravity) or engineer continuing the work.
 Environment: Windows 10, **LabVIEW 2026 64-bit (26.3.1f1)**, Actor Framework from vi.lib, Caraya installed.
 Spec: **`docs/DESIGN_AF_EXECUTOR.md` (v2) is authoritative.** This file = state + rules + next steps.
+Code: local `C:\Users\DynaAdmin\PycharmProjects\Universal-sequence-executor-AF`, git branch **`af-host`** on
+https://github.com/Robokks/Universal-sequence-executor (do NOT push to `main` — it holds the separate QMH project).
+Backup zip: `C:\Users\DynaAdmin\PycharmProjects\Backups\Universal-sequence-executor-AF_20261107_1627.zip`.
 
 ---
 

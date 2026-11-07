@@ -1,0 +1,33 @@
+<!--
+  ACTOR CORE OVERRIDE of Sequence Executor.lvclass - delivered as a HOOK, not as an override diagram.
+  Why: plugin doc af-override-tools.md 1 / labview-actor-framework.md 19b: "AIXML cannot author Call Parent
+  Class Method"; a generated override is eBad. Route:
+    1. lvai_add_class_method  this file as Sequence Executor.lvclass:Launch Plant.vi (static, private or protected)
+    2. lvai_create_override   classPath=...\src\Executor\Sequence Executor.lvclass  parentMethod="Actor Core"
+    3. lvai_af_add_hook       overridePath=<new Actor Core.vi> hookViPath=<Launch Plant.vi> shape="series"
+                              wireError=true  hookClassIn="Actor in" hookClassOut="Actor out"
+  Resulting override (intended): panel Actor in -> Launch Plant.vi -> Call Parent (Actor Core) -> Actor out.
+  Plugin warning for this shape: an Actor Core series hook WITH an error wire makes a launch error skip Handle
+  Error; the actor ends silently and the next Send answers 1556 (README Q5).
+  Launch Nested Actor terminal names below are from an OFFLINE export of
+  vi.lib\ActorFramework\Actor\Launch Nested Actor.vi (plugin vi2aixml.py, no LabVIEW): Caller Actor in (11),
+  Nested Actor (10), Auto-stop? (T) (9), error in (no error) (8), Debug Alias (4) -> Caller Actor out (3),
+  Nested Actor's Enqueuer (2), error out (0). Scope: protected (member of a descendant may call it).
+-->
+<VI _name="Sequence Executor.lvclass:Launch Plant.vi" description="Actor Core hook (series\2C before Call Parent). Launches Sim Plant as a nested actor with Auto Stop T\2C stores its enqueuer as Plant Enqueuer\2C and shows an initial IDLE status.">
+  <Control _name="Actor in" conIdx="11" connection="required" outputs="value:100.value" type="ref{UDClassInst}" uid="100" uid_parent="root" value=""/>
+  <Control _name="error in" conIdx="8" connection="required" outputs="value:102.value" type="cluster{bool.status,int32.code,string.source}" uid="102" uid_parent="root" value="[false,0,]"/>
+  <!-- CLASS SEED (plugin doc aixml-reference.md "Class constant"): authored as a labelled path constant, then
+       lvai_swap_subvis constantsJson=[{"label":"Sim Plant","class":"...\\src\\Sim Plant\\Sim Plant.lvclass"}]. -->
+  <Constant _name="Sim Plant" outputs="value:110.value" type="path" uid="110" uid_parent="root" value=""/>
+  <Constant _name="Auto-stop? (T)" outputs="value:111.value" type="bool" uid="111" uid_parent="root" value="true"/>
+  <Constant _name="Debug Alias" outputs="value:112.value" type="string" uid="112" uid_parent="root" value="Sim Plant"/>
+  <Call inputs="Caller Actor in:100.value,Nested Actor:110.value,Auto-stop? (T):111.value,Debug Alias:112.value,error in (no error):102.value" outputs="Caller Actor out:113.Caller Actor out,Nested Actor's Enqueuer:113.Nested Actor's Enqueuer,error out:113.error out" target="Actor Framework.lvlib\3AActor.lvclass\3ALaunch Nested Actor.vi" uid="113" uid_parent="root"/>
+  <!-- Caller Actor out is typed Actor.lvclass (input is not dynamic); cast back with the same utility NI's Do.vi uses (add_do.xml). -->
+  <Call inputs="Actor in:113.Caller Actor out,error in (no error):113.error out,type:100.value" outputs="Actor out:114.Actor out,error out:114.error out" target="Casting Utility For Actors.vim" uid="114" uid_parent="root"/>
+  <Node _name="Bundle By Name" fields="Plant Enqueuer" inputs="Plant Enqueuer:113.Nested Actor's Enqueuer,input cluster:114.Actor out" outputs="output cluster:115.output cluster" uid="115" uid_parent="root"/>
+  <Constant _name="Status" outputs="value:117.value" type="string" uid="117" uid_parent="root" value="IDLE - load a sequence"/>
+  <Call inputs="Actor in:115.output cluster,Status:117.value,error in:114.error out" outputs="Actor out:116.Actor out,error out:116.error out" target="Sequence Executor.lvclass\3AUpdate Displays.vi" uid="116" uid_parent="root"/>
+  <Indicator _name="Actor out" conIdx="3" connection="required" inputs="value:116.Actor out" type="ref{UDClassInst}" uid="200" uid_parent="root" value=""/>
+  <Indicator _name="error out" conIdx="0" connection="required" inputs="value:116.error out" type="cluster{bool.status,int32.code,string.source}" uid="210" uid_parent="root" value="[false,0,]"/>
+</VI>

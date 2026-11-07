@@ -1,0 +1,20 @@
+<!--
+  STOP CORE OVERRIDE of Sequence Executor.lvclass - delivered as a HOOK (AIXML cannot author Call Parent).
+  Route: lvai_add_class_method (Signal Stopped.vi) -> lvai_create_override parentMethod="Stop Core"
+         -> lvai_af_add_hook shape="seriesAfter" (class only; Stop Core has no error terminals)
+            hookClassIn="Actor in" hookClassOut="Actor out".
+  Resulting override (intended) = exactly the user's CounterActor.lvclass:Stop Core.vi (offline export):
+    Call Parent Class Method (final error code, Actor in) -> Actor out ; Unbundle Stopped Notification ;
+    Send Notification (T). The sample does this AFTER Call Parent, so seriesAfter matches it.
+  Stop Core pane (plugin doc, measured): Actor in 11 (dynamic), final error code 10, Actor out 3 (dynamic).
+  Sim Plant is auto-stop, so the parent Stop Core stops it; nothing to do for the plant here.
+-->
+<VI _name="Sequence Executor.lvclass:Signal Stopped.vi" description="Stop Core hook (seriesAfter\2C after Call Parent). Sends TRUE on the Stopped Notification so the launcher's Wait on Notification returns.">
+  <Control _name="Actor in" conIdx="11" connection="required" outputs="value:100.value" type="ref{UDClassInst}" uid="100" uid_parent="root" value=""/>
+  <Control _name="error in" conIdx="8" connection="recommended" outputs="value:102.value" type="cluster{bool.status,int32.code,string.source}" uid="102" uid_parent="root" value="[false,0,]"/>
+  <Node _name="Unbundle By Name" fields="Stopped Notification" inputs="input cluster:100.value" outputs="Stopped Notification:110.Stopped Notification" uid="110" uid_parent="root"/>
+  <Constant _name="Stopped" outputs="value:111.value" type="bool" uid="111" uid_parent="root" value="true"/>
+  <Node _name="Send Notification" inputs="notifier:110.Stopped Notification,notification:111.value,error in (no error):102.value" outputs="notifier out:,error out:112.error out" uid="112" uid_parent="root"/>
+  <Indicator _name="Actor out" conIdx="3" connection="required" inputs="value:100.value" type="ref{UDClassInst}" uid="200" uid_parent="root" value=""/>
+  <Indicator _name="error out" conIdx="0" connection="recommended" inputs="value:112.error out" type="cluster{bool.status,int32.code,string.source}" uid="210" uid_parent="root" value="[false,0,]"/>
+</VI>

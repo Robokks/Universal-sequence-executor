@@ -1,0 +1,70 @@
+<VI _name="Sequence Executor.lvclass:Load Sequence.vi" description="Loads a sequence JSON file. Refuses while Running. On a read/parse error: Status LOAD ERROR\3A source\2C Loaded F\2C and NO error is returned (operator mistake must not stop the actor). On success: Sequence stored\2C Results all NOT RUN\2C Loaded T\2C Status LOADED id (n steps)\2C table refreshed. Message: Load Sequence Msg (payload Sequence Path).">
+  <Control _name="Actor in" conIdx="11" connection="required" outputs="value:100.value" type="ref{UDClassInst}" uid="100" uid_parent="root" value=""/>
+  <!-- Payload terminal of Load Sequence Msg; the message maker lifts this label into the message class and Send Load Sequence.vi. -->
+  <Control _name="Sequence Path" conIdx="10" connection="required" outputs="value:101.value" type="path" uid="101" uid_parent="root" value=""/>
+  <Control _name="error in" conIdx="8" connection="required" outputs="value:102.value" type="cluster{bool.status,int32.code,string.source}" uid="102" uid_parent="root" value="[false,0,]"/>
+  <Node _name="Unbundle By Name" fields="Running" inputs="input cluster:100.value" outputs="Running:110.Running" uid="110" uid_parent="root"/>
+  <Structure _name="Case Structure" selectin="110.Running" uid="120" uid_parent="root">
+    <Tunnel _id="In1" inputs="value:100.value" uid="1201" uid_parent="120"/>
+    <Tunnel _id="In2" inputs="value:101.value" uid="1202" uid_parent="120"/>
+    <CaseFrame selector="True" selectout="" uid="121" uid_parent="120">
+      <Tunnel _id="In1" outputs="value:122.value" uid="122" uid_parent="121"/>
+      <Tunnel _id="In2" outputs="value:" uid="123" uid_parent="121"/>
+      <Constant _name="Refused status" outputs="value:124.value" type="string" uid="124" uid_parent="121" value="LOAD REFUSED - a sequence is running"/>
+      <Tunnel _id="Out1" inputs="value:122.value" uid="125" uid_parent="121"/>
+      <Tunnel _id="Out2" inputs="value:124.value" uid="126" uid_parent="121"/>
+    </CaseFrame>
+    <CaseFrame selector="False" selectout="" uid="130" uid_parent="120">
+      <Tunnel _id="In1" outputs="value:131.value" uid="131" uid_parent="130"/>
+      <Tunnel _id="In2" outputs="value:132.value" uid="132" uid_parent="130"/>
+      <!-- Fresh error chain: the read error is reported in Status, never returned. -->
+      <Constant _name="error in" outputs="value:134.value" type="cluster{bool.status,int32.code,string.source}" uid="134" uid_parent="130" value="[false,0,]"/>
+      <!-- UNVERIFIED terminal labels: Read Sequence File.vi is not built yet; labels taken literally from spec 4 (path, error in -> Sequence File, error out), matching the built Parse Sequence JSON.vi. -->
+      <Call inputs="path:132.value,error in:134.value" outputs="Sequence File:133.Sequence File,error out:133.error out" target="Read Sequence File.vi" uid="133" uid_parent="130"/>
+      <Structure _name="Case Structure" selectin="133.error out" uid="140" uid_parent="130">
+        <Tunnel _id="In1" inputs="value:131.value" uid="1401" uid_parent="140"/>
+        <Tunnel _id="In2" inputs="value:133.Sequence File" uid="1402" uid_parent="140"/>
+        <CaseFrame selector="No Error" selectout="" uid="141" uid_parent="140">
+          <Tunnel _id="In1" outputs="value:142.value" uid="142" uid_parent="141"/>
+          <Tunnel _id="In2" outputs="value:143.value" uid="143" uid_parent="141"/>
+          <Constant _name="Loaded" outputs="value:145.value" type="bool" uid="145" uid_parent="141" value="true"/>
+          <Constant _name="Running" outputs="value:146.value" type="bool" uid="146" uid_parent="141" value="false"/>
+          <Constant _name="Step Index" outputs="value:147.value" type="int32" uid="147" uid_parent="141" value="0"/>
+          <Constant _name="Overall Verdict" outputs="value:148.value" type="string" uid="148" uid_parent="141" value=""/>
+          <Node _name="Bundle By Name" fields="Sequence,Loaded,Running,Step Index,Overall Verdict" inputs="Sequence:143.value,Loaded:145.value,Running:146.value,Step Index:147.value,Overall Verdict:148.value,input cluster:142.value" outputs="output cluster:144.output cluster" uid="144" uid_parent="141"/>
+          <Constant _name="error in" outputs="value:150.value" type="cluster{bool.status,int32.code,string.source}" uid="150" uid_parent="141" value="[false,0,]"/>
+          <Call inputs="Actor in:144.output cluster,error in:150.value" outputs="Actor out:149.Actor out,error out:" target="Sequence Executor.lvclass\3AReset Results.vi" uid="149" uid_parent="141"/>
+          <Node _name="Unbundle By Name" fields="sequence_id,steps" inputs="input cluster:143.value" outputs="sequence_id:151.sequence_id,steps:151.steps" uid="151" uid_parent="141"/>
+          <Node _name="Array Size" inputs="array:151.steps" outputs="size(s):152.size(s)" uid="152" uid_parent="141"/>
+          <Node _name="Number To Decimal String" inputs="number:152.size(s),width (-):" outputs="decimal integer string:153.decimal integer string" uid="153" uid_parent="141"/>
+          <Constant outputs="value:155.value" type="string" uid="155" uid_parent="141" value="LOADED "/>
+          <Constant outputs="value:156.value" type="string" uid="156" uid_parent="141" value=" ("/>
+          <Constant outputs="value:157.value" type="string" uid="157" uid_parent="141" value=" steps)"/>
+          <Node _name="Concatenate Strings" inputs="string:155.value,string:151.sequence_id,string:156.value,string:153.decimal integer string,string:157.value" outputs="concatenated string:154.concatenated string" uid="154" uid_parent="141"/>
+          <Tunnel _id="Out1" inputs="value:149.Actor out" uid="158" uid_parent="141"/>
+          <Tunnel _id="Out2" inputs="value:154.concatenated string" uid="159" uid_parent="141"/>
+        </CaseFrame>
+        <CaseFrame selector="Error" selectout="160.value" uid="160" uid_parent="140">
+          <Tunnel _id="In1" outputs="value:161.value" uid="161" uid_parent="160"/>
+          <Tunnel _id="In2" outputs="value:" uid="162" uid_parent="160"/>
+          <Constant _name="Loaded" outputs="value:164.value" type="bool" uid="164" uid_parent="160" value="false"/>
+          <Node _name="Bundle By Name" fields="Loaded" inputs="Loaded:164.value,input cluster:161.value" outputs="output cluster:163.output cluster" uid="163" uid_parent="160"/>
+          <Node _name="Unbundle By Name" fields="source" inputs="input cluster:160.value" outputs="source:165.source" uid="165" uid_parent="160"/>
+          <Constant outputs="value:167.value" type="string" uid="167" uid_parent="160" value="LOAD ERROR\3A "/>
+          <Node _name="Concatenate Strings" inputs="string:167.value,string:165.source" outputs="concatenated string:166.concatenated string" uid="166" uid_parent="160"/>
+          <Tunnel _id="Out1" inputs="value:163.output cluster" uid="168" uid_parent="160"/>
+          <Tunnel _id="Out2" inputs="value:166.concatenated string" uid="169" uid_parent="160"/>
+        </CaseFrame>
+        <Tunnel _id="Out1" outputs="value:170.value" uid="170" uid_parent="140"/>
+        <Tunnel _id="Out2" outputs="value:171.value" uid="171" uid_parent="140"/>
+      </Structure>
+      <Tunnel _id="Out1" inputs="value:170.value" uid="172" uid_parent="130"/>
+      <Tunnel _id="Out2" inputs="value:171.value" uid="173" uid_parent="130"/>
+    </CaseFrame>
+    <Tunnel _id="Out1" outputs="value:180.value" uid="180" uid_parent="120"/>
+    <Tunnel _id="Out2" outputs="value:181.value" uid="181" uid_parent="120"/>
+  </Structure>
+  <Call inputs="Actor in:180.value,Status:181.value,error in:102.value" outputs="Actor out:190.Actor out,error out:190.error out" target="Sequence Executor.lvclass\3AUpdate Displays.vi" uid="190" uid_parent="root"/>
+  <Indicator _name="Actor out" conIdx="3" connection="required" inputs="value:190.Actor out" type="ref{UDClassInst}" uid="200" uid_parent="root" value=""/>
+  <Indicator _name="error out" conIdx="0" connection="required" inputs="value:190.error out" type="cluster{bool.status,int32.code,string.source}" uid="210" uid_parent="root" value="[false,0,]"/>
+</VI>

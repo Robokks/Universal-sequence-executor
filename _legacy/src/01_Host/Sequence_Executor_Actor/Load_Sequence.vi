@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<VI _name='Sequence_Executor_Actor.lvclass:Load_Sequence.vi' description='Load config JSON and initialize actor private data.'>
+  <Control RefID='100' Name='Actor in' Type='ref{UDClassInst}' />
+  <Control RefID='110' Name='Config Path' Type='string' />
+  <Node RefID='200' Name='Parse JSON' />
+  <Node RefID='210' Name='Init Private Data' />
+  <Control RefID='300' Name='Actor out' Type='ref{UDClassInst}' Indicator='true' />
+</VI>

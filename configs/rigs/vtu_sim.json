@@ -1,0 +1,25 @@
+{
+    "rig_id":  "VTU_SIM",
+    "description":  "Simulated VTU hydraulic rig (pressure, flow, PC-lever displacement)",
+    "plugin_class":  "../../plugins/VTU Sim Rig/VTU Sim Rig.lvclass",
+    "channels":  [
+                     {
+                         "name":  "Pressure",
+                         "unit":  "bar",
+                         "min":  0,
+                         "max":  250
+                     },
+                     {
+                         "name":  "Flow",
+                         "unit":  "lpm",
+                         "min":  0,
+                         "max":  120
+                     },
+                     {
+                         "name":  "Displacement",
+                         "unit":  "mm",
+                         "min":  -50,
+                         "max":  50
+                     }
+                 ]
+}

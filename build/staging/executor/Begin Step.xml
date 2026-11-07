@@ -1,0 +1,28 @@
+<VI _name="Sequence Executor.lvclass:Begin Step.vi" description="PRIVATE. Begins Results[Step Index]\3A result RUNNING\2C Phase Settling\2C Step Start ms = Last Feedback timestamp_ms\2C Dwell Start ms 0\2C sends Set Setpoints Msg with the step's three setpoints to the plant\2C refreshes the displays.">
+  <Control _name="Actor in" conIdx="11" connection="required" outputs="value:100.value" type="ref{UDClassInst}" uid="100" uid_parent="root" value=""/>
+  <Control _name="error in" conIdx="8" connection="required" outputs="value:102.value" type="cluster{bool.status,int32.code,string.source}" uid="102" uid_parent="root" value="[false,0,]"/>
+  <Node _name="Unbundle By Name" fields="Sequence,Results,Step Index,Last Feedback,Plant Enqueuer" inputs="input cluster:100.value" outputs="Sequence:110.Sequence,Results:110.Results,Step Index:110.Step Index,Last Feedback:110.Last Feedback,Plant Enqueuer:110.Plant Enqueuer" uid="110" uid_parent="root"/>
+  <Node _name="Unbundle By Name" fields="steps" inputs="input cluster:110.Sequence" outputs="steps:111.steps" uid="111" uid_parent="root"/>
+  <Node _name="Index Array" inputs="array:111.steps,index:110.Step Index" outputs="element:112.element" uid="112" uid_parent="root"/>
+  <Node _name="Unbundle By Name" fields="pressure_sp_bar,flow_sp_lpm,displacement_sp_mm" inputs="input cluster:112.element" outputs="pressure_sp_bar:113.pressure_sp_bar,flow_sp_lpm:113.flow_sp_lpm,displacement_sp_mm:113.displacement_sp_mm" uid="113" uid_parent="root"/>
+  <!-- Typedef: bind to Plant Setpoints.ctl (label "Plant Setpoints"). -->
+  <Constant _name="Plant Setpoints" outputs="value:114.value" type="cluster{double.pressure_sp_bar,double.flow_sp_lpm,double.displacement_sp_mm}" uid="114" uid_parent="root" value="[0,0,0]"/>
+  <Node _name="Bundle By Name" fields="pressure_sp_bar,flow_sp_lpm,displacement_sp_mm" inputs="pressure_sp_bar:113.pressure_sp_bar,flow_sp_lpm:113.flow_sp_lpm,displacement_sp_mm:113.displacement_sp_mm,input cluster:114.value" outputs="output cluster:115.output cluster" uid="115" uid_parent="root"/>
+  <Node _name="Index Array" inputs="array:110.Results,index:110.Step Index" outputs="element:116.element" uid="116" uid_parent="root"/>
+  <Constant _name="result" outputs="value:118.value" type="string" uid="118" uid_parent="root" value="RUNNING"/>
+  <Constant _name="reason" outputs="value:119.value" type="string" uid="119" uid_parent="root" value=""/>
+  <Node _name="Bundle By Name" fields="result,reason" inputs="result:118.value,reason:119.value,input cluster:116.element" outputs="output cluster:117.output cluster" uid="117" uid_parent="root"/>
+  <Node _name="Replace Array Subset" inputs="array:110.Results,index:110.Step Index,new element/subarray:117.output cluster" outputs="output array:120.output array" uid="120" uid_parent="root"/>
+  <!-- NOTE (README Q6): if no Feedback Msg has arrived yet, timestamp_ms is 0 and the first evaluation times out at once. -->
+  <Node _name="Unbundle By Name" fields="timestamp_ms" inputs="input cluster:110.Last Feedback" outputs="timestamp_ms:121.timestamp_ms" uid="121" uid_parent="root"/>
+  <!-- UNVERIFIED: Step Phase base type uint16; 1 = Settling. -->
+  <Constant _name="Step Phase" outputs="value:123.value" type="uint16{Idle,Settling,Dwell,Complete}" uid="123" uid_parent="root" value="1"/>
+  <Constant _name="Dwell Start ms" outputs="value:124.value" type="double" uid="124" uid_parent="root" value="0"/>
+  <Node _name="Bundle By Name" fields="Results,Phase,Step Start ms,Dwell Start ms" inputs="Results:120.output array,Phase:123.value,Step Start ms:121.timestamp_ms,Dwell Start ms:124.value,input cluster:100.value" outputs="output cluster:122.output cluster" uid="122" uid_parent="root"/>
+  <!-- Send VI made by the AF message maker from Sim Plant.lvclass:Set Setpoints.vi. Terminal shape per plugin doc labview-actor-framework.md 7 (Message Enqueuer 11, payload 10, Message Priority (Normal) 7, error in (no error) 8 -> error out 0, Message Enqueuer out 3). -->
+  <Call inputs="Message Enqueuer:110.Plant Enqueuer,Plant Setpoints:115.output cluster,Message Priority (Normal):,error in (no error):102.value" outputs="Message Enqueuer out:,error out:125.error out" target="Set Setpoints Msg.lvclass\3ASend Set Setpoints.vi" uid="125" uid_parent="root"/>
+  <Constant _name="Status" outputs="value:127.value" type="string" uid="127" uid_parent="root" value="RUNNING"/>
+  <Call inputs="Actor in:122.output cluster,Status:127.value,error in:125.error out" outputs="Actor out:126.Actor out,error out:126.error out" target="Sequence Executor.lvclass\3AUpdate Displays.vi" uid="126" uid_parent="root"/>
+  <Indicator _name="Actor out" conIdx="3" connection="required" inputs="value:126.Actor out" type="ref{UDClassInst}" uid="200" uid_parent="root" value=""/>
+  <Indicator _name="error out" conIdx="0" connection="required" inputs="value:126.error out" type="cluster{bool.status,int32.code,string.source}" uid="210" uid_parent="root" value="[false,0,]"/>
+</VI>

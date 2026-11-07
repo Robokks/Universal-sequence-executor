@@ -1,0 +1,46 @@
+<VI _name="Sequence Executor.lvclass:Abort Sequence.vi" description="Aborts a running sequence\3A Results[Step Index] ABORTED with the reason\2C remaining steps stay NOT RUN\2C Running F\2C Phase Complete\2C Overall Verdict ABORTED\2C Status = reason. Always drives the plant to safe setpoints (0\2C0\2C0)\2C also when nothing is running (see README Q7). Called by Stop Sequence.vi and Emergency Stop.vi.">
+  <Control _name="Actor in" conIdx="11" connection="required" outputs="value:100.value" type="ref{UDClassInst}" uid="100" uid_parent="root" value=""/>
+  <Control _name="Reason" conIdx="10" connection="required" outputs="value:101.value" type="string" uid="101" uid_parent="root" value=""/>
+  <Control _name="error in" conIdx="8" connection="required" outputs="value:102.value" type="cluster{bool.status,int32.code,string.source}" uid="102" uid_parent="root" value="[false,0,]"/>
+  <Node _name="Unbundle By Name" fields="Running,Results,Step Index,Plant Enqueuer" inputs="input cluster:100.value" outputs="Running:110.Running,Results:110.Results,Step Index:110.Step Index,Plant Enqueuer:110.Plant Enqueuer" uid="110" uid_parent="root"/>
+  <Constant _name="Safe Setpoints" outputs="value:111.value" type="cluster{double.pressure_sp_bar,double.flow_sp_lpm,double.displacement_sp_mm}" uid="111" uid_parent="root" value="[0,0,0]"/>
+  <Call inputs="Message Enqueuer:110.Plant Enqueuer,Plant Setpoints:111.value,Message Priority (Normal):,error in (no error):102.value" outputs="Message Enqueuer out:,error out:112.error out" target="Set Setpoints Msg.lvclass\3ASend Set Setpoints.vi" uid="112" uid_parent="root"/>
+  <Structure _name="Case Structure" selectin="110.Running" uid="120" uid_parent="root">
+    <Tunnel _id="In1" inputs="value:100.value" uid="1201" uid_parent="120"/>
+    <Tunnel _id="In2" inputs="value:101.value" uid="1202" uid_parent="120"/>
+    <Tunnel _id="In3" inputs="value:110.Results" uid="1203" uid_parent="120"/>
+    <Tunnel _id="In4" inputs="value:110.Step Index" uid="1204" uid_parent="120"/>
+    <CaseFrame selector="True" selectout="" uid="121" uid_parent="120">
+      <Tunnel _id="In1" outputs="value:1211.value" uid="1211" uid_parent="121"/>
+      <Tunnel _id="In2" outputs="value:1212.value" uid="1212" uid_parent="121"/>
+      <Tunnel _id="In3" outputs="value:1213.value" uid="1213" uid_parent="121"/>
+      <Tunnel _id="In4" outputs="value:1214.value" uid="1214" uid_parent="121"/>
+      <Node _name="Index Array" inputs="array:1213.value,index:1214.value" outputs="element:122.element" uid="122" uid_parent="121"/>
+      <Constant _name="result" outputs="value:124.value" type="string" uid="124" uid_parent="121" value="ABORTED"/>
+      <Node _name="Bundle By Name" fields="result,reason" inputs="result:124.value,reason:1212.value,input cluster:122.element" outputs="output cluster:123.output cluster" uid="123" uid_parent="121"/>
+      <Node _name="Replace Array Subset" inputs="array:1213.value,index:1214.value,new element/subarray:123.output cluster" outputs="output array:125.output array" uid="125" uid_parent="121"/>
+      <Constant _name="Running" outputs="value:127.value" type="bool" uid="127" uid_parent="121" value="false"/>
+      <Constant _name="Overall Verdict" outputs="value:128.value" type="string" uid="128" uid_parent="121" value="ABORTED"/>
+      <!-- UNVERIFIED: Step Phase base type uint16; 3 = Complete. -->
+      <Constant _name="Step Phase" outputs="value:129.value" type="uint16{Idle,Settling,Dwell,Complete}" uid="129" uid_parent="121" value="3"/>
+      <Node _name="Bundle By Name" fields="Results,Running,Overall Verdict,Phase" inputs="Results:125.output array,Running:127.value,Overall Verdict:128.value,Phase:129.value,input cluster:1211.value" outputs="output cluster:126.output cluster" uid="126" uid_parent="121"/>
+      <Tunnel _id="Out1" inputs="value:126.output cluster" uid="1215" uid_parent="121"/>
+      <Tunnel _id="Out2" inputs="value:1212.value" uid="1216" uid_parent="121"/>
+    </CaseFrame>
+    <CaseFrame selector="False" selectout="" uid="130" uid_parent="120">
+      <Tunnel _id="In1" outputs="value:1301.value" uid="1301" uid_parent="130"/>
+      <Tunnel _id="In2" outputs="value:1302.value" uid="1302" uid_parent="130"/>
+      <Tunnel _id="In3" outputs="value:" uid="1303" uid_parent="130"/>
+      <Tunnel _id="In4" outputs="value:" uid="1304" uid_parent="130"/>
+      <Constant outputs="value:132.value" type="string" uid="132" uid_parent="130" value=" (no sequence running)"/>
+      <Node _name="Concatenate Strings" inputs="string:1302.value,string:132.value" outputs="concatenated string:131.concatenated string" uid="131" uid_parent="130"/>
+      <Tunnel _id="Out1" inputs="value:1301.value" uid="1305" uid_parent="130"/>
+      <Tunnel _id="Out2" inputs="value:131.concatenated string" uid="1306" uid_parent="130"/>
+    </CaseFrame>
+    <Tunnel _id="Out1" outputs="value:140.value" uid="140" uid_parent="120"/>
+    <Tunnel _id="Out2" outputs="value:141.value" uid="141" uid_parent="120"/>
+  </Structure>
+  <Call inputs="Actor in:140.value,Status:141.value,error in:112.error out" outputs="Actor out:150.Actor out,error out:150.error out" target="Sequence Executor.lvclass\3AUpdate Displays.vi" uid="150" uid_parent="root"/>
+  <Indicator _name="Actor out" conIdx="3" connection="required" inputs="value:150.Actor out" type="ref{UDClassInst}" uid="200" uid_parent="root" value=""/>
+  <Indicator _name="error out" conIdx="0" connection="required" inputs="value:150.error out" type="cluster{bool.status,int32.code,string.source}" uid="210" uid_parent="root" value="[false,0,]"/>
+</VI>

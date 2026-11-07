@@ -1,0 +1,17 @@
+<VI _name="Sequence Executor.lvclass:Reset Results.vi" description="PRIVATE helper (not in spec 5 - added so Load Sequence and Start Sequence share one implementation). Rebuilds Results from Sequence.steps: one Step Result per step with result NOT RUN\2C empty reason\2C zero numbers.">
+  <Control _name="Actor in" conIdx="11" connection="required" outputs="value:100.value" type="ref{UDClassInst}" uid="100" uid_parent="root" value=""/>
+  <Control _name="error in" conIdx="8" connection="required" outputs="value:102.value" type="cluster{bool.status,int32.code,string.source}" uid="102" uid_parent="root" value="[false,0,]"/>
+  <Node _name="Unbundle By Name" fields="Sequence" inputs="input cluster:100.value" outputs="Sequence:110.Sequence" uid="110" uid_parent="root"/>
+  <Node _name="Unbundle By Name" fields="steps" inputs="input cluster:110.Sequence" outputs="steps:111.steps" uid="111" uid_parent="root"/>
+  <Structure _name="For Loop" count="" maxin="" maxout="" uid="120" uid_parent="root">
+    <Tunnel _id="In1" inputs="value:111.steps" mode="index" outputs="value:121.value" uid="121" uid_parent="120"/>
+    <Node _name="Unbundle By Name" fields="step_no,step_name" inputs="input cluster:121.value" outputs="step_no:122.step_no,step_name:122.step_name" uid="122" uid_parent="120"/>
+    <!-- Typedef: bind to src\Typedefs\Step Result.ctl afterwards (lvai_bind_typedef_constants, label "Step Result"). -->
+    <Constant _name="Step Result" outputs="value:123.value" type="cluster{int32.step_no,string.step_name,string.result,string.reason,double.measured,double.target,double.duration_ms}" uid="123" uid_parent="120" value="[0,,NOT RUN,,0,0,0]"/>
+    <Node _name="Bundle By Name" fields="step_no,step_name" inputs="step_no:122.step_no,step_name:122.step_name,input cluster:123.value" outputs="output cluster:124.output cluster" uid="124" uid_parent="120"/>
+    <Tunnel _id="Out1" inputs="value:124.output cluster" mode="index" outputs="value:125.value" uid="125" uid_parent="120"/>
+  </Structure>
+  <Node _name="Bundle By Name" fields="Results" inputs="Results:125.value,input cluster:100.value" outputs="output cluster:130.output cluster" uid="130" uid_parent="root"/>
+  <Indicator _name="Actor out" conIdx="3" connection="required" inputs="value:130.output cluster" type="ref{UDClassInst}" uid="200" uid_parent="root" value=""/>
+  <Indicator _name="error out" conIdx="0" connection="required" inputs="value:102.value" type="cluster{bool.status,int32.code,string.source}" uid="210" uid_parent="root" value="[false,0,]"/>
+</VI>

@@ -1,0 +1,46 @@
+name: LabVIEW batch offline checks
+
+on:
+  push:
+    paths:
+      - 'pycharm-batch-builder/**'
+      - '.github/workflows/lvbatch-offline-checks.yml'
+  pull_request:
+    paths:
+      - 'pycharm-batch-builder/**'
+      - '.github/workflows/lvbatch-offline-checks.yml'
+
+jobs:
+  offline-structure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install offline builder
+        run: python -m pip install -e ./pycharm-batch-builder
+      - name: Test layouts, manifests and documentation
+        working-directory: pycharm-batch-builder
+        run: python -m unittest discover -s tests -v
+      - name: A01 deterministic simulator smoke (software only)
+        working-directory: pycharm-batch-builder
+        run: python -m lvbatch sim-smoke
+      - name: Execute the complete MVP simulation-only sequence
+        working-directory: pycharm-batch-builder
+        run: python -m lvbatch demo-run --backend mock
+      - name: Stage isolated native A01 Sim_Clock candidate
+        working-directory: pycharm-batch-builder
+        run: python -m lvbatch a01-clock-prepare
+      - name: Validate A01 clock AIXML without LabVIEW
+        working-directory: pycharm-batch-builder
+        run: python -m lvbatch check --batch A01
+      - name: Stage U02 with measured connector layouts
+        working-directory: pycharm-batch-builder
+        run: python -m lvbatch prepare --batch U02 --pane 4815 --layout compact --native-dir native_ci
+      - name: Validate U02 AIXML
+        working-directory: pycharm-batch-builder
+        run: python -m lvbatch check --batch U02

@@ -1,0 +1,18 @@
+<VI _name="Sequence Executor.lvclass:Update Displays.vi" description="PRIVATE. Writes Status (input)\2C Current Step (Step Index + 1)\2C Step Table (Build Step Table of Sequence + Results) and Overall Verdict through the stored display references. Does not change the object.">
+  <Control _name="Actor in" conIdx="11" connection="required" outputs="value:100.value" type="ref{UDClassInst}" uid="100" uid_parent="root" value=""/>
+  <!-- Status text is an input (spec 5 does not say where Status comes from). -->
+  <Control _name="Status" conIdx="10" connection="required" outputs="value:101.value" type="string" uid="101" uid_parent="root" value=""/>
+  <Control _name="error in" conIdx="8" connection="required" outputs="value:102.value" type="cluster{bool.status,int32.code,string.source}" uid="102" uid_parent="root" value="[false,0,]"/>
+  <Node _name="Unbundle By Name" fields="Sequence,Results,Step Index,Overall Verdict,Status Display,Step Index Display,Step Table Display,Verdict Display" inputs="input cluster:100.value" outputs="Sequence:110.Sequence,Results:110.Results,Step Index:110.Step Index,Overall Verdict:110.Overall Verdict,Status Display:110.Status Display,Step Index Display:110.Step Index Display,Step Table Display:110.Step Table Display,Verdict Display:110.Verdict Display" uid="110" uid_parent="root"/>
+  <!-- UNVERIFIED terminal labels: Build Step Table.vi is not built yet. Inputs per spec 4 literal ("Sequence File"\2C "Step Result array"); the output label "Step Table" is a guess (spec only says "2-D string array"). -->
+  <Call inputs="Sequence File:110.Sequence,Step Result array:110.Results" outputs="Step Table:111.Step Table" target="Build Step Table.vi" uid="111" uid_parent="root"/>
+  <Node _name="Increment" inputs="x:110.Step Index" outputs="x+1:112.x+1" uid="112" uid_parent="root"/>
+  <!-- write+Value on {LV.String} is evidenced (aixml-reference.md\2C implicit-link section). -->
+  <Node _name="Property Node" fields="write+Value" inputs="reference:110.Status Display,error in (no error):102.value,Value:101.value" outputs="error out:113.error out" type="{LV.String}" uid="113" uid_parent="root"/>
+  <Node _name="Property Node" fields="write+Value" inputs="reference:110.Step Index Display,error in (no error):113.error out,Value:112.x+1" outputs="error out:114.error out" type="{LV.Digital}" uid="114" uid_parent="root"/>
+  <Node _name="To Variant" inputs="anything:111.Step Table" outputs="Variant:115.Variant" uid="115" uid_parent="root"/>
+  <Node _name="Property Node" fields="write+Value" inputs="reference:110.Step Table Display,error in (no error):114.error out,Value:115.Variant" outputs="error out:116.error out" type="{LV.Control}" uid="116" uid_parent="root"/>
+  <Node _name="Property Node" fields="write+Value" inputs="reference:110.Verdict Display,error in (no error):116.error out,Value:110.Overall Verdict" outputs="error out:117.error out" type="{LV.String}" uid="117" uid_parent="root"/>
+  <Indicator _name="Actor out" conIdx="3" connection="required" inputs="value:100.value" type="ref{UDClassInst}" uid="200" uid_parent="root" value=""/>
+  <Indicator _name="error out" conIdx="0" connection="required" inputs="value:117.error out" type="cluster{bool.status,int32.code,string.source}" uid="210" uid_parent="root" value="[false,0,]"/>
+</VI>

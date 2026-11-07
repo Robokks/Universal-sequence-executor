@@ -1,0 +1,8 @@
+<VI _name="Sequence Executor.lvclass:Stop Sequence.vi" description="Operator stop. Thin wrapper so the AF message maker produces Stop Sequence Msg / Send Stop Sequence.vi with NO payload (spec 5)\3A calls Abort Sequence with reason STOPPED BY OPERATOR.">
+  <Control _name="Actor in" conIdx="11" connection="required" outputs="value:100.value" type="ref{UDClassInst}" uid="100" uid_parent="root" value=""/>
+  <Control _name="error in" conIdx="8" connection="required" outputs="value:102.value" type="cluster{bool.status,int32.code,string.source}" uid="102" uid_parent="root" value="[false,0,]"/>
+  <Constant _name="Reason" outputs="value:110.value" type="string" uid="110" uid_parent="root" value="STOPPED BY OPERATOR"/>
+  <Call inputs="Actor in:100.value,Reason:110.value,error in:102.value" outputs="Actor out:120.Actor out,error out:120.error out" target="Sequence Executor.lvclass\3AAbort Sequence.vi" uid="120" uid_parent="root"/>
+  <Indicator _name="Actor out" conIdx="3" connection="required" inputs="value:120.Actor out" type="ref{UDClassInst}" uid="200" uid_parent="root" value=""/>
+  <Indicator _name="error out" conIdx="0" connection="required" inputs="value:120.error out" type="cluster{bool.status,int32.code,string.source}" uid="210" uid_parent="root" value="[false,0,]"/>
+</VI>

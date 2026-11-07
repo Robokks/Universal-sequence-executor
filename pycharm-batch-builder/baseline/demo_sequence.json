@@ -1,0 +1,30 @@
+{
+  "mode": "SIMULATION_ONLY",
+  "name": "Universal Executor — Simulation Demo",
+  "steps": [
+    {
+      "name": "Pressure setpoint 25 bar",
+      "target_bar": 25,
+      "tolerance_bar": 1.5,
+      "timeout_ms": 5000,
+      "dwell_ms": 200,
+      "period_ms": 100
+    },
+    {
+      "name": "Pressure setpoint 50 bar",
+      "target_bar": 50,
+      "tolerance_bar": 1.5,
+      "timeout_ms": 5000,
+      "dwell_ms": 200,
+      "period_ms": 100
+    },
+    {
+      "name": "Pressure return 10 bar",
+      "target_bar": 10,
+      "tolerance_bar": 1.5,
+      "timeout_ms": 5000,
+      "dwell_ms": 200,
+      "period_ms": 100
+    }
+  ]
+}

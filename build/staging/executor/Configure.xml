@@ -1,0 +1,20 @@
+<VI _name="Sequence Executor.lvclass:Configure.vi" description="Stores the UI display references\2C the Stopped Notification and the results folder in the actor's private data. Called by Launch Sequence Executor.vi BEFORE Launch Root Actor. Static\2C public. Plant displays are stored by Configure Plant Displays.vi (pane 4815 has only 12 slots).">
+  <!-- DEVIATION from spec 5: spec has ONE Configure.vi taking all 8 display refs + notifier + folder.
+       That is 10 data inputs + Actor in + error in + 2 outputs = 14 terminals > 12 on pattern 4815,
+       so the refs are split across Configure.vi and Configure Plant Displays.vi. See README open question Q1. -->
+  <!-- Pane modelled on CounterActor.lvclass:Configure.vi (offline export): Actor in 11, data 10/9/7, error in 8, Actor out 3, error out 0, all "required". -->
+  <!-- UNVERIFIED: conIdx 6/5/4 used as INPUT slots on 4815 (the sample only proves 11,10,9,8,7 in, 3,0 out; Launch Nested Actor.vi uses 4 as an input). -->
+  <Control _name="Actor in" conIdx="11" connection="required" outputs="value:100.value" type="ref{UDClassInst}" uid="100" uid_parent="root" value=""/>
+  <Control _name="Status Display" conIdx="10" connection="required" outputs="value:101.value" type="ref{LV.String}" uid="101" uid_parent="root" value=""/>
+  <!-- UNVERIFIED: ref{LV.Digital}{int32} - only ref{LV.Digital}{double} is evidenced (CounterActor Configure.vi). Must match the strict ref a VI Server Reference to an I32 indicator produces. -->
+  <Control _name="Step Index Display" conIdx="9" connection="required" outputs="value:102.value" type="ref{LV.Digital}{int32}" uid="102" uid_parent="root" value=""/>
+  <Control _name="error in" conIdx="8" connection="required" outputs="value:103.value" type="cluster{bool.status,int32.code,string.source}" uid="103" uid_parent="root" value="[false,0,]"/>
+  <!-- Generic ref{LV.Control} on purpose: the Table/2-D array refnum class is not evidenced; Value is written as a Variant through {LV.Control}. -->
+  <Control _name="Step Table Display" conIdx="7" connection="required" outputs="value:104.value" type="ref{LV.Control}" uid="104" uid_parent="root" value=""/>
+  <Control _name="Verdict Display" conIdx="6" connection="required" outputs="value:105.value" type="ref{LV.String}" uid="105" uid_parent="root" value=""/>
+  <Control _name="Stopped Notification" conIdx="5" connection="required" outputs="value:106.value" type="ref{Notifier}{bool}" uid="106" uid_parent="root" value=""/>
+  <Control _name="Results Folder" conIdx="4" connection="required" outputs="value:107.value" type="path" uid="107" uid_parent="root" value=""/>
+  <Node _name="Bundle By Name" fields="Status Display,Step Index Display,Step Table Display,Verdict Display,Stopped Notification,Results Folder" inputs="Status Display:101.value,Step Index Display:102.value,Step Table Display:104.value,Verdict Display:105.value,Stopped Notification:106.value,Results Folder:107.value,input cluster:100.value" outputs="output cluster:150.output cluster" uid="150" uid_parent="root"/>
+  <Indicator _name="Actor out" conIdx="3" connection="required" inputs="value:150.output cluster" type="ref{UDClassInst}" uid="200" uid_parent="root" value=""/>
+  <Indicator _name="error out" conIdx="0" connection="required" inputs="value:103.value" type="cluster{bool.status,int32.code,string.source}" uid="210" uid_parent="root" value="[false,0,]"/>
+</VI>

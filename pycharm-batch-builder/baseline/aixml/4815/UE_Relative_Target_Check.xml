@@ -1,0 +1,10 @@
+<VI _name="UE_Relative_Target_Check.vi" description="Resolve relative servo motion then check authorized physical travel range">
+  <Control _name="servo_reference_mm" conIdx="11" connection="required" outputs="value:101.value" type="double" uid="101" uid_parent="root" value="0" />
+  <Control _name="delta_mm" conIdx="10" connection="required" outputs="value:102.value" type="double" uid="102" uid_parent="root" value="0" />
+  <Control _name="min_target_mm" conIdx="9" connection="required" outputs="value:103.value" type="double" uid="103" uid_parent="root" value="0" />
+  <Control _name="max_target_mm" conIdx="8" connection="required" outputs="value:104.value" type="double" uid="104" uid_parent="root" value="0" />
+  <Node _name="Add" inputs="x:101.value,y:102.value" outputs="x+y:105.x+y" uid="105" uid_parent="root" />
+  <Node _name="In Range and Coerce" inputs="upper limit:104.value,x:105.x+y,lower limit:103.value" outputs="coerced(x):106.coerced(x),In Range?:106.In Range?" uid="106" uid_parent="root" includeLow="true" includeHigh="true" />
+  <Indicator _name="requested_target_mm" conIdx="3" connection="recommended" inputs="value:105.x+y" type="double" uid="107" uid_parent="root" value="0" />
+  <Indicator _name="within_limits" conIdx="2" connection="recommended" inputs="value:106.In Range?" type="bool" uid="108" uid_parent="root" value="false" />
+</VI>

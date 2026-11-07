@@ -1,0 +1,6 @@
+<VI _name="UE_Retry_Allowed.vi" description="True if retry attempts used is lower than configured maximum">
+  <Control _name="attempts_used" conIdx="11" connection="required" outputs="value:101.value" type="int32" uid="101" uid_parent="root" value="0" />
+  <Control _name="max_attempts" conIdx="10" connection="required" outputs="value:102.value" type="int32" uid="102" uid_parent="root" value="0" />
+  <Node _name="Less?" inputs="x:101.value,y:102.value" outputs="x &lt; y?:103.x &lt; y?" uid="103" uid_parent="root" />
+  <Indicator _name="allowed" conIdx="3" connection="recommended" inputs="value:103.x &lt; y?" type="bool" uid="104" uid_parent="root" value="false" />
+</VI>

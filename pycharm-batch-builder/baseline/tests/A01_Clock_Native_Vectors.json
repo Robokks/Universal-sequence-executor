@@ -1,0 +1,72 @@
+{
+  "kind": "native_LabVIEW_tests",
+  "vi": "Sim_Clock.vi",
+  "status": "NOT_RUN",
+  "notes": "Integer values outside JavaScript safe integer range are stored as decimal strings for lossless MCP transmission; verification MUST compare exact I64 values.",
+  "vectors": [
+    {
+      "id": "A01-CLK-001",
+      "current_ms": 100,
+      "advance_ms": 50,
+      "next_ms": 150,
+      "valid": true,
+      "focus": "normal advance"
+    },
+    {
+      "id": "A01-CLK-002",
+      "current_ms": 0,
+      "advance_ms": 0,
+      "next_ms": 0,
+      "valid": true,
+      "focus": "zero increment"
+    },
+    {
+      "id": "A01-CLK-003",
+      "current_ms": 100,
+      "advance_ms": -1,
+      "next_ms": 100,
+      "valid": false,
+      "focus": "negative increment rejected"
+    },
+    {
+      "id": "A01-CLK-004",
+      "current_ms": -1,
+      "advance_ms": 5,
+      "next_ms": -1,
+      "valid": false,
+      "focus": "negative prior timestamp rejected"
+    },
+    {
+      "id": "A01-CLK-005",
+      "current_ms": "9223372036854775806",
+      "advance_ms": 2,
+      "next_ms": "9223372036854775806",
+      "valid": false,
+      "focus": "signed overflow rejected"
+    },
+    {
+      "id": "A01-CLK-006",
+      "current_ms": "9223372036854775807",
+      "advance_ms": 0,
+      "next_ms": "9223372036854775807",
+      "valid": true,
+      "focus": "max timestamp with zero advance"
+    },
+    {
+      "id": "A01-CLK-007",
+      "current_ms": 0,
+      "advance_ms": "9223372036854775807",
+      "next_ms": "9223372036854775807",
+      "valid": true,
+      "focus": "max increment from zero"
+    },
+    {
+      "id": "A01-CLK-008",
+      "current_ms": "9223372036854775805",
+      "advance_ms": 2,
+      "next_ms": "9223372036854775807",
+      "valid": true,
+      "focus": "exact signed upper bound"
+    }
+  ]
+}

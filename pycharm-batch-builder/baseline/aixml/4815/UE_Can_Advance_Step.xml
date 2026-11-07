@@ -1,0 +1,13 @@
+<VI _name="UE_Can_Advance_Step.vi" description="Combine signal quality\2C required feedback\2C stabilization and no-fault gate">
+  <Control _name="quality_valid" conIdx="11" connection="required" outputs="value:101.value" type="bool" uid="101" uid_parent="root" value="false" />
+  <Control _name="feedback_condition" conIdx="10" connection="required" outputs="value:102.value" type="bool" uid="102" uid_parent="root" value="false" />
+  <Control _name="stabilized" conIdx="9" connection="required" outputs="value:103.value" type="bool" uid="103" uid_parent="root" value="false" />
+  <Control _name="no_fault" conIdx="8" connection="required" outputs="value:104.value" type="bool" uid="104" uid_parent="root" value="false" />
+  <Constant _name="Constant" outputs="value:105.value" type="bool" uid="105" uid_parent="root" value="false" />
+  <Node _name="Select" inputs="t:102.value,s:101.value,f:105.value" outputs="s? t\3Af:106.s? t\3Af" uid="106" uid_parent="root" />
+  <Constant _name="Constant" outputs="value:107.value" type="bool" uid="107" uid_parent="root" value="false" />
+  <Node _name="Select" inputs="t:103.value,s:106.s? t\3Af,f:107.value" outputs="s? t\3Af:108.s? t\3Af" uid="108" uid_parent="root" />
+  <Constant _name="Constant" outputs="value:109.value" type="bool" uid="109" uid_parent="root" value="false" />
+  <Node _name="Select" inputs="t:104.value,s:108.s? t\3Af,f:109.value" outputs="s? t\3Af:110.s? t\3Af" uid="110" uid_parent="root" />
+  <Indicator _name="advance" conIdx="3" connection="recommended" inputs="value:110.s? t\3Af" type="bool" uid="111" uid_parent="root" value="false" />
+</VI>

@@ -1,0 +1,53 @@
+<VI _name="Sequence Executor.lvclass:Finish Sequence.vi" description="PRIVATE. Running F\2C Phase Complete. Overall Verdict PASS if every Results[i].result equals steps[i].expected_result\2C else FAIL. Writes the CSV report (a report error is shown in Status\2C not returned). Drives the plant to safe setpoints (0\2C0\2C0). Status COMPLETE\3A verdict - report file.">
+  <Control _name="Actor in" conIdx="11" connection="required" outputs="value:100.value" type="ref{UDClassInst}" uid="100" uid_parent="root" value=""/>
+  <Control _name="error in" conIdx="8" connection="required" outputs="value:102.value" type="cluster{bool.status,int32.code,string.source}" uid="102" uid_parent="root" value="[false,0,]"/>
+  <Node _name="Unbundle By Name" fields="Sequence,Results,Results Folder,Plant Enqueuer" inputs="input cluster:100.value" outputs="Sequence:110.Sequence,Results:110.Results,Results Folder:110.Results Folder,Plant Enqueuer:110.Plant Enqueuer" uid="110" uid_parent="root"/>
+  <Node _name="Unbundle By Name" fields="sequence_id,steps" inputs="input cluster:110.Sequence" outputs="sequence_id:111.sequence_id,steps:111.steps" uid="111" uid_parent="root"/>
+  <Structure _name="For Loop" count="" maxin="" maxout="" uid="120" uid_parent="root">
+    <Tunnel _id="In1" inputs="value:111.steps" mode="index" outputs="value:121.value" uid="121" uid_parent="120"/>
+    <Tunnel _id="In2" inputs="value:110.Results" mode="index" outputs="value:122.value" uid="122" uid_parent="120"/>
+    <Node _name="Unbundle By Name" fields="expected_result" inputs="input cluster:121.value" outputs="expected_result:123.expected_result" uid="123" uid_parent="120"/>
+    <Node _name="Unbundle By Name" fields="result" inputs="input cluster:122.value" outputs="result:124.result" uid="124" uid_parent="120"/>
+    <Node _name="Equal?" inputs="x:124.result,y:123.expected_result" outputs="x = y?:125.x = y?" uid="125" uid_parent="120"/>
+    <Tunnel _id="Out1" inputs="value:125.x = y?" mode="index" outputs="value:126.value" uid="126" uid_parent="120"/>
+  </Structure>
+  <Node _name="And Array Elements" inputs="Boolean array:126.value" outputs="logical AND:127.logical AND" uid="127" uid_parent="root"/>
+  <Constant outputs="value:129.value" type="string" uid="129" uid_parent="root" value="PASS"/>
+  <Constant outputs="value:130.value" type="string" uid="130" uid_parent="root" value="FAIL"/>
+  <Node _name="Select" inputs="t:129.value,s:127.logical AND,f:130.value" outputs="s? t\3Af:128.s? t\3Af" uid="128" uid_parent="root"/>
+  <Constant _name="error in" outputs="value:132.value" type="cluster{bool.status,int32.code,string.source}" uid="132" uid_parent="root" value="[false,0,]"/>
+  <!-- UNVERIFIED terminal labels: Write Results CSV.vi is not built yet; labels taken literally from spec 4. -->
+  <Call inputs="results folder path:110.Results Folder,sequence_id:111.sequence_id,Step Result array:110.Results,overall verdict:128.s? t\3Af,error in:132.value" outputs="file path:131.file path,error out:131.error out" target="Write Results CSV.vi" uid="131" uid_parent="root"/>
+  <Structure _name="Case Structure" selectin="131.error out" uid="140" uid_parent="root">
+    <Tunnel _id="In1" inputs="value:131.file path" uid="1401" uid_parent="140"/>
+    <Tunnel _id="In2" inputs="value:128.s? t\3Af" uid="1402" uid_parent="140"/>
+    <CaseFrame selector="No Error" selectout="" uid="141" uid_parent="140">
+      <Tunnel _id="In1" outputs="value:1411.value" uid="1411" uid_parent="141"/>
+      <Tunnel _id="In2" outputs="value:1412.value" uid="1412" uid_parent="141"/>
+      <Node _name="Path To String" inputs="path:1411.value" outputs="string:142.string" uid="142" uid_parent="141"/>
+      <Constant outputs="value:143.value" type="string" uid="143" uid_parent="141" value="COMPLETE\3A "/>
+      <Constant outputs="value:144.value" type="string" uid="144" uid_parent="141" value=" - report "/>
+      <Node _name="Concatenate Strings" inputs="string:143.value,string:1412.value,string:144.value,string:142.string" outputs="concatenated string:145.concatenated string" uid="145" uid_parent="141"/>
+      <Tunnel _id="Out1" inputs="value:145.concatenated string" uid="1413" uid_parent="141"/>
+    </CaseFrame>
+    <CaseFrame selector="Error" selectout="150.value" uid="150" uid_parent="140">
+      <Tunnel _id="In1" outputs="value:" uid="1501" uid_parent="150"/>
+      <Tunnel _id="In2" outputs="value:1502.value" uid="1502" uid_parent="150"/>
+      <Node _name="Unbundle By Name" fields="source" inputs="input cluster:150.value" outputs="source:151.source" uid="151" uid_parent="150"/>
+      <Constant outputs="value:152.value" type="string" uid="152" uid_parent="150" value="COMPLETE\3A "/>
+      <Constant outputs="value:153.value" type="string" uid="153" uid_parent="150" value=" - REPORT ERROR\3A "/>
+      <Node _name="Concatenate Strings" inputs="string:152.value,string:1502.value,string:153.value,string:151.source" outputs="concatenated string:154.concatenated string" uid="154" uid_parent="150"/>
+      <Tunnel _id="Out1" inputs="value:154.concatenated string" uid="1503" uid_parent="150"/>
+    </CaseFrame>
+    <Tunnel _id="Out1" outputs="value:146.value" uid="146" uid_parent="140"/>
+  </Structure>
+  <Constant _name="Running" outputs="value:161.value" type="bool" uid="161" uid_parent="root" value="false"/>
+  <!-- UNVERIFIED: Step Phase base type uint16; 3 = Complete. -->
+  <Constant _name="Step Phase" outputs="value:162.value" type="uint16{Idle,Settling,Dwell,Complete}" uid="162" uid_parent="root" value="3"/>
+  <Node _name="Bundle By Name" fields="Running,Overall Verdict,Phase" inputs="Running:161.value,Overall Verdict:128.s? t\3Af,Phase:162.value,input cluster:100.value" outputs="output cluster:160.output cluster" uid="160" uid_parent="root"/>
+  <Constant _name="Safe Setpoints" outputs="value:163.value" type="cluster{double.pressure_sp_bar,double.flow_sp_lpm,double.displacement_sp_mm}" uid="163" uid_parent="root" value="[0,0,0]"/>
+  <Call inputs="Message Enqueuer:110.Plant Enqueuer,Plant Setpoints:163.value,Message Priority (Normal):,error in (no error):102.value" outputs="Message Enqueuer out:,error out:164.error out" target="Set Setpoints Msg.lvclass\3ASend Set Setpoints.vi" uid="164" uid_parent="root"/>
+  <Call inputs="Actor in:160.output cluster,Status:146.value,error in:164.error out" outputs="Actor out:165.Actor out,error out:165.error out" target="Sequence Executor.lvclass\3AUpdate Displays.vi" uid="165" uid_parent="root"/>
+  <Indicator _name="Actor out" conIdx="3" connection="required" inputs="value:165.Actor out" type="ref{UDClassInst}" uid="200" uid_parent="root" value=""/>
+  <Indicator _name="error out" conIdx="0" connection="required" inputs="value:165.error out" type="cluster{bool.status,int32.code,string.source}" uid="210" uid_parent="root" value="[false,0,]"/>
+</VI>

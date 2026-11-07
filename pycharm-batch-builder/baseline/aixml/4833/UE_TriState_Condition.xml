@@ -1,0 +1,10 @@
+<VI _name="UE_TriState_Condition.vi" description="Evaluate result as -1 UNKNOWN\2C 0 FALSE or 1 TRUE; invalid sample never passes">
+  <Control _name="sample_valid" conIdx="0" connection="required" outputs="value:101.value" type="bool" uid="101" uid_parent="root" value="false" />
+  <Control _name="condition_met" conIdx="5" connection="required" outputs="value:102.value" type="bool" uid="102" uid_parent="root" value="false" />
+  <Constant _name="Constant" outputs="value:103.value" type="int32" uid="103" uid_parent="root" value="1" />
+  <Constant _name="Constant" outputs="value:104.value" type="int32" uid="104" uid_parent="root" value="0" />
+  <Node _name="Select" inputs="t:103.value,s:102.value,f:104.value" outputs="s? t\3Af:105.s? t\3Af" uid="105" uid_parent="root" />
+  <Constant _name="Constant" outputs="value:106.value" type="int32" uid="106" uid_parent="root" value="-1" />
+  <Node _name="Select" inputs="t:105.s? t\3Af,s:101.value,f:106.value" outputs="s? t\3Af:107.s? t\3Af" uid="107" uid_parent="root" />
+  <Indicator _name="state_code" conIdx="4" connection="recommended" inputs="value:107.s? t\3Af" type="int32" uid="108" uid_parent="root" value="0" />
+</VI>

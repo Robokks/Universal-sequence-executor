@@ -1,0 +1,12 @@
+<VI _name="Sequence Executor.lvclass:Configure Plant Displays.vi" description="Stores the Pressure/Flow/Displacement numeric display references and the Feedback Chart reference. Companion of Configure.vi (see README Q1). Static\2C public. Called before Launch Root Actor.">
+  <Control _name="Actor in" conIdx="11" connection="required" outputs="value:100.value" type="ref{UDClassInst}" uid="100" uid_parent="root" value=""/>
+  <Control _name="Pressure Display" conIdx="10" connection="required" outputs="value:101.value" type="ref{LV.Digital}{double}" uid="101" uid_parent="root" value=""/>
+  <Control _name="Flow Display" conIdx="9" connection="required" outputs="value:102.value" type="ref{LV.Digital}{double}" uid="102" uid_parent="root" value=""/>
+  <Control _name="error in" conIdx="8" connection="required" outputs="value:103.value" type="cluster{bool.status,int32.code,string.source}" uid="103" uid_parent="root" value="[false,0,]"/>
+  <Control _name="Displacement Display" conIdx="7" connection="required" outputs="value:104.value" type="ref{LV.Digital}{double}" uid="104" uid_parent="root" value=""/>
+  <!-- UNVERIFIED: conIdx 6 as an input slot on 4815. Chart kept as generic ref{LV.Control} (chart data type of a 3-plot chart not evidenced). -->
+  <Control _name="Feedback Chart" conIdx="6" connection="required" outputs="value:105.value" type="ref{LV.Control}" uid="105" uid_parent="root" value=""/>
+  <Node _name="Bundle By Name" fields="Pressure Display,Flow Display,Displacement Display,Feedback Chart" inputs="Pressure Display:101.value,Flow Display:102.value,Displacement Display:104.value,Feedback Chart:105.value,input cluster:100.value" outputs="output cluster:150.output cluster" uid="150" uid_parent="root"/>
+  <Indicator _name="Actor out" conIdx="3" connection="required" inputs="value:150.output cluster" type="ref{UDClassInst}" uid="200" uid_parent="root" value=""/>
+  <Indicator _name="error out" conIdx="0" connection="required" inputs="value:103.value" type="cluster{bool.status,int32.code,string.source}" uid="210" uid_parent="root" value="[false,0,]"/>
+</VI>

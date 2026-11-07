@@ -1,0 +1,173 @@
+<!--
+  Root launcher, modelled node-for-node on the user's launch.xml (Launch Message Counter.vi):
+  Obtain Notifier -> Configure -> Launch Root Actor -> Case(no error){ While{ Event Structure } } ->
+  Send Normal Stop -> Wait on Notification (5000 ms) -> Release Notifier -> read displays back -> error out.
+  BUILD NOTE: the plugin doc (aixml-reference.md "Event Structure") says NI's ValidateAIXML/ConvertAIXMLToVI
+  DROP every event frame silently. Generate this file with lvai_generate_vi_with_events (pylabview composer),
+  not plain lvai_generate_vi. Assumes the VI is saved in the PROJECT ROOT (like Launch Message Counter.vi):
+  project root = Strip Path(Current VI's Path).
+-->
+<VI _name="Launch Sequence Executor.vi" description="Root launcher of the Universal Sequence Executor (AF). Run this VI. Load reads the sequence JSON (empty Config Path = configs\5Cactual_vtu_sequence.json)\2C Start runs it against the simulated VTU plant\2C Stop Sequence / E-Stop abort it\2C Exit or window close stops the actor tree (Send Normal Stop + Stopped Notification\2C 5000 ms). Reports go to results\5C under the project root.">
+  <!-- CLASS SEED: authored as a path constant, swapped to Sequence Executor.lvclass with lvai_swap_subvis constantsJson. -->
+  <Constant _name="Sequence Executor" outputs="value:100.value" type="path" uid="100" uid_parent="root" value=""/>
+  <Constant _name="Boolean notification type" outputs="value:101.value" type="bool" uid="101" uid_parent="root" value="false"/>
+  <Constant _name="No error for cleanup" outputs="value:102.value" type="cluster{bool.status,int32.code,string.source}" uid="102" uid_parent="root" value="[false,0,]"/>
+  <Constant _name="Shutdown timeout ms" outputs="value:103.value" type="int32" uid="103" uid_parent="root" value="5000"/>
+  <Constant _name="results" outputs="value:104.value" type="string" uid="104" uid_parent="root" value="results"/>
+  <Constant _name="configs" outputs="value:105.value" type="string" uid="105" uid_parent="root" value="configs"/>
+  <Constant _name="default sequence" outputs="value:106.value" type="string" uid="106" uid_parent="root" value="actual_vtu_sequence.json"/>
+  <Node _name="Current VI's Path" outputs="path:110.path" uid="110" uid_parent="root"/>
+  <Node _name="Strip Path" inputs="path:110.path" outputs="stripped path:111.stripped path,name:" uid="111" uid_parent="root"/>
+  <Node _name="Build Path" inputs="base path:111.stripped path,name or relative path:104.value" outputs="appended path:112.appended path" uid="112" uid_parent="root"/>
+  <Node _name="Build Path" inputs="base path:111.stripped path,name or relative path:105.value" outputs="appended path:113.appended path" uid="113" uid_parent="root"/>
+  <Node _name="Build Path" inputs="base path:113.appended path,name or relative path:106.value" outputs="appended path:114.appended path" uid="114" uid_parent="root"/>
+  <Node _name="VI Server Reference" element="Status" outputs="Status:120.Status" uid="120" uid_parent="root"/>
+  <Node _name="VI Server Reference" element="Current Step" outputs="Current Step:121.Current Step" uid="121" uid_parent="root"/>
+  <Node _name="VI Server Reference" element="Step Table" outputs="Step Table:122.Step Table" uid="122" uid_parent="root"/>
+  <Node _name="VI Server Reference" element="Verdict" outputs="Verdict:123.Verdict" uid="123" uid_parent="root"/>
+  <Node _name="VI Server Reference" element="Pressure" outputs="Pressure:124.Pressure" uid="124" uid_parent="root"/>
+  <Node _name="VI Server Reference" element="Flow" outputs="Flow:125.Flow" uid="125" uid_parent="root"/>
+  <Node _name="VI Server Reference" element="Displacement" outputs="Displacement:126.Displacement" uid="126" uid_parent="root"/>
+  <Node _name="VI Server Reference" element="Feedback Chart" outputs="Feedback Chart:127.Feedback Chart" uid="127" uid_parent="root"/>
+  <Node _name="Obtain Notifier" inputs="name (unnamed):,notification data type:101.value,create if not found? (T):,error in (no error):" outputs="notifier out:130.notifier out,created new?:,error out:130.error out" uid="130" uid_parent="root"/>
+  <Call inputs="Actor in:100.value,Status Display:120.Status,Step Index Display:121.Current Step,Step Table Display:122.Step Table,Verdict Display:123.Verdict,Stopped Notification:130.notifier out,Results Folder:112.appended path,error in:130.error out" outputs="Actor out:140.Actor out,error out:140.error out" target="Sequence Executor.lvclass\3AConfigure.vi" uid="140" uid_parent="root"/>
+  <Call inputs="Actor in:140.Actor out,Pressure Display:124.Pressure,Flow Display:125.Flow,Displacement Display:126.Displacement,Feedback Chart:127.Feedback Chart,error in:140.error out" outputs="Actor out:141.Actor out,error out:141.error out" target="Sequence Executor.lvclass\3AConfigure Plant Displays.vi" uid="141" uid_parent="root"/>
+  <Call inputs="Actor:141.Actor out,error in (no error):141.error out,Open Actor Core front panel? (F):,Debug Alias:" outputs="Actor's Enqueuer:150.Actor's Enqueuer,error out:150.error out" target="Actor Framework.lvlib\3AActor.lvclass\3ALaunch Root Actor.vi" uid="150" uid_parent="root"/>
+  <Node _name="Unbundle By Name" fields="status" inputs="input cluster:150.error out" outputs="status:160.status" uid="160" uid_parent="root"/>
+  <Structure _name="Case Structure" selectin="160.status" uid="170" uid_parent="root">
+    <Tunnel _id="In1" inputs="value:150.Actor's Enqueuer" uid="171" uid_parent="170"/>
+    <Tunnel _id="In2" inputs="value:150.error out" uid="172" uid_parent="170"/>
+    <Tunnel _id="In3" inputs="value:114.appended path" uid="173" uid_parent="170"/>
+    <CaseFrame selector="False" selectout="" uid="180" uid_parent="170">
+      <Tunnel _id="In1" outputs="value:181.value" uid="181" uid_parent="180"/>
+      <Tunnel _id="In2" outputs="value:182.value" uid="182" uid_parent="180"/>
+      <Tunnel _id="In3" outputs="value:183.value" uid="183" uid_parent="180"/>
+      <Structure _name="While Loop" count="" uid="190" uid_parent="180">
+        <Tunnel _id="In1" inputs="value:181.value" outputs="value:191.value" uid="191" uid_parent="190"/>
+        <Tunnel _id="In2" inputs="value:183.value" outputs="value:192.value" uid="192" uid_parent="190"/>
+        <Structure _name="Event Structure" uid="200" uid_parent="190">
+          <Tunnel _id="In1" inputs="value:191.value" uid="201" uid_parent="200"/>
+          <Tunnel _id="In2" inputs="value:294.value" uid="202" uid_parent="200"/>
+          <Tunnel _id="In3" inputs="value:192.value" uid="203" uid_parent="200"/>
+          <CaseFrame selector=" &quot;Load&quot;\3A Value Change " uid="210" uid_parent="200">
+            <Control _name="Load" outputs="value:" style="latched" type="bool" uid="211" uid_parent="210" value="false"/>
+            <!-- UNVERIFIED: path default "" = empty path; empty -> default sequence via Empty String/Path?. -->
+            <Control _name="Config Path" outputs="value:212.value" type="path" uid="212" uid_parent="210" value=""/>
+            <Constant _name="Continue UI" outputs="value:213.value" type="bool" uid="213" uid_parent="210" value="false"/>
+            <Tunnel _id="In1" outputs="value:214.value" uid="214" uid_parent="210"/>
+            <Tunnel _id="In2" outputs="value:215.value" uid="215" uid_parent="210"/>
+            <Tunnel _id="In3" outputs="value:216.value" uid="216" uid_parent="210"/>
+            <Node _name="Event Data Node" fields="NewVal" outputs="NewVal:" uid="217" uid_parent="210"/>
+            <Node _name="Empty String/Path?" inputs="string/path:212.value" outputs="empty?:218.empty?" uid="218" uid_parent="210"/>
+            <Node _name="Select" inputs="t:216.value,s:218.empty?,f:212.value" outputs="s? t\3Af:219.s? t\3Af" uid="219" uid_parent="210"/>
+            <Call inputs="Message Enqueuer:214.value,Sequence Path:219.s? t\3Af,Message Priority (Normal):,error in (no error):215.value" outputs="Message Enqueuer out:,error out:220.error out" target="Load Sequence Msg.lvclass\3ASend Load Sequence.vi" uid="220" uid_parent="210"/>
+            <Tunnel _id="Out1" inputs="value:213.value" uid="221" uid_parent="210"/>
+            <Tunnel _id="Out2" inputs="value:220.error out" uid="222" uid_parent="210"/>
+          </CaseFrame>
+          <CaseFrame selector=" &quot;Start&quot;\3A Value Change " uid="230" uid_parent="200">
+            <Control _name="Start" outputs="value:" style="latched" type="bool" uid="231" uid_parent="230" value="false"/>
+            <Constant _name="Continue UI" outputs="value:232.value" type="bool" uid="232" uid_parent="230" value="false"/>
+            <Tunnel _id="In1" outputs="value:233.value" uid="233" uid_parent="230"/>
+            <Tunnel _id="In2" outputs="value:234.value" uid="234" uid_parent="230"/>
+            <Tunnel _id="In3" outputs="value:" uid="235" uid_parent="230"/>
+            <Node _name="Event Data Node" fields="NewVal" outputs="NewVal:" uid="236" uid_parent="230"/>
+            <Call inputs="Message Enqueuer:233.value,Message Priority (Normal):,error in (no error):234.value" outputs="Message Enqueuer out:,error out:237.error out" target="Start Sequence Msg.lvclass\3ASend Start Sequence.vi" uid="237" uid_parent="230"/>
+            <Tunnel _id="Out1" inputs="value:232.value" uid="238" uid_parent="230"/>
+            <Tunnel _id="Out2" inputs="value:237.error out" uid="239" uid_parent="230"/>
+          </CaseFrame>
+          <CaseFrame selector=" &quot;Stop Sequence&quot;\3A Value Change " uid="240" uid_parent="200">
+            <Control _name="Stop Sequence" outputs="value:" style="latched" type="bool" uid="241" uid_parent="240" value="false"/>
+            <Constant _name="Continue UI" outputs="value:242.value" type="bool" uid="242" uid_parent="240" value="false"/>
+            <Tunnel _id="In1" outputs="value:243.value" uid="243" uid_parent="240"/>
+            <Tunnel _id="In2" outputs="value:244.value" uid="244" uid_parent="240"/>
+            <Tunnel _id="In3" outputs="value:" uid="245" uid_parent="240"/>
+            <Node _name="Event Data Node" fields="NewVal" outputs="NewVal:" uid="246" uid_parent="240"/>
+            <Call inputs="Message Enqueuer:243.value,Message Priority (Normal):,error in (no error):244.value" outputs="Message Enqueuer out:,error out:247.error out" target="Stop Sequence Msg.lvclass\3ASend Stop Sequence.vi" uid="247" uid_parent="240"/>
+            <Tunnel _id="Out1" inputs="value:242.value" uid="248" uid_parent="240"/>
+            <Tunnel _id="Out2" inputs="value:247.error out" uid="249" uid_parent="240"/>
+          </CaseFrame>
+          <CaseFrame selector=" &quot;E-Stop&quot;\3A Value Change " uid="250" uid_parent="200">
+            <Control _name="E-Stop" outputs="value:" style="latched" type="bool" uid="251" uid_parent="250" value="false"/>
+            <Constant _name="Continue UI" outputs="value:252.value" type="bool" uid="252" uid_parent="250" value="false"/>
+            <!-- Spec asks for CRITICAL priority. The public AF priority enum is uint16{Low,Normal,High} (offline export of
+                 Enqueue.vi / Time-Delayed Send Message.vi); Enqueue Critical.vi is community scope (MethodScope 4, friends
+                 only: Stop Msg, Last Ack). So High (index 2) is the highest a user message can get. README Q4. -->
+            <Constant _name="Message Priority (Normal)" outputs="value:253.value" type="uint16{Low,Normal,High}" uid="253" uid_parent="250" value="2"/>
+            <Tunnel _id="In1" outputs="value:254.value" uid="254" uid_parent="250"/>
+            <Tunnel _id="In2" outputs="value:255.value" uid="255" uid_parent="250"/>
+            <Tunnel _id="In3" outputs="value:" uid="256" uid_parent="250"/>
+            <Node _name="Event Data Node" fields="NewVal" outputs="NewVal:" uid="257" uid_parent="250"/>
+            <Call inputs="Message Enqueuer:254.value,Message Priority (Normal):253.value,error in (no error):255.value" outputs="Message Enqueuer out:,error out:258.error out" target="Emergency Stop Msg.lvclass\3ASend Emergency Stop.vi" uid="258" uid_parent="250"/>
+            <Tunnel _id="Out1" inputs="value:252.value" uid="259" uid_parent="250"/>
+            <Tunnel _id="Out2" inputs="value:258.error out" uid="2591" uid_parent="250"/>
+          </CaseFrame>
+          <CaseFrame selector=" &quot;Exit&quot;\3A Value Change " uid="260" uid_parent="200">
+            <Control _name="Exit" outputs="value:" style="latched" type="bool" uid="261" uid_parent="260" value="false"/>
+            <Constant _name="Leave UI" outputs="value:262.value" type="bool" uid="262" uid_parent="260" value="true"/>
+            <Tunnel _id="In1" outputs="value:" uid="263" uid_parent="260"/>
+            <Tunnel _id="In2" outputs="value:264.value" uid="264" uid_parent="260"/>
+            <Tunnel _id="In3" outputs="value:" uid="265" uid_parent="260"/>
+            <Node _name="Event Data Node" fields="NewVal" outputs="NewVal:" uid="266" uid_parent="260"/>
+            <Tunnel _id="Out1" inputs="value:262.value" uid="267" uid_parent="260"/>
+            <Tunnel _id="Out2" inputs="value:264.value" uid="268" uid_parent="260"/>
+          </CaseFrame>
+          <CaseFrame selector=" Panel Close? " uid="270" uid_parent="200">
+            <Constant _name="Leave UI" outputs="value:271.value" type="bool" uid="271" uid_parent="270" value="true"/>
+            <Tunnel _id="In1" outputs="value:" uid="272" uid_parent="270"/>
+            <Tunnel _id="In2" outputs="value:273.value" uid="273" uid_parent="270"/>
+            <Tunnel _id="In3" outputs="value:" uid="274" uid_parent="270"/>
+            <Node _name="Event Data Node" fields="Time" outputs="Time:" uid="275" uid_parent="270"/>
+            <Node _name="Event Filter Node" fields="Discard?" inputs="Discard?:271.value" uid="276" uid_parent="270"/>
+            <Tunnel _id="Out1" inputs="value:271.value" uid="277" uid_parent="270"/>
+            <Tunnel _id="Out2" inputs="value:273.value" uid="278" uid_parent="270"/>
+          </CaseFrame>
+          <Tunnel _id="Out1" outputs="value:280.value" uid="280" uid_parent="200"/>
+          <Tunnel _id="Out2" outputs="value:281.value" uid="281" uid_parent="200"/>
+        </Structure>
+        <Node _name="Unbundle By Name" fields="status" inputs="input cluster:281.value" outputs="status:290.status" uid="290" uid_parent="190"/>
+        <Node _name="Or" inputs="x:280.value,y:290.status" outputs="x .or. y?:291.x .or. y?" uid="291" uid_parent="190"/>
+        <Condition inputs="value:291.x .or. y?" uid="292" uid_parent="190" value="stop"/>
+        <ShiftReg uid="293" uid_parent="190">
+          <Left inputs="value:182.value" outputs="value:294.value" uid="294" uid_parent="293"/>
+          <Right inputs="value:281.value" outputs="value:295.value" uid="295" uid_parent="293"/>
+        </ShiftReg>
+      </Structure>
+      <Tunnel _id="Out1" inputs="value:295.value" uid="296" uid_parent="180"/>
+    </CaseFrame>
+    <CaseFrame selector="True" selectout="" uid="300" uid_parent="170">
+      <Tunnel _id="In1" outputs="value:" uid="301" uid_parent="300"/>
+      <Tunnel _id="In2" outputs="value:302.value" uid="302" uid_parent="300"/>
+      <Tunnel _id="In3" outputs="value:" uid="303" uid_parent="300"/>
+      <Tunnel _id="Out1" inputs="value:302.value" uid="304" uid_parent="300"/>
+    </CaseFrame>
+    <Tunnel _id="Out1" outputs="value:310.value" uid="310" uid_parent="170"/>
+  </Structure>
+  <Node _name="Unbundle By Name" fields="status" inputs="input cluster:310.value" outputs="status:320.status" uid="320" uid_parent="root"/>
+  <!-- Copied from the sample: t and f are both "No error", so Send Normal Stop always runs. -->
+  <Node _name="Select" inputs="t:102.value,s:320.status,f:102.value" outputs="s? t\3Af:321.s? t\3Af" uid="321" uid_parent="root"/>
+  <Call inputs="Message Enqueuer:150.Actor's Enqueuer,error in (no error):321.s? t\3Af" outputs="error out:322.error out" target="Actor Framework.lvlib\3AStop Msg.lvclass\3ASend Normal Stop.vi" uid="322" uid_parent="root"/>
+  <Node _name="Wait on Notification" inputs="notifier:130.notifier out,ignore previous (F):,timeout in ms (-1):103.value,error in (no error):322.error out" outputs="notifier out:323.notifier out,notification:323.notification,timed out?:,error out:323.error out" uid="323" uid_parent="root"/>
+  <Node _name="Release Notifier" inputs="notifier:323.notifier out,force destroy? (F):,error in (no error):" outputs="notifier name:,last notification:,error out:324.error out" uid="324" uid_parent="root"/>
+  <Node _name="Select" inputs="t:310.value,s:320.status,f:323.error out" outputs="s? t\3Af:325.s? t\3Af" uid="325" uid_parent="root"/>
+  <!-- Read-back of the property-written displays into their own terminals, as the sample does for Count/Processed. -->
+  <Node _name="Property Node" fields="read+Value" inputs="reference:120.Status,error in (no error):324.error out" outputs="Value:330.Value,reference out:,error out:330.error out" type="{LV.String}" uid="330" uid_parent="root"/>
+  <Node _name="Property Node" fields="read+Value" inputs="reference:121.Current Step,error in (no error):330.error out" outputs="Value:331.Value,reference out:,error out:331.error out" type="{LV.Digital}" uid="331" uid_parent="root"/>
+  <Node _name="Property Node" fields="read+Value" inputs="reference:123.Verdict,error in (no error):331.error out" outputs="Value:332.Value,reference out:,error out:332.error out" type="{LV.String}" uid="332" uid_parent="root"/>
+  <Node _name="Property Node" fields="read+Value" inputs="reference:124.Pressure,error in (no error):332.error out" outputs="Value:333.Value,reference out:,error out:333.error out" type="{LV.Digital}" uid="333" uid_parent="root"/>
+  <Node _name="Property Node" fields="read+Value" inputs="reference:125.Flow,error in (no error):333.error out" outputs="Value:334.Value,reference out:,error out:334.error out" type="{LV.Digital}" uid="334" uid_parent="root"/>
+  <Node _name="Property Node" fields="read+Value" inputs="reference:126.Displacement,error in (no error):334.error out" outputs="Value:335.Value,reference out:,error out:" type="{LV.Digital}" uid="335" uid_parent="root"/>
+  <Indicator _name="Status" inputs="value:330.Value" type="string" uid="400" uid_parent="root" value=""/>
+  <Indicator _name="Current Step" inputs="value:331.Value" type="int32" uid="401" uid_parent="root" value="0"/>
+  <!-- UNVERIFIED: no AIXML style token for a Table control is evidenced; without one this is a 2-D string ARRAY indicator.
+       Left unwired (inputs="value:" - also unverified for an Indicator); it is written only through its reference. -->
+  <Indicator _name="Step Table" inputs="value:" type="array.2{string}" uid="402" uid_parent="root" value="[]"/>
+  <Indicator _name="Pressure" inputs="value:333.Value" type="double" uid="403" uid_parent="root" value="0"/>
+  <Indicator _name="Flow" inputs="value:334.Value" type="double" uid="404" uid_parent="root" value="0"/>
+  <Indicator _name="Displacement" inputs="value:335.Value" type="double" uid="405" uid_parent="root" value="0"/>
+  <Indicator _name="Verdict" inputs="value:332.Value" type="string" uid="406" uid_parent="root" value=""/>
+  <!-- UNVERIFIED: style "graph21717" is the waveform CHART token named in aixml-backends.md, measured only on
+       array{doublewaveform} / scalar-waveform charts. A 3-plot chart of a cluster of 3 doubles is not evidenced. Unwired. -->
+  <Indicator _name="Feedback Chart" inputs="value:" style="graph21717" type="cluster{double.Pressure,double.Flow,double.Displacement}" uid="407" uid_parent="root" value="[0,0,0]"/>
+  <Indicator _name="Stopped cleanly" inputs="value:323.notification" type="bool" uid="408" uid_parent="root" value="false"/>
+  <Indicator _name="error out" inputs="value:325.s? t\3Af" type="cluster{bool.status,int32.code,string.source}" uid="409" uid_parent="root" value="[false,0,]"/>
+</VI>

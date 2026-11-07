@@ -1,0 +1,20 @@
+<!--
+  STOP CORE OVERRIDE of Sim Plant.lvclass - delivered as a HOOK (AIXML cannot author Call Parent).
+  Route: lvai_add_class_method (Stop Tick.vi) -> lvai_create_override parentMethod="Stop Core"
+         -> lvai_af_add_hook shape="seriesAfter" (class only) hookClassIn="Actor in" hookClassOut="Actor out".
+  Stops the periodic tick: Send Notification "Stop all further copies" (index 3 of Time-Delay Override Options),
+  then Release Notifier. Time-Delayed Send Message Core.vi releases the notifier itself when it exits, so the
+  Release here may answer a benign invalid-refnum error; its error is not wired to anything that matters.
+  The plugin doc (labview-actor-framework.md 19f) says only "NI's template stops it in Stop Core".
+-->
+<VI _name="Sim Plant.lvclass:Stop Tick.vi" description="Stop Core hook (seriesAfter). Stops and releases the Time-Delayed Send delivery notifier held in Tick Notifier.">
+  <Control _name="Actor in" conIdx="11" connection="required" outputs="value:100.value" type="ref{UDClassInst}" uid="100" uid_parent="root" value=""/>
+  <Node _name="Unbundle By Name" fields="Tick Notifier" inputs="input cluster:100.value" outputs="Tick Notifier:110.Tick Notifier" uid="110" uid_parent="root"/>
+  <!-- UNVERIFIED: enum constant must match the notifier's element type exactly (Time-Delay Override Options.ctl typedef);
+       bind it to vi.lib\ActorFramework\Time-Delayed Send Message\Time-Delay Override Options.ctl if a coercion/broken wire shows. -->
+  <Constant _name="Time-Delay Override Options" outputs="value:111.value" type="uint16{Send next copy now,Skip next scheduled copy,Send next copy now and stop all further copies,Stop all further copies}" uid="111" uid_parent="root" value="3"/>
+  <Node _name="Send Notification" inputs="notifier:110.Tick Notifier,notification:111.value,error in (no error):" outputs="notifier out:112.notifier out,error out:112.error out" uid="112" uid_parent="root"/>
+  <Node _name="Release Notifier" inputs="notifier:112.notifier out,force destroy? (F):,error in (no error):112.error out" outputs="notifier name:,last notification:,error out:113.error out" uid="113" uid_parent="root"/>
+  <Indicator _name="Actor out" conIdx="3" connection="required" inputs="value:100.value" type="ref{UDClassInst}" uid="200" uid_parent="root" value=""/>
+  <Indicator _name="error out" conIdx="0" connection="recommended" inputs="value:113.error out" type="cluster{bool.status,int32.code,string.source}" uid="210" uid_parent="root" value="[false,0,]"/>
+</VI>

@@ -1,0 +1,28 @@
+<!--
+  ACTOR CORE OVERRIDE of Sim Plant.lvclass - delivered as a HOOK (AIXML cannot author Call Parent).
+  Route: lvai_add_class_method (Start Tick.vi) -> lvai_create_override parentMethod="Actor Core"
+         -> lvai_af_add_hook shape="series" wireError=true hookClassIn="Actor in" hookClassOut="Actor out".
+  Intended override: Actor in -> Start Tick.vi -> Call Parent (Actor Core) -> Actor out.
+  Terminal names from OFFLINE exports (plugin vi2aixml.py, no LabVIEW) of vi.lib\ActorFramework:
+    Read Self Enqueuer.vi  : Actor (11) -> Self Enqueuer (2). Scope protected (hook is a member: OK).
+    Time-Delayed Send Message.vi (qualified name "Actor Framework.lvlib:Time-Delayed Send Message.vi", public):
+      Message Enqueuer (11, req), Message (10, req), Milliseconds To Wait (9, req), error in (no error) (8),
+      # Copies (0 = infinite repeat) (7), Message Priority (Normal) (6, uint16{Low,Normal,High})
+      -> Delivery Notifier (2), error out (0).
+    Delivery Notifier payload = Time-Delay Override Options.ctl, uint16{Send next copy now,Skip next scheduled copy,
+      Send next copy now and stop all further copies,Stop all further copies} (from the VI's own Obtain Notifier constant).
+-->
+<VI _name="Sim Plant.lvclass:Start Tick.vi" description="Actor Core hook (series\2C before Call Parent). Starts a Time-Delayed Send Message of Plant Tick Msg to the plant itself every 100 ms\2C repeat forever\2C and stores the delivery notifier as Tick Notifier.">
+  <Control _name="Actor in" conIdx="11" connection="required" outputs="value:100.value" type="ref{UDClassInst}" uid="100" uid_parent="root" value=""/>
+  <Control _name="error in" conIdx="8" connection="required" outputs="value:102.value" type="cluster{bool.status,int32.code,string.source}" uid="102" uid_parent="root" value="[false,0,]"/>
+  <Call inputs="Actor:100.value" outputs="Self Enqueuer:110.Self Enqueuer" target="Actor Framework.lvlib\3AActor.lvclass\3ARead Self Enqueuer.vi" uid="110" uid_parent="root"/>
+  <!-- CLASS SEED: swap with lvai_swap_subvis constantsJson label "Plant Tick Msg" -> the message class the AF
+       message maker creates from Sim Plant.lvclass:Tick.vi (default name "Tick Msg", see MESSAGES.md / README Q3). -->
+  <Constant _name="Plant Tick Msg" outputs="value:111.value" type="path" uid="111" uid_parent="root" value=""/>
+  <Constant _name="Milliseconds To Wait" outputs="value:112.value" type="int32" uid="112" uid_parent="root" value="100"/>
+  <Constant _name="# Copies (0 = infinite repeat)" outputs="value:113.value" type="uint32" uid="113" uid_parent="root" value="0"/>
+  <Call inputs="Message Enqueuer:110.Self Enqueuer,Message:111.value,Milliseconds To Wait:112.value,# Copies (0 = infinite repeat):113.value,Message Priority (Normal):,error in (no error):102.value" outputs="Delivery Notifier:114.Delivery Notifier,error out:114.error out" target="Actor Framework.lvlib\3ATime-Delayed Send Message.vi" uid="114" uid_parent="root"/>
+  <Node _name="Bundle By Name" fields="Tick Notifier" inputs="Tick Notifier:114.Delivery Notifier,input cluster:100.value" outputs="output cluster:115.output cluster" uid="115" uid_parent="root"/>
+  <Indicator _name="Actor out" conIdx="3" connection="required" inputs="value:115.output cluster" type="ref{UDClassInst}" uid="200" uid_parent="root" value=""/>
+  <Indicator _name="error out" conIdx="0" connection="required" inputs="value:114.error out" type="cluster{bool.status,int32.code,string.source}" uid="210" uid_parent="root" value="[false,0,]"/>
+</VI>

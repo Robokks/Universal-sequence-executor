@@ -1,0 +1,72 @@
+{
+  "sequence_id": "VTU_ACTUAL_SEQUENCE_001",
+  "description": "5-Step Automated Hydraulic Valve Test Sequence",
+  "total_steps": 5,
+  "steps": [
+    {
+      "step_no": 1,
+      "step_name": "Pre-fill & Prime",
+      "command_type": "RAMP_PRESSURE",
+      "pressure_sp_bar": 20.0,
+      "flow_sp_lpm": 15.0,
+      "displacement_sp_mm": 0.0,
+      "monitored_io": "AI_Pressure_PT101",
+      "tolerance_bar": 2.0,
+      "dwell_time_ms": 1000,
+      "timeout_ms": 5000,
+      "expected_result": "PASS"
+    },
+    {
+      "step_no": 2,
+      "step_name": "Pressure Ramp",
+      "command_type": "RAMP_PRESSURE",
+      "pressure_sp_bar": 80.0,
+      "flow_sp_lpm": 30.0,
+      "displacement_sp_mm": 1.0,
+      "monitored_io": "AI_Pressure_PT101",
+      "tolerance_bar": 2.0,
+      "dwell_time_ms": 1500,
+      "timeout_ms": 8000,
+      "expected_result": "PASS"
+    },
+    {
+      "step_no": 3,
+      "step_name": "Operating Point Dwell",
+      "command_type": "HOLD_PRESSURE",
+      "pressure_sp_bar": 100.0,
+      "flow_sp_lpm": 45.0,
+      "displacement_sp_mm": 2.5,
+      "monitored_io": "AI_Pressure_PT101",
+      "tolerance_bar": 2.0,
+      "dwell_time_ms": 3000,
+      "timeout_ms": 10000,
+      "expected_result": "PASS"
+    },
+    {
+      "step_no": 4,
+      "step_name": "Flow Check & Stroke",
+      "command_type": "VERIFY_FLOW",
+      "pressure_sp_bar": 100.0,
+      "flow_sp_lpm": 60.0,
+      "displacement_sp_mm": 2.5,
+      "monitored_io": "AI_Flow_FT102",
+      "tolerance_bar": 2.5,
+      "dwell_time_ms": 2000,
+      "timeout_ms": 8000,
+      "expected_result": "PASS"
+    },
+    {
+      "step_no": 5,
+      "step_name": "Depressurize & Safe",
+      "command_type": "VENT_PRESSURE",
+      "pressure_sp_bar": 0.0,
+      "flow_sp_lpm": 0.0,
+      "displacement_sp_mm": 0.0,
+      "monitored_io": "AI_Pressure_PT101",
+      "tolerance_bar": 1.5,
+      "dwell_time_ms": 1000,
+      "timeout_ms": 5000,
+      "expected_result": "PASS"
+    }
+  ]
+}

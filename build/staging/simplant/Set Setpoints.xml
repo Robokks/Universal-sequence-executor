@@ -1,0 +1,9 @@
+<VI _name="Sim Plant.lvclass:Set Setpoints.vi" description="Stores new plant setpoints. Takes effect on the next Tick. Message: Set Setpoints Msg (payload Plant Setpoints).">
+  <Control _name="Actor in" conIdx="11" connection="required" outputs="value:100.value" type="ref{UDClassInst}" uid="100" uid_parent="root" value=""/>
+  <!-- Typedef: Plant Setpoints.ctl. Payload terminal of Set Setpoints Msg. -->
+  <Control _name="Plant Setpoints" conIdx="10" connection="required" outputs="value:101.value" type="cluster{double.pressure_sp_bar,double.flow_sp_lpm,double.displacement_sp_mm}" uid="101" uid_parent="root" value="[0,0,0]"/>
+  <Control _name="error in" conIdx="8" connection="required" outputs="value:102.value" type="cluster{bool.status,int32.code,string.source}" uid="102" uid_parent="root" value="[false,0,]"/>
+  <Node _name="Bundle By Name" fields="Setpoints" inputs="Setpoints:101.value,input cluster:100.value" outputs="output cluster:110.output cluster" uid="110" uid_parent="root"/>
+  <Indicator _name="Actor out" conIdx="3" connection="required" inputs="value:110.output cluster" type="ref{UDClassInst}" uid="200" uid_parent="root" value=""/>
+  <Indicator _name="error out" conIdx="0" connection="required" inputs="value:102.value" type="cluster{bool.status,int32.code,string.source}" uid="210" uid_parent="root" value="[false,0,]"/>
+</VI>

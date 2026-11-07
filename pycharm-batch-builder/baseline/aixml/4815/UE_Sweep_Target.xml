@@ -1,0 +1,8 @@
+<VI _name="UE_Sweep_Target.vi" description="Compute start plus index times increment for a validated linear sweep">
+  <Control _name="start_value" conIdx="11" connection="required" outputs="value:101.value" type="double" uid="101" uid_parent="root" value="0" />
+  <Control _name="step_size" conIdx="10" connection="required" outputs="value:102.value" type="double" uid="102" uid_parent="root" value="0" />
+  <Control _name="point_index" conIdx="9" connection="required" outputs="value:103.value" type="double" uid="103" uid_parent="root" value="0" />
+  <Node _name="Multiply" inputs="x:103.value,y:102.value" outputs="x*y:104.x*y" uid="104" uid_parent="root" />
+  <Node _name="Add" inputs="x:101.value,y:104.x*y" outputs="x+y:105.x+y" uid="105" uid_parent="root" />
+  <Indicator _name="target" conIdx="3" connection="recommended" inputs="value:105.x+y" type="double" uid="106" uid_parent="root" value="0" />
+</VI>

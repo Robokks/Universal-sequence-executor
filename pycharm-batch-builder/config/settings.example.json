@@ -1,0 +1,7 @@
+{
+  "pane": "4815",
+  "mcp_exe": "C:\\LabVIEWTools\\labview-mcp-v2.4.1\\bin\\LabVIEWMCP.exe",
+  "backend": "grpc",
+  "docker_image": "nationalinstruments/labview:latest-linux",
+  "labview_path_in_container": "/usr/local/natinst/LabVIEW-2026-64/labview"
+}

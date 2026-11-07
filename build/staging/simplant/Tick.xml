@@ -1,0 +1,18 @@
+<VI _name="Sim Plant.lvclass:Tick.vi" description="One plant step\3A now = Tick Count ms\2C State = Plant First Order Step(State\2C Setpoints\2C dt 0.1 s\2C now)\2C then sends the new State to the caller (the executor) as Process Feedback Msg. Message: Plant Tick Msg (no payload)\2C sent to self every 100 ms by Time-Delayed Send Message.">
+  <Control _name="Actor in" conIdx="11" connection="required" outputs="value:100.value" type="ref{UDClassInst}" uid="100" uid_parent="root" value=""/>
+  <Control _name="error in" conIdx="8" connection="required" outputs="value:102.value" type="cluster{bool.status,int32.code,string.source}" uid="102" uid_parent="root" value="[false,0,]"/>
+  <Node _name="Tick Count (ms)" outputs="millisecond timer value:110.millisecond timer value" uid="110" uid_parent="root"/>
+  <Node _name="To Double Precision Float" inputs="number:110.millisecond timer value" outputs="double precision float:111.double precision float" uid="111" uid_parent="root"/>
+  <Node _name="Unbundle By Name" fields="State,Setpoints" inputs="input cluster:100.value" outputs="State:112.State,Setpoints:112.Setpoints" uid="112" uid_parent="root"/>
+  <Constant _name="dt s" outputs="value:113.value" type="double" uid="113" uid_parent="root" value="0.1"/>
+  <!-- VERIFIED terminal labels: offline export of the built src\Logic\Plant First Order Step.vi
+       (current Plant Feedback 11, Plant Setpoints 10, dt s 9, now ms 8 -> new Plant Feedback 3). -->
+  <Call inputs="current Plant Feedback:112.State,Plant Setpoints:112.Setpoints,dt s:113.value,now ms:111.double precision float" outputs="new Plant Feedback:114.new Plant Feedback" target="Plant First Order Step.vi" uid="114" uid_parent="root"/>
+  <Node _name="Bundle By Name" fields="State" inputs="State:114.new Plant Feedback,input cluster:100.value" outputs="output cluster:115.output cluster" uid="115" uid_parent="root"/>
+  <!-- Read Caller Enqueuer.vi (offline export): Actor (11) -> Caller Enqueuer (2); protected. -->
+  <Call inputs="Actor:115.output cluster" outputs="Caller Enqueuer:116.Caller Enqueuer" target="Actor Framework.lvlib\3AActor.lvclass\3ARead Caller Enqueuer.vi" uid="116" uid_parent="root"/>
+  <!-- Send VI the message maker creates from Sequence Executor.lvclass:Process Feedback.vi (default names; spec calls it Feedback Msg - README Q3). -->
+  <Call inputs="Message Enqueuer:116.Caller Enqueuer,Plant Feedback:114.new Plant Feedback,Message Priority (Normal):,error in (no error):102.value" outputs="Message Enqueuer out:,error out:117.error out" target="Process Feedback Msg.lvclass\3ASend Process Feedback.vi" uid="117" uid_parent="root"/>
+  <Indicator _name="Actor out" conIdx="3" connection="required" inputs="value:115.output cluster" type="ref{UDClassInst}" uid="200" uid_parent="root" value=""/>
+  <Indicator _name="error out" conIdx="0" connection="required" inputs="value:117.error out" type="cluster{bool.status,int32.code,string.source}" uid="210" uid_parent="root" value="[false,0,]"/>
+</VI>

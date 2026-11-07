@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0.0",
+  "rig": {
+    "RigID": "VTU_RIG_HYD_01",
+    "target_type": "cRIO-9045",
+    "capabilities": [
+      "PC_SERVO",
+      "PRV_PRESSURE",
+      "VFD_FLOW",
+      "HITCH_LOAD_CELL"
+    ],
+    "authorized_limits": {
+      "max_pressure_bar": 250.0,
+      "max_flow_lpm": 120.0,
+      "max_displacement_mm": 50.0
+    }
+  },
+  "test": {
+    "TestID": "VTU_ACCEPTANCE_TEST_01",
+    "prerequisites": [],
+    "repeat_count": 1,
+    "fault_sequence_id": "SEQ_FAULT_SAFE_RETRACT",
+    "shutdown_sequence_id": "SEQ_NORMAL_SHUTDOWN"
+  },
+  "groups": [
+    {
+      "group_id": "GRP_INIT_01",
+      "is_parallel": false,
+      "actions": [
+        {
+          "action_id": "ACT_START_PUMP",
+          "kind": "Command",
+          "target": "VFD_FLOW",
+          "setpoint": 30.0
+        },
+        {
+          "action_id": "ACT_WARMUP_DWELL",
+          "kind": "Dwell",
+          "duration_ms": 2000
+        }
+      ]
+    },
+    {
+      "group_id": "GRP_SWEEP_PROFILE",
+      "is_parallel": false,
+      "actions": [
+        {
+          "action_id": "ACT_RAMP_PRESSURE",
+          "kind": "Ramp",
+          "target": "PRV_PRESSURE",
+          "setpoint": 180.0,
+          "duration_ms": 3000
+        },
+        {
+          "action_id": "ACT_ENGAGE_SERVO",
+          "kind": "Command",
+          "target": "PC_SERVO",
+          "setpoint": 2.0
+        },
+        {
+          "action_id": "ACT_MEASURE_HITCH",
+          "kind": "WaitCondition",
+          "parameter": "HITCH_LOAD",
+          "target": 50.0,
+          "tolerance": 5.0,
+          "timeout_ms": 5000
+        }
+      ]
+    }
+  ]
+}

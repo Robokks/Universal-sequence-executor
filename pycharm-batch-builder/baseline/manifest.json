@@ -1,0 +1,1717 @@
+{
+  "package": "Universal Executor AIXML Core",
+  "version": "0.4.0-draft",
+  "source_reference": "Zuehlke/labview-mcp docs/aixml-reference.md main accessed 2026-11-05",
+  "validation": "offline XML and evaluator only; NO LabVIEW converter validation",
+  "aixml_file_count": 56,
+  "definitions": [
+    {
+      "name": "UE_Relative_Target",
+      "module": "vtu",
+      "pane": "4815",
+      "path": "aixml/4815/UE_Relative_Target.xml",
+      "sha256": "5464624facd6bec2eec802f5fc48235bec3e3a2e58d8d5a86dc5bd6ed08ef691",
+      "inputs": [
+        {
+          "name": "reference_mm",
+          "type": "double"
+        },
+        {
+          "name": "offset_mm",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "target_mm",
+          "type": "double"
+        }
+      ],
+      "requirements": [
+        "SRS-F-020"
+      ],
+      "notes": "Reference is servo encoder-based calibrated lever position, not hydraulic hitch feedback.",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_Measured_Displacement",
+      "module": "measurement",
+      "pane": "4815",
+      "path": "aixml/4815/UE_Measured_Displacement.xml",
+      "sha256": "c1e24a410d08fe80f84b5b5b31ca92e7091c49b0f4de6fb0ceb3d5e62fa9b1ca",
+      "inputs": [
+        {
+          "name": "final_mm",
+          "type": "double"
+        },
+        {
+          "name": "initial_mm",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "delta_mm",
+          "type": "double"
+        }
+      ],
+      "requirements": [
+        "SRS-F-020"
+      ],
+      "notes": "",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_Elapsed_Ms",
+      "module": "timing",
+      "pane": "4815",
+      "path": "aixml/4815/UE_Elapsed_Ms.xml",
+      "sha256": "6bed8f26bea55df9ed583c8069c0231c19511cf19efd14d4a99eddc2e95c28f4",
+      "inputs": [
+        {
+          "name": "now_ms",
+          "type": "double"
+        },
+        {
+          "name": "start_ms",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "elapsed_ms",
+          "type": "double"
+        }
+      ],
+      "requirements": [
+        "SRS-F-006"
+      ],
+      "notes": "Inputs must be monotonic ticks sourced from a common clock domain.",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_Ms_To_Seconds",
+      "module": "timing",
+      "pane": "4815",
+      "path": "aixml/4815/UE_Ms_To_Seconds.xml",
+      "sha256": "2159b0bc3babbf329bdb5a68d12c52bbbf7265f02619200ca815c556e32a61ac",
+      "inputs": [
+        {
+          "name": "milliseconds",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "seconds",
+          "type": "double"
+        }
+      ],
+      "requirements": [
+        "SRS-F-006"
+      ],
+      "notes": "",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_Inclusive_Range",
+      "module": "condition",
+      "pane": "4815",
+      "path": "aixml/4815/UE_Inclusive_Range.xml",
+      "sha256": "cf3041ea8b28cb749eb028fed591f28916f36795f715e0730f2bf2f93cd7ae9d",
+      "inputs": [
+        {
+          "name": "value",
+          "type": "double"
+        },
+        {
+          "name": "minimum",
+          "type": "double"
+        },
+        {
+          "name": "maximum",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "in_range",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-005"
+      ],
+      "notes": "Caller validates minimum <= maximum and quality before invocation.",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_Clamp_To_Limits",
+      "module": "condition",
+      "pane": "4815",
+      "path": "aixml/4815/UE_Clamp_To_Limits.xml",
+      "sha256": "bac37594c49793561222942a46087e0a960f8c083327717f5fef5eaab89a6bc7",
+      "inputs": [
+        {
+          "name": "value",
+          "type": "double"
+        },
+        {
+          "name": "minimum",
+          "type": "double"
+        },
+        {
+          "name": "maximum",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "clamped",
+          "type": "double"
+        },
+        {
+          "name": "original_in_range",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-021"
+      ],
+      "notes": "Clamping a setpoint does not grant permission to issue a hardware command.",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_Within_Tolerance",
+      "module": "condition",
+      "pane": "4815",
+      "path": "aixml/4815/UE_Within_Tolerance.xml",
+      "sha256": "cbecf59807cf7e8386d2826c0347e2d5bf7b7daff18065e213f98dbbaba82bf7",
+      "inputs": [
+        {
+          "name": "actual",
+          "type": "double"
+        },
+        {
+          "name": "target",
+          "type": "double"
+        },
+        {
+          "name": "tolerance",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "within_tolerance",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-005"
+      ],
+      "notes": "Caller checks tolerance>=0 and feedback freshness.",
+      "diagram_nodes": 3
+    },
+    {
+      "name": "UE_Target_Error",
+      "module": "measurement",
+      "pane": "4815",
+      "path": "aixml/4815/UE_Target_Error.xml",
+      "sha256": "1858e04b83dd2b675ae1bacd359e1171d5d221a0b4f1f1fe8d0544f7cfa4d402",
+      "inputs": [
+        {
+          "name": "target",
+          "type": "double"
+        },
+        {
+          "name": "actual",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "error",
+          "type": "double"
+        }
+      ],
+      "requirements": [
+        "SRS-F-005"
+      ],
+      "notes": "",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_Timeout_Reached",
+      "module": "timing",
+      "pane": "4815",
+      "path": "aixml/4815/UE_Timeout_Reached.xml",
+      "sha256": "8a6550071ade53326872153e11853207b42740904d2f7dfab1d93d417ecc1260",
+      "inputs": [
+        {
+          "name": "elapsed_ms",
+          "type": "double"
+        },
+        {
+          "name": "threshold_ms",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "reached",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-006"
+      ],
+      "notes": "This VI checks elapsed time. Reset and clock ownership belong to Step Tick.",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_Stabilization_Reached",
+      "module": "timing",
+      "pane": "4815",
+      "path": "aixml/4815/UE_Stabilization_Reached.xml",
+      "sha256": "d0862c692588beaae1dec4bad60c51576fe43cb638f9d18bb32ac15438ea84f7",
+      "inputs": [
+        {
+          "name": "elapsed_ms",
+          "type": "double"
+        },
+        {
+          "name": "threshold_ms",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "reached",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-006"
+      ],
+      "notes": "This VI checks elapsed time. Reset and clock ownership belong to Step Tick.",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_Dwell_Reached",
+      "module": "timing",
+      "pane": "4815",
+      "path": "aixml/4815/UE_Dwell_Reached.xml",
+      "sha256": "aeb298d5000161c9b6a137f7395740625e2ae18fd53e32947c0ca4a1c51e588d",
+      "inputs": [
+        {
+          "name": "elapsed_ms",
+          "type": "double"
+        },
+        {
+          "name": "threshold_ms",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "reached",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-006"
+      ],
+      "notes": "This VI checks elapsed time. Reset and clock ownership belong to Step Tick.",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_Retry_Allowed",
+      "module": "cycle",
+      "pane": "4815",
+      "path": "aixml/4815/UE_Retry_Allowed.xml",
+      "sha256": "1c9c59459471c1b501cc1dfc269cbdd3ca28118723badaabf9f836e71f5929b9",
+      "inputs": [
+        {
+          "name": "attempts_used",
+          "type": "int32"
+        },
+        {
+          "name": "max_attempts",
+          "type": "int32"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "allowed",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-010"
+      ],
+      "notes": "Attempt counting semantics must be consistent with scheduler.",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_Cycles_Done",
+      "module": "cycle",
+      "pane": "4815",
+      "path": "aixml/4815/UE_Cycles_Done.xml",
+      "sha256": "1bd86c912af64f708080fc3bccc9f3cb761bf3f0c321e758f4fc677992824448",
+      "inputs": [
+        {
+          "name": "completed",
+          "type": "int32"
+        },
+        {
+          "name": "requested",
+          "type": "int32"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "done",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-010"
+      ],
+      "notes": "Counter persistence and retry identities are managed by Cycle Manager.",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_Stop_Requested",
+      "module": "supervisor",
+      "pane": "4815",
+      "path": "aixml/4815/UE_Stop_Requested.xml",
+      "sha256": "61e7c82c721a7a143dfe1dc48344c630239340d6704274d3dd0bd4589e390168",
+      "inputs": [
+        {
+          "name": "operator_stop",
+          "type": "bool"
+        },
+        {
+          "name": "global_fault",
+          "type": "bool"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "must_stop",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-015"
+      ],
+      "notes": "Safety action must not wait for this VI or an ordinary executor loop.",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_Select_Setpoint",
+      "module": "profile",
+      "pane": "4815",
+      "path": "aixml/4815/UE_Select_Setpoint.xml",
+      "sha256": "97b0d846f37249235ffff2569ee083ea47c9f0d0762119b3e2a1a293e41e9345",
+      "inputs": [
+        {
+          "name": "override_selected",
+          "type": "bool"
+        },
+        {
+          "name": "override_target",
+          "type": "double"
+        },
+        {
+          "name": "default_target",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "selected_target",
+          "type": "double"
+        }
+      ],
+      "requirements": [
+        "SRS-F-019"
+      ],
+      "notes": "",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_TriState_Condition",
+      "module": "condition",
+      "pane": "4815",
+      "path": "aixml/4815/UE_TriState_Condition.xml",
+      "sha256": "f4d173348d954a970377047215a12125ca7115bb4f690d1732d4a3f41737865a",
+      "inputs": [
+        {
+          "name": "sample_valid",
+          "type": "bool"
+        },
+        {
+          "name": "condition_met",
+          "type": "bool"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "state_code",
+          "type": "int32"
+        }
+      ],
+      "requirements": [
+        "SRS-F-022"
+      ],
+      "notes": "Quality states stale and invalid must be converted to sample_valid=false by Parameter Registry.",
+      "diagram_nodes": 2
+    },
+    {
+      "name": "UE_Command_Permitted",
+      "module": "bridge",
+      "pane": "4815",
+      "path": "aixml/4815/UE_Command_Permitted.xml",
+      "sha256": "80ba99d49d6e22fd80fffc87f54f8a1de4843fa1a51b34353e10c3b646ea28ba",
+      "inputs": [
+        {
+          "name": "mode_authorized",
+          "type": "bool"
+        },
+        {
+          "name": "resource_owned",
+          "type": "bool"
+        },
+        {
+          "name": "interlocks_satisfied",
+          "type": "bool"
+        },
+        {
+          "name": "no_fault",
+          "type": "bool"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "permitted",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-021"
+      ],
+      "notes": "Decision helper only; bridge must also enforce ownership expiry, command identity, limits and target capability.",
+      "diagram_nodes": 3
+    },
+    {
+      "name": "UE_Capture_Acceptable",
+      "module": "report",
+      "pane": "4815",
+      "path": "aixml/4815/UE_Capture_Acceptable.xml",
+      "sha256": "d58c2b501f583cf59dbb3c9ab3bcd20261e9623f67b20c71b90e6906d15d09e9",
+      "inputs": [
+        {
+          "name": "samples_present",
+          "type": "bool"
+        },
+        {
+          "name": "feedback_valid",
+          "type": "bool"
+        },
+        {
+          "name": "buffer_ok",
+          "type": "bool"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "acceptable",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-008"
+      ],
+      "notes": "Does not perform logging, average calculation or buffer management.",
+      "diagram_nodes": 2
+    },
+    {
+      "name": "UE_Relative_Target_Check",
+      "module": "vtu",
+      "pane": "4815",
+      "path": "aixml/4815/UE_Relative_Target_Check.xml",
+      "sha256": "f167b96207cbfbc04819eb0447794b44591ab37e41397ed21356bbd9bb781123",
+      "inputs": [
+        {
+          "name": "servo_reference_mm",
+          "type": "double"
+        },
+        {
+          "name": "delta_mm",
+          "type": "double"
+        },
+        {
+          "name": "min_target_mm",
+          "type": "double"
+        },
+        {
+          "name": "max_target_mm",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "requested_target_mm",
+          "type": "double"
+        },
+        {
+          "name": "within_limits",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-020",
+        "SRS-F-021"
+      ],
+      "notes": "Reject out-of-limit target; do not silently clamp a motion request.",
+      "diagram_nodes": 2
+    },
+    {
+      "name": "UE_Sweep_Target",
+      "module": "profile",
+      "pane": "4815",
+      "path": "aixml/4815/UE_Sweep_Target.xml",
+      "sha256": "49ad427c79f432261310ca48bf4103b800a9419653b79d5d2bc59546a5e9a9fd",
+      "inputs": [
+        {
+          "name": "start_value",
+          "type": "double"
+        },
+        {
+          "name": "step_size",
+          "type": "double"
+        },
+        {
+          "name": "point_index",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "target",
+          "type": "double"
+        }
+      ],
+      "requirements": [
+        "SRS-F-019"
+      ],
+      "notes": "Sequencer validates point index and sweep size.",
+      "diagram_nodes": 2
+    },
+    {
+      "name": "UE_Hydraulic_Power_kW",
+      "module": "vtu",
+      "pane": "4815",
+      "path": "aixml/4815/UE_Hydraulic_Power_kW.xml",
+      "sha256": "47f26f0344cecf59cdb4fd2b369f72854b0b998cd97347628397c64faf0384cf",
+      "inputs": [
+        {
+          "name": "pressure_bar",
+          "type": "double"
+        },
+        {
+          "name": "flow_lpm",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "hydraulic_kw",
+          "type": "double"
+        }
+      ],
+      "requirements": [
+        "SRS-F-019"
+      ],
+      "notes": "For positive differential pressure and actual volumetric flow; this is not shaft electrical power.",
+      "diagram_nodes": 2
+    },
+    {
+      "name": "UE_Percent_Drop",
+      "module": "measurement",
+      "pane": "4815",
+      "path": "aixml/4815/UE_Percent_Drop.xml",
+      "sha256": "eab612f449d326f6e13627cfa123b01ef483aaebe0da8e4047d696b36141fa2c",
+      "inputs": [
+        {
+          "name": "initial",
+          "type": "double"
+        },
+        {
+          "name": "final",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "percent_drop",
+          "type": "double"
+        },
+        {
+          "name": "valid",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-008"
+      ],
+      "notes": "Invalid initial produces 0 percent and valid=false; caller must reject invalid result.",
+      "diagram_nodes": 6
+    },
+    {
+      "name": "UE_Load_Fraction",
+      "module": "vtu",
+      "pane": "4815",
+      "path": "aixml/4815/UE_Load_Fraction.xml",
+      "sha256": "9a5c83950352bae730b8fd05b4516dd73e13a7ecbcbf3d470e6e5f5190157db7",
+      "inputs": [
+        {
+          "name": "reference_load_N",
+          "type": "double"
+        },
+        {
+          "name": "fraction",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "commanded_load_N",
+          "type": "double"
+        }
+      ],
+      "requirements": [
+        "SRS-F-008"
+      ],
+      "notes": "Used for maintenance-of-lift planning; validated fraction expected in [0,1].",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_Operating_Point_Ready",
+      "module": "profile",
+      "pane": "4815",
+      "path": "aixml/4815/UE_Operating_Point_Ready.xml",
+      "sha256": "b827019960c043f6fe01070644d66f850f9c1279da5919ce5d955706931aed81",
+      "inputs": [
+        {
+          "name": "pressure_achieved",
+          "type": "bool"
+        },
+        {
+          "name": "flow_achieved",
+          "type": "bool"
+        },
+        {
+          "name": "mode_valid",
+          "type": "bool"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "ready",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-019"
+      ],
+      "notes": "Not a substitute for individual controller status or stale-signal checks.",
+      "diagram_nodes": 2
+    },
+    {
+      "name": "UE_Can_Advance_Step",
+      "module": "executor",
+      "pane": "4815",
+      "path": "aixml/4815/UE_Can_Advance_Step.xml",
+      "sha256": "c7d5935673c5d7c4743f4744ebbf0e4f7c251f28f309930064840f76b292e729",
+      "inputs": [
+        {
+          "name": "quality_valid",
+          "type": "bool"
+        },
+        {
+          "name": "feedback_condition",
+          "type": "bool"
+        },
+        {
+          "name": "stabilized",
+          "type": "bool"
+        },
+        {
+          "name": "no_fault",
+          "type": "bool"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "advance",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-005",
+        "SRS-F-022"
+      ],
+      "notes": "Sequence scheduler supplies timestamp and timeouts independently.",
+      "diagram_nodes": 3
+    },
+    {
+      "name": "UE_Run_Id_Matches",
+      "module": "bridge",
+      "pane": "4815",
+      "path": "aixml/4815/UE_Run_Id_Matches.xml",
+      "sha256": "d5e88adcb8ef8ab7aca517895e730e7f9cb600e7965c7fbf05ad9cf2e8d01729",
+      "inputs": [
+        {
+          "name": "incoming_run_id",
+          "type": "int32"
+        },
+        {
+          "name": "active_run_id",
+          "type": "int32"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "same_run",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-024"
+      ],
+      "notes": "Production run IDs should use stronger unique identities; this is only a comparison helper.",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_Feedback_Freshness",
+      "module": "parameter",
+      "pane": "4815",
+      "path": "aixml/4815/UE_Feedback_Freshness.xml",
+      "sha256": "25a0a131bea54a7941e92ee97985579837c94f33bbaa6b86abeb5de6219d46a9",
+      "inputs": [
+        {
+          "name": "now_ms",
+          "type": "double"
+        },
+        {
+          "name": "sample_ms",
+          "type": "double"
+        },
+        {
+          "name": "max_age_ms",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "age_ms",
+          "type": "double"
+        },
+        {
+          "name": "fresh",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-022"
+      ],
+      "notes": "Clocks must share one monotonic domain; sample validity is separately checked.",
+      "diagram_nodes": 4
+    },
+    {
+      "name": "UE_Cycle_Event_Duration",
+      "module": "vtu",
+      "pane": "4815",
+      "path": "aixml/4815/UE_Cycle_Event_Duration.xml",
+      "sha256": "96907fd738005eace6c9273e8da9ae72009ca7178504f55bd6a89abd45f227b5",
+      "inputs": [
+        {
+          "name": "end_ms",
+          "type": "double"
+        },
+        {
+          "name": "start_ms",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "duration_ms",
+          "type": "double"
+        }
+      ],
+      "requirements": [
+        "SRS-F-006"
+      ],
+      "notes": "Used for TPL lift/lower cycle time; does not detect events.",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_Relative_Target",
+      "module": "vtu",
+      "pane": "4833",
+      "path": "aixml/4833/UE_Relative_Target.xml",
+      "sha256": "1c5f2ffa839613eeb63fbb9e084e25f63dd4929963ea8ac66a77a0b70baf5630",
+      "inputs": [
+        {
+          "name": "reference_mm",
+          "type": "double"
+        },
+        {
+          "name": "offset_mm",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "target_mm",
+          "type": "double"
+        }
+      ],
+      "requirements": [
+        "SRS-F-020"
+      ],
+      "notes": "Reference is servo encoder-based calibrated lever position, not hydraulic hitch feedback.",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_Measured_Displacement",
+      "module": "measurement",
+      "pane": "4833",
+      "path": "aixml/4833/UE_Measured_Displacement.xml",
+      "sha256": "1bf0e2713874cee24273a882dab01253e13dd9c7db6e9d59094b59c9e7ef7f54",
+      "inputs": [
+        {
+          "name": "final_mm",
+          "type": "double"
+        },
+        {
+          "name": "initial_mm",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "delta_mm",
+          "type": "double"
+        }
+      ],
+      "requirements": [
+        "SRS-F-020"
+      ],
+      "notes": "",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_Elapsed_Ms",
+      "module": "timing",
+      "pane": "4833",
+      "path": "aixml/4833/UE_Elapsed_Ms.xml",
+      "sha256": "9180051733ae33cd920c132dd9c66bd9b63a80938fe80bd4c779155e5b83b1f9",
+      "inputs": [
+        {
+          "name": "now_ms",
+          "type": "double"
+        },
+        {
+          "name": "start_ms",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "elapsed_ms",
+          "type": "double"
+        }
+      ],
+      "requirements": [
+        "SRS-F-006"
+      ],
+      "notes": "Inputs must be monotonic ticks sourced from a common clock domain.",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_Ms_To_Seconds",
+      "module": "timing",
+      "pane": "4833",
+      "path": "aixml/4833/UE_Ms_To_Seconds.xml",
+      "sha256": "a7229651bc108b7b9fa5cbecacad2146b25bb6cc7082e889c0dc30bba6757007",
+      "inputs": [
+        {
+          "name": "milliseconds",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "seconds",
+          "type": "double"
+        }
+      ],
+      "requirements": [
+        "SRS-F-006"
+      ],
+      "notes": "",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_Inclusive_Range",
+      "module": "condition",
+      "pane": "4833",
+      "path": "aixml/4833/UE_Inclusive_Range.xml",
+      "sha256": "a83454a4507ed1d94a58a0b36a3895869930548b2a424d915c999f482d51d9b8",
+      "inputs": [
+        {
+          "name": "value",
+          "type": "double"
+        },
+        {
+          "name": "minimum",
+          "type": "double"
+        },
+        {
+          "name": "maximum",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "in_range",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-005"
+      ],
+      "notes": "Caller validates minimum <= maximum and quality before invocation.",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_Clamp_To_Limits",
+      "module": "condition",
+      "pane": "4833",
+      "path": "aixml/4833/UE_Clamp_To_Limits.xml",
+      "sha256": "227bb47401be527fa0b16033fd829fdf4b42e097507748feffcdb581c2108ff6",
+      "inputs": [
+        {
+          "name": "value",
+          "type": "double"
+        },
+        {
+          "name": "minimum",
+          "type": "double"
+        },
+        {
+          "name": "maximum",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "clamped",
+          "type": "double"
+        },
+        {
+          "name": "original_in_range",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-021"
+      ],
+      "notes": "Clamping a setpoint does not grant permission to issue a hardware command.",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_Within_Tolerance",
+      "module": "condition",
+      "pane": "4833",
+      "path": "aixml/4833/UE_Within_Tolerance.xml",
+      "sha256": "add0b07b5b5578264a9ae6b6f49000ea86a5733ad116ff6b44a343bb7d20ff10",
+      "inputs": [
+        {
+          "name": "actual",
+          "type": "double"
+        },
+        {
+          "name": "target",
+          "type": "double"
+        },
+        {
+          "name": "tolerance",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "within_tolerance",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-005"
+      ],
+      "notes": "Caller checks tolerance>=0 and feedback freshness.",
+      "diagram_nodes": 3
+    },
+    {
+      "name": "UE_Target_Error",
+      "module": "measurement",
+      "pane": "4833",
+      "path": "aixml/4833/UE_Target_Error.xml",
+      "sha256": "e58a27bd96614727cb6043af5a921973ced9b77f59b96b80b3e599089575b098",
+      "inputs": [
+        {
+          "name": "target",
+          "type": "double"
+        },
+        {
+          "name": "actual",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "error",
+          "type": "double"
+        }
+      ],
+      "requirements": [
+        "SRS-F-005"
+      ],
+      "notes": "",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_Timeout_Reached",
+      "module": "timing",
+      "pane": "4833",
+      "path": "aixml/4833/UE_Timeout_Reached.xml",
+      "sha256": "36184fd34c6186df16a6a3386341c5f93eca9a078b93e0ba2b32806ce6dc8c7e",
+      "inputs": [
+        {
+          "name": "elapsed_ms",
+          "type": "double"
+        },
+        {
+          "name": "threshold_ms",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "reached",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-006"
+      ],
+      "notes": "This VI checks elapsed time. Reset and clock ownership belong to Step Tick.",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_Stabilization_Reached",
+      "module": "timing",
+      "pane": "4833",
+      "path": "aixml/4833/UE_Stabilization_Reached.xml",
+      "sha256": "fadf6d1bb75d486f08e7e07482b6889028eea0380ec8c92d1fab9e2d6711dbf0",
+      "inputs": [
+        {
+          "name": "elapsed_ms",
+          "type": "double"
+        },
+        {
+          "name": "threshold_ms",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "reached",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-006"
+      ],
+      "notes": "This VI checks elapsed time. Reset and clock ownership belong to Step Tick.",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_Dwell_Reached",
+      "module": "timing",
+      "pane": "4833",
+      "path": "aixml/4833/UE_Dwell_Reached.xml",
+      "sha256": "e95bb4243c1f6a9bc56bd0b201da38c94fc00bef94df7c3efadf872e5c7719bc",
+      "inputs": [
+        {
+          "name": "elapsed_ms",
+          "type": "double"
+        },
+        {
+          "name": "threshold_ms",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "reached",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-006"
+      ],
+      "notes": "This VI checks elapsed time. Reset and clock ownership belong to Step Tick.",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_Retry_Allowed",
+      "module": "cycle",
+      "pane": "4833",
+      "path": "aixml/4833/UE_Retry_Allowed.xml",
+      "sha256": "520028ecd393b1958cab016d67bda25d8a7a2087376aa0d1585afda2cbab4b0d",
+      "inputs": [
+        {
+          "name": "attempts_used",
+          "type": "int32"
+        },
+        {
+          "name": "max_attempts",
+          "type": "int32"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "allowed",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-010"
+      ],
+      "notes": "Attempt counting semantics must be consistent with scheduler.",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_Cycles_Done",
+      "module": "cycle",
+      "pane": "4833",
+      "path": "aixml/4833/UE_Cycles_Done.xml",
+      "sha256": "91752ffcff0f6b47e93626dd13698790fe5c788a780e697a672b3e5b02a2a32b",
+      "inputs": [
+        {
+          "name": "completed",
+          "type": "int32"
+        },
+        {
+          "name": "requested",
+          "type": "int32"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "done",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-010"
+      ],
+      "notes": "Counter persistence and retry identities are managed by Cycle Manager.",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_Stop_Requested",
+      "module": "supervisor",
+      "pane": "4833",
+      "path": "aixml/4833/UE_Stop_Requested.xml",
+      "sha256": "7c98a30c5c1e9584a39d75f0b1cea7bbb180a3d99605fd37ad3fd551839b98b1",
+      "inputs": [
+        {
+          "name": "operator_stop",
+          "type": "bool"
+        },
+        {
+          "name": "global_fault",
+          "type": "bool"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "must_stop",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-015"
+      ],
+      "notes": "Safety action must not wait for this VI or an ordinary executor loop.",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_Select_Setpoint",
+      "module": "profile",
+      "pane": "4833",
+      "path": "aixml/4833/UE_Select_Setpoint.xml",
+      "sha256": "1745c71b364e02124421340805a7b2109f7bdad726bc146020cfe6ce382472f5",
+      "inputs": [
+        {
+          "name": "override_selected",
+          "type": "bool"
+        },
+        {
+          "name": "override_target",
+          "type": "double"
+        },
+        {
+          "name": "default_target",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "selected_target",
+          "type": "double"
+        }
+      ],
+      "requirements": [
+        "SRS-F-019"
+      ],
+      "notes": "",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_TriState_Condition",
+      "module": "condition",
+      "pane": "4833",
+      "path": "aixml/4833/UE_TriState_Condition.xml",
+      "sha256": "724c08ae81c52ba00860b54ba767cee9cc150cfa841405250b349fcbb5b38dcc",
+      "inputs": [
+        {
+          "name": "sample_valid",
+          "type": "bool"
+        },
+        {
+          "name": "condition_met",
+          "type": "bool"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "state_code",
+          "type": "int32"
+        }
+      ],
+      "requirements": [
+        "SRS-F-022"
+      ],
+      "notes": "Quality states stale and invalid must be converted to sample_valid=false by Parameter Registry.",
+      "diagram_nodes": 2
+    },
+    {
+      "name": "UE_Command_Permitted",
+      "module": "bridge",
+      "pane": "4833",
+      "path": "aixml/4833/UE_Command_Permitted.xml",
+      "sha256": "afb524b7d36f6952dc2ca1c6cf3a7ad3f5cb7ea03fd769912eb9835d7b0c29a7",
+      "inputs": [
+        {
+          "name": "mode_authorized",
+          "type": "bool"
+        },
+        {
+          "name": "resource_owned",
+          "type": "bool"
+        },
+        {
+          "name": "interlocks_satisfied",
+          "type": "bool"
+        },
+        {
+          "name": "no_fault",
+          "type": "bool"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "permitted",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-021"
+      ],
+      "notes": "Decision helper only; bridge must also enforce ownership expiry, command identity, limits and target capability.",
+      "diagram_nodes": 3
+    },
+    {
+      "name": "UE_Capture_Acceptable",
+      "module": "report",
+      "pane": "4833",
+      "path": "aixml/4833/UE_Capture_Acceptable.xml",
+      "sha256": "93af543e4a7fccf86446b73082475db66c70c191c37c858cb4a78f173184ca15",
+      "inputs": [
+        {
+          "name": "samples_present",
+          "type": "bool"
+        },
+        {
+          "name": "feedback_valid",
+          "type": "bool"
+        },
+        {
+          "name": "buffer_ok",
+          "type": "bool"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "acceptable",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-008"
+      ],
+      "notes": "Does not perform logging, average calculation or buffer management.",
+      "diagram_nodes": 2
+    },
+    {
+      "name": "UE_Relative_Target_Check",
+      "module": "vtu",
+      "pane": "4833",
+      "path": "aixml/4833/UE_Relative_Target_Check.xml",
+      "sha256": "a0c9e3e23dcc83de8ff3a5ba737ab79a4eaed941055ef6fd1e603225d95ec2dd",
+      "inputs": [
+        {
+          "name": "servo_reference_mm",
+          "type": "double"
+        },
+        {
+          "name": "delta_mm",
+          "type": "double"
+        },
+        {
+          "name": "min_target_mm",
+          "type": "double"
+        },
+        {
+          "name": "max_target_mm",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "requested_target_mm",
+          "type": "double"
+        },
+        {
+          "name": "within_limits",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-020",
+        "SRS-F-021"
+      ],
+      "notes": "Reject out-of-limit target; do not silently clamp a motion request.",
+      "diagram_nodes": 2
+    },
+    {
+      "name": "UE_Sweep_Target",
+      "module": "profile",
+      "pane": "4833",
+      "path": "aixml/4833/UE_Sweep_Target.xml",
+      "sha256": "a60528ab91df126dabaf53d40ebbf464202e3ab59b77ca928a7e661add2dc7ff",
+      "inputs": [
+        {
+          "name": "start_value",
+          "type": "double"
+        },
+        {
+          "name": "step_size",
+          "type": "double"
+        },
+        {
+          "name": "point_index",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "target",
+          "type": "double"
+        }
+      ],
+      "requirements": [
+        "SRS-F-019"
+      ],
+      "notes": "Sequencer validates point index and sweep size.",
+      "diagram_nodes": 2
+    },
+    {
+      "name": "UE_Hydraulic_Power_kW",
+      "module": "vtu",
+      "pane": "4833",
+      "path": "aixml/4833/UE_Hydraulic_Power_kW.xml",
+      "sha256": "bb33caa76ea0f08974f0ac141547eb46a6c5fbf7a49f3e07c21494298bb5dd05",
+      "inputs": [
+        {
+          "name": "pressure_bar",
+          "type": "double"
+        },
+        {
+          "name": "flow_lpm",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "hydraulic_kw",
+          "type": "double"
+        }
+      ],
+      "requirements": [
+        "SRS-F-019"
+      ],
+      "notes": "For positive differential pressure and actual volumetric flow; this is not shaft electrical power.",
+      "diagram_nodes": 2
+    },
+    {
+      "name": "UE_Percent_Drop",
+      "module": "measurement",
+      "pane": "4833",
+      "path": "aixml/4833/UE_Percent_Drop.xml",
+      "sha256": "9e9644441632bf06a33361d85bc67c5e47d1e78ccb260a7319de914bc7fae03a",
+      "inputs": [
+        {
+          "name": "initial",
+          "type": "double"
+        },
+        {
+          "name": "final",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "percent_drop",
+          "type": "double"
+        },
+        {
+          "name": "valid",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-008"
+      ],
+      "notes": "Invalid initial produces 0 percent and valid=false; caller must reject invalid result.",
+      "diagram_nodes": 6
+    },
+    {
+      "name": "UE_Load_Fraction",
+      "module": "vtu",
+      "pane": "4833",
+      "path": "aixml/4833/UE_Load_Fraction.xml",
+      "sha256": "1a117d98f520274fbbff6d356e30e212b86f62fa3ca9757501e51eb6802c32d0",
+      "inputs": [
+        {
+          "name": "reference_load_N",
+          "type": "double"
+        },
+        {
+          "name": "fraction",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "commanded_load_N",
+          "type": "double"
+        }
+      ],
+      "requirements": [
+        "SRS-F-008"
+      ],
+      "notes": "Used for maintenance-of-lift planning; validated fraction expected in [0,1].",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_Operating_Point_Ready",
+      "module": "profile",
+      "pane": "4833",
+      "path": "aixml/4833/UE_Operating_Point_Ready.xml",
+      "sha256": "767c6f04bdabe822eadd39a9072ab47e215e6a53fd77a5fbaafad3bdc2b17f49",
+      "inputs": [
+        {
+          "name": "pressure_achieved",
+          "type": "bool"
+        },
+        {
+          "name": "flow_achieved",
+          "type": "bool"
+        },
+        {
+          "name": "mode_valid",
+          "type": "bool"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "ready",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-019"
+      ],
+      "notes": "Not a substitute for individual controller status or stale-signal checks.",
+      "diagram_nodes": 2
+    },
+    {
+      "name": "UE_Can_Advance_Step",
+      "module": "executor",
+      "pane": "4833",
+      "path": "aixml/4833/UE_Can_Advance_Step.xml",
+      "sha256": "1b5f246bde4fdff12a31ea46a1fb5143c3eb5d691d7cb60e67c70c988ec08fba",
+      "inputs": [
+        {
+          "name": "quality_valid",
+          "type": "bool"
+        },
+        {
+          "name": "feedback_condition",
+          "type": "bool"
+        },
+        {
+          "name": "stabilized",
+          "type": "bool"
+        },
+        {
+          "name": "no_fault",
+          "type": "bool"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "advance",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-005",
+        "SRS-F-022"
+      ],
+      "notes": "Sequence scheduler supplies timestamp and timeouts independently.",
+      "diagram_nodes": 3
+    },
+    {
+      "name": "UE_Run_Id_Matches",
+      "module": "bridge",
+      "pane": "4833",
+      "path": "aixml/4833/UE_Run_Id_Matches.xml",
+      "sha256": "e5247c1025857556b535e001ae874adc84022bc5a5f406ba8868a2642a5b157e",
+      "inputs": [
+        {
+          "name": "incoming_run_id",
+          "type": "int32"
+        },
+        {
+          "name": "active_run_id",
+          "type": "int32"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "same_run",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-024"
+      ],
+      "notes": "Production run IDs should use stronger unique identities; this is only a comparison helper.",
+      "diagram_nodes": 1
+    },
+    {
+      "name": "UE_Feedback_Freshness",
+      "module": "parameter",
+      "pane": "4833",
+      "path": "aixml/4833/UE_Feedback_Freshness.xml",
+      "sha256": "08286566cfd63b0450657e3cebad7e44fa0941dc619582fa9298074cd7d23c82",
+      "inputs": [
+        {
+          "name": "now_ms",
+          "type": "double"
+        },
+        {
+          "name": "sample_ms",
+          "type": "double"
+        },
+        {
+          "name": "max_age_ms",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "age_ms",
+          "type": "double"
+        },
+        {
+          "name": "fresh",
+          "type": "bool"
+        }
+      ],
+      "requirements": [
+        "SRS-F-022"
+      ],
+      "notes": "Clocks must share one monotonic domain; sample validity is separately checked.",
+      "diagram_nodes": 4
+    },
+    {
+      "name": "UE_Cycle_Event_Duration",
+      "module": "vtu",
+      "pane": "4833",
+      "path": "aixml/4833/UE_Cycle_Event_Duration.xml",
+      "sha256": "27b9ee36e6800c4041a0ea5d1a2318b01d97ed5078482a4f33ba03d3b1520d82",
+      "inputs": [
+        {
+          "name": "end_ms",
+          "type": "double"
+        },
+        {
+          "name": "start_ms",
+          "type": "double"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "duration_ms",
+          "type": "double"
+        }
+      ],
+      "requirements": [
+        "SRS-F-006"
+      ],
+      "notes": "Used for TPL lift/lower cycle time; does not detect events.",
+      "diagram_nodes": 1
+    }
+  ]
+}

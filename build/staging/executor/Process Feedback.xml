@@ -1,0 +1,137 @@
+<VI _name="Sequence Executor.lvclass:Process Feedback.vi" description="Handles one plant sample\3A stores Last Feedback\2C writes the three numerics and the chart. If Running\3A Evaluate Step on (current step\2C Phase\2C Step Start ms\2C Dwell Start ms)\2C stores Phase/Dwell Start\2C and when done records PASS/FAIL\2C reason\2C measured\2C target\2C duration and advances (next step -> Begin Step\2C last step -> Finish Sequence). Message: Process Feedback Msg (payload Plant Feedback) - spec name Feedback Msg\2C see README Q3.">
+  <Control _name="Actor in" conIdx="11" connection="required" outputs="value:100.value" type="ref{UDClassInst}" uid="100" uid_parent="root" value=""/>
+  <!-- Typedef: Plant Feedback.ctl. Payload terminal of the message. -->
+  <Control _name="Plant Feedback" conIdx="10" connection="required" outputs="value:101.value" type="cluster{double.pressure_bar,double.flow_lpm,double.displacement_mm,double.timestamp_ms}" uid="101" uid_parent="root" value="[0,0,0,0]"/>
+  <Control _name="error in" conIdx="8" connection="required" outputs="value:102.value" type="cluster{bool.status,int32.code,string.source}" uid="102" uid_parent="root" value="[false,0,]"/>
+  <Node _name="Bundle By Name" fields="Last Feedback" inputs="Last Feedback:101.value,input cluster:100.value" outputs="output cluster:110.output cluster" uid="110" uid_parent="root"/>
+  <Node _name="Unbundle By Name" fields="Running,Sequence,Step Index,Phase,Step Start ms,Dwell Start ms,Pressure Display,Flow Display,Displacement Display,Feedback Chart" inputs="input cluster:100.value" outputs="Running:111.Running,Sequence:111.Sequence,Step Index:111.Step Index,Phase:111.Phase,Step Start ms:111.Step Start ms,Dwell Start ms:111.Dwell Start ms,Pressure Display:111.Pressure Display,Flow Display:111.Flow Display,Displacement Display:111.Displacement Display,Feedback Chart:111.Feedback Chart" uid="111" uid_parent="root"/>
+  <Node _name="Unbundle By Name" fields="pressure_bar,flow_lpm,displacement_mm,timestamp_ms" inputs="input cluster:101.value" outputs="pressure_bar:112.pressure_bar,flow_lpm:112.flow_lpm,displacement_mm:112.displacement_mm,timestamp_ms:112.timestamp_ms" uid="112" uid_parent="root"/>
+  <!-- Property Node shape copied from CounterActor.lvclass:Add.vi (write+Value on {LV.Digital}). -->
+  <Node _name="Property Node" fields="write+Value" inputs="reference:111.Pressure Display,error in (no error):102.value,Value:112.pressure_bar" outputs="error out:113.error out" type="{LV.Digital}" uid="113" uid_parent="root"/>
+  <Node _name="Property Node" fields="write+Value" inputs="reference:111.Flow Display,error in (no error):113.error out,Value:112.flow_lpm" outputs="error out:114.error out" type="{LV.Digital}" uid="114" uid_parent="root"/>
+  <Node _name="Property Node" fields="write+Value" inputs="reference:111.Displacement Display,error in (no error):114.error out,Value:112.displacement_mm" outputs="error out:115.error out" type="{LV.Digital}" uid="115" uid_parent="root"/>
+  <Constant _name="Chart point" outputs="value:117.value" type="cluster{double.Pressure,double.Flow,double.Displacement}" uid="117" uid_parent="root" value="[0,0,0]"/>
+  <Node _name="Bundle By Name" fields="Pressure,Flow,Displacement" inputs="Pressure:112.pressure_bar,Flow:112.flow_lpm,Displacement:112.displacement_mm,input cluster:117.value" outputs="output cluster:116.output cluster" uid="116" uid_parent="root"/>
+  <Node _name="To Variant" inputs="anything:116.output cluster" outputs="Variant:118.Variant" uid="118" uid_parent="root"/>
+  <!-- UNVERIFIED (behaviour): writing a chart's Value property through a generic {LV.Control} ref with a Variant holding a 3-double cluster appends one point per plot. Spelling write+Value on {LV.Control} is evidenced (write+Value (Signaling) in plugin docs). -->
+  <Node _name="Property Node" fields="write+Value" inputs="reference:111.Feedback Chart,error in (no error):115.error out,Value:118.Variant" outputs="error out:119.error out" type="{LV.Control}" uid="119" uid_parent="root"/>
+  <Structure _name="Case Structure" selectin="111.Running" uid="120" uid_parent="root">
+    <Tunnel _id="In1" inputs="value:110.output cluster" uid="1201" uid_parent="120"/>
+    <Tunnel _id="In2" inputs="value:101.value" uid="1202" uid_parent="120"/>
+    <Tunnel _id="In3" inputs="value:119.error out" uid="1203" uid_parent="120"/>
+    <Tunnel _id="In4" inputs="value:111.Sequence" uid="1204" uid_parent="120"/>
+    <Tunnel _id="In5" inputs="value:111.Step Index" uid="1205" uid_parent="120"/>
+    <Tunnel _id="In6" inputs="value:111.Phase" uid="1206" uid_parent="120"/>
+    <Tunnel _id="In7" inputs="value:111.Step Start ms" uid="1207" uid_parent="120"/>
+    <Tunnel _id="In8" inputs="value:111.Dwell Start ms" uid="1208" uid_parent="120"/>
+    <CaseFrame selector="False" selectout="" uid="121" uid_parent="120">
+      <Tunnel _id="In1" outputs="value:1211.value" uid="1211" uid_parent="121"/>
+      <Tunnel _id="In2" outputs="value:" uid="1212" uid_parent="121"/>
+      <Tunnel _id="In3" outputs="value:1213.value" uid="1213" uid_parent="121"/>
+      <Tunnel _id="In4" outputs="value:" uid="1214" uid_parent="121"/>
+      <Tunnel _id="In5" outputs="value:" uid="1215" uid_parent="121"/>
+      <Tunnel _id="In6" outputs="value:" uid="1216" uid_parent="121"/>
+      <Tunnel _id="In7" outputs="value:" uid="1217" uid_parent="121"/>
+      <Tunnel _id="In8" outputs="value:" uid="1218" uid_parent="121"/>
+      <Tunnel _id="Out1" inputs="value:1211.value" uid="1219" uid_parent="121"/>
+      <Tunnel _id="Out2" inputs="value:1213.value" uid="1220" uid_parent="121"/>
+    </CaseFrame>
+    <CaseFrame selector="True" selectout="" uid="130" uid_parent="120">
+      <Tunnel _id="In1" outputs="value:1301.value" uid="1301" uid_parent="130"/>
+      <Tunnel _id="In2" outputs="value:1302.value" uid="1302" uid_parent="130"/>
+      <Tunnel _id="In3" outputs="value:1303.value" uid="1303" uid_parent="130"/>
+      <Tunnel _id="In4" outputs="value:1304.value" uid="1304" uid_parent="130"/>
+      <Tunnel _id="In5" outputs="value:1305.value" uid="1305" uid_parent="130"/>
+      <Tunnel _id="In6" outputs="value:1306.value" uid="1306" uid_parent="130"/>
+      <Tunnel _id="In7" outputs="value:1307.value" uid="1307" uid_parent="130"/>
+      <Tunnel _id="In8" outputs="value:1308.value" uid="1308" uid_parent="130"/>
+      <Node _name="Unbundle By Name" fields="steps" inputs="input cluster:1304.value" outputs="steps:131.steps" uid="131" uid_parent="130"/>
+      <Node _name="Index Array" inputs="array:131.steps,index:1305.value" outputs="element:132.element" uid="132" uid_parent="130"/>
+      <!-- UNVERIFIED terminal labels: Evaluate Step.vi is not built yet; labels taken literally from spec 4. -->
+      <Call inputs="Step Config:132.element,Plant Feedback:1302.value,Step Phase in:1306.value,step start ms:1307.value,dwell start ms:1308.value" outputs="Step Phase out:133.Step Phase out,dwell start ms out:133.dwell start ms out,done:133.done,passed:133.passed,reason:133.reason,measured:133.measured,target:133.target" target="Evaluate Step.vi" uid="133" uid_parent="130"/>
+      <Node _name="Bundle By Name" fields="Phase,Dwell Start ms" inputs="Phase:133.Step Phase out,Dwell Start ms:133.dwell start ms out,input cluster:1301.value" outputs="output cluster:134.output cluster" uid="134" uid_parent="130"/>
+      <Node _name="Unbundle By Name" fields="timestamp_ms" inputs="input cluster:1302.value" outputs="timestamp_ms:135.timestamp_ms" uid="135" uid_parent="130"/>
+      <Node _name="Subtract" inputs="x:135.timestamp_ms,y:1307.value" outputs="x-y:136.x-y" uid="136" uid_parent="130"/>
+      <Structure _name="Case Structure" selectin="133.done" uid="140" uid_parent="130">
+        <Tunnel _id="In1" inputs="value:134.output cluster" uid="1401" uid_parent="140"/>
+        <Tunnel _id="In2" inputs="value:1303.value" uid="1402" uid_parent="140"/>
+        <Tunnel _id="In3" inputs="value:133.passed" uid="1403" uid_parent="140"/>
+        <Tunnel _id="In4" inputs="value:133.reason" uid="1404" uid_parent="140"/>
+        <Tunnel _id="In5" inputs="value:133.measured" uid="1405" uid_parent="140"/>
+        <Tunnel _id="In6" inputs="value:133.target" uid="1406" uid_parent="140"/>
+        <Tunnel _id="In7" inputs="value:136.x-y" uid="1407" uid_parent="140"/>
+        <Tunnel _id="In8" inputs="value:1305.value" uid="1408" uid_parent="140"/>
+        <Tunnel _id="In9" inputs="value:131.steps" uid="1409" uid_parent="140"/>
+        <CaseFrame selector="False" selectout="" uid="141" uid_parent="140">
+          <Tunnel _id="In1" outputs="value:1411.value" uid="1411" uid_parent="141"/>
+          <Tunnel _id="In2" outputs="value:1412.value" uid="1412" uid_parent="141"/>
+          <Tunnel _id="In3" outputs="value:" uid="1413" uid_parent="141"/>
+          <Tunnel _id="In4" outputs="value:" uid="1414" uid_parent="141"/>
+          <Tunnel _id="In5" outputs="value:" uid="1415" uid_parent="141"/>
+          <Tunnel _id="In6" outputs="value:" uid="1416" uid_parent="141"/>
+          <Tunnel _id="In7" outputs="value:" uid="1417" uid_parent="141"/>
+          <Tunnel _id="In8" outputs="value:" uid="1418" uid_parent="141"/>
+          <Tunnel _id="In9" outputs="value:" uid="1419" uid_parent="141"/>
+          <Tunnel _id="Out1" inputs="value:1411.value" uid="1420" uid_parent="141"/>
+          <Tunnel _id="Out2" inputs="value:1412.value" uid="1421" uid_parent="141"/>
+        </CaseFrame>
+        <CaseFrame selector="True" selectout="" uid="150" uid_parent="140">
+          <Tunnel _id="In1" outputs="value:1501.value" uid="1501" uid_parent="150"/>
+          <Tunnel _id="In2" outputs="value:1502.value" uid="1502" uid_parent="150"/>
+          <Tunnel _id="In3" outputs="value:1503.value" uid="1503" uid_parent="150"/>
+          <Tunnel _id="In4" outputs="value:1504.value" uid="1504" uid_parent="150"/>
+          <Tunnel _id="In5" outputs="value:1505.value" uid="1505" uid_parent="150"/>
+          <Tunnel _id="In6" outputs="value:1506.value" uid="1506" uid_parent="150"/>
+          <Tunnel _id="In7" outputs="value:1507.value" uid="1507" uid_parent="150"/>
+          <Tunnel _id="In8" outputs="value:1508.value" uid="1508" uid_parent="150"/>
+          <Tunnel _id="In9" outputs="value:1509.value" uid="1509" uid_parent="150"/>
+          <Constant outputs="value:1511.value" type="string" uid="1511" uid_parent="150" value="PASS"/>
+          <Constant outputs="value:1512.value" type="string" uid="1512" uid_parent="150" value="FAIL"/>
+          <Node _name="Select" inputs="t:1511.value,s:1503.value,f:1512.value" outputs="s? t\3Af:151.s? t\3Af" uid="151" uid_parent="150"/>
+          <Node _name="Unbundle By Name" fields="Results" inputs="input cluster:1501.value" outputs="Results:152.Results" uid="152" uid_parent="150"/>
+          <Node _name="Index Array" inputs="array:152.Results,index:1508.value" outputs="element:153.element" uid="153" uid_parent="150"/>
+          <Node _name="Bundle By Name" fields="result,reason,measured,target,duration_ms" inputs="result:151.s? t\3Af,reason:1504.value,measured:1505.value,target:1506.value,duration_ms:1507.value,input cluster:153.element" outputs="output cluster:154.output cluster" uid="154" uid_parent="150"/>
+          <Node _name="Replace Array Subset" inputs="array:152.Results,index:1508.value,new element/subarray:154.output cluster" outputs="output array:155.output array" uid="155" uid_parent="150"/>
+          <Node _name="Bundle By Name" fields="Results" inputs="Results:155.output array,input cluster:1501.value" outputs="output cluster:156.output cluster" uid="156" uid_parent="150"/>
+          <Node _name="Increment" inputs="x:1508.value" outputs="x+1:157.x+1" uid="157" uid_parent="150"/>
+          <Node _name="Array Size" inputs="array:1509.value" outputs="size(s):158.size(s)" uid="158" uid_parent="150"/>
+          <Node _name="Less?" inputs="x:157.x+1,y:158.size(s)" outputs="x &lt; y?:159.x &lt; y?" uid="159" uid_parent="150"/>
+          <Structure _name="Case Structure" selectin="159.x &lt; y?" uid="160" uid_parent="150">
+            <Tunnel _id="In1" inputs="value:156.output cluster" uid="1601" uid_parent="160"/>
+            <Tunnel _id="In2" inputs="value:1502.value" uid="1602" uid_parent="160"/>
+            <Tunnel _id="In3" inputs="value:157.x+1" uid="1603" uid_parent="160"/>
+            <CaseFrame selector="True" selectout="" uid="161" uid_parent="160">
+              <Tunnel _id="In1" outputs="value:1611.value" uid="1611" uid_parent="161"/>
+              <Tunnel _id="In2" outputs="value:1612.value" uid="1612" uid_parent="161"/>
+              <Tunnel _id="In3" outputs="value:1613.value" uid="1613" uid_parent="161"/>
+              <Node _name="Bundle By Name" fields="Step Index" inputs="Step Index:1613.value,input cluster:1611.value" outputs="output cluster:162.output cluster" uid="162" uid_parent="161"/>
+              <Call inputs="Actor in:162.output cluster,error in:1612.value" outputs="Actor out:163.Actor out,error out:163.error out" target="Sequence Executor.lvclass\3ABegin Step.vi" uid="163" uid_parent="161"/>
+              <Tunnel _id="Out1" inputs="value:163.Actor out" uid="1614" uid_parent="161"/>
+              <Tunnel _id="Out2" inputs="value:163.error out" uid="1615" uid_parent="161"/>
+            </CaseFrame>
+            <CaseFrame selector="False" selectout="" uid="164" uid_parent="160">
+              <Tunnel _id="In1" outputs="value:1641.value" uid="1641" uid_parent="164"/>
+              <Tunnel _id="In2" outputs="value:1642.value" uid="1642" uid_parent="164"/>
+              <Tunnel _id="In3" outputs="value:" uid="1643" uid_parent="164"/>
+              <Call inputs="Actor in:1641.value,error in:1642.value" outputs="Actor out:165.Actor out,error out:165.error out" target="Sequence Executor.lvclass\3AFinish Sequence.vi" uid="165" uid_parent="164"/>
+              <Tunnel _id="Out1" inputs="value:165.Actor out" uid="1644" uid_parent="164"/>
+              <Tunnel _id="Out2" inputs="value:165.error out" uid="1645" uid_parent="164"/>
+            </CaseFrame>
+            <Tunnel _id="Out1" outputs="value:1604.value" uid="1604" uid_parent="160"/>
+            <Tunnel _id="Out2" outputs="value:1605.value" uid="1605" uid_parent="160"/>
+          </Structure>
+          <Tunnel _id="Out1" inputs="value:1604.value" uid="1510" uid_parent="150"/>
+          <Tunnel _id="Out2" inputs="value:1605.value" uid="1513" uid_parent="150"/>
+        </CaseFrame>
+        <Tunnel _id="Out1" outputs="value:1430.value" uid="1430" uid_parent="140"/>
+        <Tunnel _id="Out2" outputs="value:1431.value" uid="1431" uid_parent="140"/>
+      </Structure>
+      <Tunnel _id="Out1" inputs="value:1430.value" uid="1309" uid_parent="130"/>
+      <Tunnel _id="Out2" inputs="value:1431.value" uid="1310" uid_parent="130"/>
+    </CaseFrame>
+    <Tunnel _id="Out1" outputs="value:180.value" uid="180" uid_parent="120"/>
+    <Tunnel _id="Out2" outputs="value:181.value" uid="181" uid_parent="120"/>
+  </Structure>
+  <Indicator _name="Actor out" conIdx="3" connection="required" inputs="value:180.value" type="ref{UDClassInst}" uid="200" uid_parent="root" value=""/>
+  <Indicator _name="error out" conIdx="0" connection="required" inputs="value:181.value" type="cluster{bool.status,int32.code,string.source}" uid="210" uid_parent="root" value="[false,0,]"/>
+</VI>

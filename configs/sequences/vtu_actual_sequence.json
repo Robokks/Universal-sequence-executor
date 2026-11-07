@@ -1,0 +1,152 @@
+{
+    "sequence_id":  "VTU_ACTUAL_SEQUENCE_001",
+    "description":  "5-Step Automated Hydraulic Valve Test Sequence",
+    "rig_config":  "../rigs/vtu_sim.json",
+    "steps":  [
+                  {
+                      "step_no":  1,
+                      "step_name":  "Pre-fill & Prime",
+                      "command_type":  "RAMP_PRESSURE",
+                      "setpoints":  [
+                                        {
+                                            "channel":  "Pressure",
+                                            "value":  20.0
+                                        },
+                                        {
+                                            "channel":  "Flow",
+                                            "value":  15.0
+                                        },
+                                        {
+                                            "channel":  "Displacement",
+                                            "value":  0.0
+                                        }
+                                    ],
+                      "conditions":  [
+                                         {
+                                             "channel":  "Pressure",
+                                             "target":  20.0,
+                                             "tolerance":  2.0
+                                         }
+                                     ],
+                      "dwell_time_ms":  1000,
+                      "timeout_ms":  5000,
+                      "expected_result":  "PASS"
+                  },
+                  {
+                      "step_no":  2,
+                      "step_name":  "Pressure Ramp",
+                      "command_type":  "RAMP_PRESSURE",
+                      "setpoints":  [
+                                        {
+                                            "channel":  "Pressure",
+                                            "value":  80.0
+                                        },
+                                        {
+                                            "channel":  "Flow",
+                                            "value":  30.0
+                                        },
+                                        {
+                                            "channel":  "Displacement",
+                                            "value":  1.0
+                                        }
+                                    ],
+                      "conditions":  [
+                                         {
+                                             "channel":  "Pressure",
+                                             "target":  80.0,
+                                             "tolerance":  2.0
+                                         }
+                                     ],
+                      "dwell_time_ms":  1500,
+                      "timeout_ms":  8000,
+                      "expected_result":  "PASS"
+                  },
+                  {
+                      "step_no":  3,
+                      "step_name":  "Operating Point Dwell",
+                      "command_type":  "HOLD_PRESSURE",
+                      "setpoints":  [
+                                        {
+                                            "channel":  "Pressure",
+                                            "value":  100.0
+                                        },
+                                        {
+                                            "channel":  "Flow",
+                                            "value":  45.0
+                                        },
+                                        {
+                                            "channel":  "Displacement",
+                                            "value":  2.5
+                                        }
+                                    ],
+                      "conditions":  [
+                                         {
+                                             "channel":  "Pressure",
+                                             "target":  100.0,
+                                             "tolerance":  2.0
+                                         }
+                                     ],
+                      "dwell_time_ms":  3000,
+                      "timeout_ms":  10000,
+                      "expected_result":  "PASS"
+                  },
+                  {
+                      "step_no":  4,
+                      "step_name":  "Flow Check & Stroke",
+                      "command_type":  "VERIFY_FLOW",
+                      "setpoints":  [
+                                        {
+                                            "channel":  "Pressure",
+                                            "value":  100.0
+                                        },
+                                        {
+                                            "channel":  "Flow",
+                                            "value":  60.0
+                                        },
+                                        {
+                                            "channel":  "Displacement",
+                                            "value":  2.5
+                                        }
+                                    ],
+                      "conditions":  [
+                                         {
+                                             "channel":  "Flow",
+                                             "target":  60.0,
+                                             "tolerance":  2.5
+                                         }
+                                     ],
+                      "dwell_time_ms":  2000,
+                      "timeout_ms":  8000,
+                      "expected_result":  "PASS"
+                  },
+                  {
+                      "step_no":  5,
+                      "step_name":  "Depressurize & Safe",
+                      "command_type":  "VENT_PRESSURE",
+                      "setpoints":  [
+                                        {
+                                            "channel":  "Pressure",
+                                            "value":  0.0
+                                        },
+                                        {
+                                            "channel":  "Flow",
+                                            "value":  0.0
+                                        },
+                                        {
+                                            "channel":  "Displacement",
+                                            "value":  0.0
+                                        }
+                                    ],
+                      "conditions":  [
+                                         {
+                                             "channel":  "Pressure",
+                                             "target":  0.0,
+                                             "tolerance":  1.5
+                                         }
+                                     ],
+                      "dwell_time_ms":  1000,
+                      "timeout_ms":  5000,
+                      "expected_result":  "PASS"
+                  }
+              ]
+}

@@ -1,0 +1,822 @@
+[
+  {
+    "ID": "UT-CFG-001",
+    "Group": "Config / Schema",
+    "Level": "Unit",
+    "Req": "SRS-F-023",
+    "VIs": "Config_Validate_Target.vi",
+    "Setup": "Valid simple rig and test package",
+    "Stimulus": "Validate package",
+    "Expected": "PASS and compiled plan contains correct root IDs."
+  },
+  {
+    "ID": "UT-CFG-002",
+    "Group": "Config / Schema",
+    "Level": "Unit",
+    "Req": "SRS-F-023",
+    "VIs": "Config_Decode.vi",
+    "Setup": "Package with unsupported major schema",
+    "Stimulus": "Decode",
+    "Expected": "Explicit version mismatch, no partially activated config."
+  },
+  {
+    "ID": "UT-CFG-003",
+    "Group": "Config / Schema",
+    "Level": "Unit",
+    "Req": "SRS-F-023",
+    "VIs": "Config_Validate_Target.vi",
+    "Setup": "Temperature constant compared to pressure signal",
+    "Stimulus": "Validate condition",
+    "Expected": "Reject incompatible engineering dimensions."
+  },
+  {
+    "ID": "UT-CFG-004",
+    "Group": "Config / Schema",
+    "Level": "Unit",
+    "Req": "SRS-F-023",
+    "VIs": "Config_Validate_Target.vi",
+    "Setup": "Test omits shutdown procedure",
+    "Stimulus": "Validate test",
+    "Expected": "Reject and identify TestID and missing sequence."
+  },
+  {
+    "ID": "UT-CFG-005",
+    "Group": "Config / Schema",
+    "Level": "Unit",
+    "Req": "SRS-F-023",
+    "VIs": "Config_Compile_Plan.vi",
+    "Setup": "Group contains circular dependency",
+    "Stimulus": "Compile plan",
+    "Expected": "Rejected as unreachable/deadlocked graph."
+  },
+  {
+    "ID": "UT-CFG-006",
+    "Group": "Config / Schema",
+    "Level": "Unit",
+    "Req": "SRS-F-023",
+    "VIs": "Config_Resolve_Plugins.vi",
+    "Setup": "Plugin version not deployed on target",
+    "Stimulus": "Validate manifest",
+    "Expected": "Reject before Ready state."
+  },
+  {
+    "ID": "UT-CFG-007",
+    "Group": "Config / Schema",
+    "Level": "Integration",
+    "Req": "SRS-Q-003",
+    "VIs": "Config_Activate_Snapshot.vi",
+    "Setup": "Published revision R1 active during run",
+    "Stimulus": "Publish R2",
+    "Expected": "R1 stays active and run metadata unchanged until new authorized run."
+  },
+  {
+    "ID": "UT-CFG-008",
+    "Group": "Config / Schema",
+    "Level": "Unit",
+    "Req": "SRS-F-019",
+    "VIs": "Profile_Expand_Points.vi",
+    "Setup": "Combined pressure/flow operating-point table",
+    "Stimulus": "Expand points",
+    "Expected": "Exact configured point sequence and controller modes preserved."
+  },
+  {
+    "ID": "UT-CFG-009",
+    "Group": "Config / Schema",
+    "Level": "Unit",
+    "Req": "SRS-F-019",
+    "VIs": "Profile_Expand_Points.vi",
+    "Setup": "Point count exceeds configured maximum",
+    "Stimulus": "Expand",
+    "Expected": "Explicit capacity error, no unbounded allocation."
+  },
+  {
+    "ID": "UT-CFG-010",
+    "Group": "Config / Schema",
+    "Level": "Unit",
+    "Req": "SRS-F-023",
+    "VIs": "Config_File_Read_Block.vi",
+    "Setup": "Truncated package bytes",
+    "Stimulus": "Load target",
+    "Expected": "Read/decode fails closed, no Ready state."
+  },
+  {
+    "ID": "UT-CON-001",
+    "Group": "Parameter / Conditions",
+    "Level": "Unit",
+    "Req": "SRS-F-005",
+    "VIs": "Condition_Compare.vi",
+    "Setup": "Pressure PV 100 bar, target 100, tolerance 2",
+    "Stimulus": "In-range compare",
+    "Expected": "TRUE."
+  },
+  {
+    "ID": "UT-CON-002",
+    "Group": "Parameter / Conditions",
+    "Level": "Unit",
+    "Req": "SRS-F-005",
+    "VIs": "Condition_Compare.vi",
+    "Setup": "Pressure PV 104 bar, target 100, tolerance 2",
+    "Stimulus": "In-range compare",
+    "Expected": "FALSE."
+  },
+  {
+    "ID": "UT-CON-003",
+    "Group": "Parameter / Conditions",
+    "Level": "Unit",
+    "Req": "SRS-F-022",
+    "VIs": "Condition_Check_Quality.vi",
+    "Setup": "Pressure sample age exceeds freshness threshold",
+    "Stimulus": "Evaluate",
+    "Expected": "UNKNOWN with stale reason, cannot pass."
+  },
+  {
+    "ID": "UT-CON-004",
+    "Group": "Parameter / Conditions",
+    "Level": "Unit",
+    "Req": "SRS-F-022",
+    "VIs": "Condition_Compare.vi",
+    "Setup": "Sensor has invalid quality but raw numeric 100",
+    "Stimulus": "Compare",
+    "Expected": "UNKNOWN, not TRUE."
+  },
+  {
+    "ID": "UT-CON-005",
+    "Group": "Parameter / Conditions",
+    "Level": "Unit",
+    "Req": "SRS-F-005",
+    "VIs": "Condition_Eval_Logic.vi",
+    "Setup": "AND(FALSE, UNKNOWN)",
+    "Stimulus": "Evaluate",
+    "Expected": "FALSE."
+  },
+  {
+    "ID": "UT-CON-006",
+    "Group": "Parameter / Conditions",
+    "Level": "Unit",
+    "Req": "SRS-F-005",
+    "VIs": "Condition_Eval_Logic.vi",
+    "Setup": "OR(TRUE, UNKNOWN)",
+    "Stimulus": "Evaluate",
+    "Expected": "TRUE."
+  },
+  {
+    "ID": "UT-CON-007",
+    "Group": "Parameter / Conditions",
+    "Level": "Unit",
+    "Req": "SRS-F-005",
+    "VIs": "Condition_Eval_Logic.vi",
+    "Setup": "AND(TRUE, UNKNOWN)",
+    "Stimulus": "Evaluate",
+    "Expected": "UNKNOWN."
+  },
+  {
+    "ID": "UT-CON-008",
+    "Group": "Parameter / Conditions",
+    "Level": "Unit",
+    "Req": "SRS-F-005",
+    "VIs": "Condition_Compare.vi",
+    "Setup": "Float 1.0 compared with Boolean TRUE without conversion",
+    "Stimulus": "Compare",
+    "Expected": "Invalid type / UNKNOWN."
+  },
+  {
+    "ID": "UT-CON-009",
+    "Group": "Parameter / Conditions",
+    "Level": "Unit",
+    "Req": "SRS-F-005",
+    "VIs": "Condition_Compare.vi",
+    "Setup": "Configured in-range boundary exactly equal to min/max",
+    "Stimulus": "Compare",
+    "Expected": "Boundary inclusion matches specified comparator contract."
+  },
+  {
+    "ID": "UT-CON-010",
+    "Group": "Parameter / Conditions",
+    "Level": "Unit",
+    "Req": "SRS-F-006",
+    "VIs": "Condition_Stabilize.vi",
+    "Setup": "Feedback alternates TRUE/FALSE during 2 second stabilization",
+    "Stimulus": "Advance virtual clock",
+    "Expected": "Stabilization never completes until 2 continuous true seconds."
+  },
+  {
+    "ID": "UT-CON-011",
+    "Group": "Parameter / Conditions",
+    "Level": "Unit",
+    "Req": "SRS-F-022",
+    "VIs": "Registry_Update.vi",
+    "Setup": "Older sensor sequence arrives after newer reading",
+    "Stimulus": "Update",
+    "Expected": "Old sample rejected and newest sample retained."
+  },
+  {
+    "ID": "UT-CON-012",
+    "Group": "Parameter / Conditions",
+    "Level": "Unit",
+    "Req": "SRS-F-022",
+    "VIs": "Registry_Get_Snapshot.vi",
+    "Setup": "Snapshot contains fresh flow and stale pressure",
+    "Stimulus": "Read snapshot and evaluate AND",
+    "Expected": "Condition not satisfied; pressure quality preserved."
+  },
+  {
+    "ID": "UT-SEQ-001",
+    "Group": "Timing / Execution",
+    "Level": "Unit",
+    "Req": "SRS-F-006",
+    "VIs": "Timer_Create.vi; Timer_Check.vi",
+    "Setup": "Virtual clock, duration 1000 ms",
+    "Stimulus": "Advance to 999 then 1000 ms",
+    "Expected": "Pending then elapsed without sleeps."
+  },
+  {
+    "ID": "UT-SEQ-002",
+    "Group": "Timing / Execution",
+    "Level": "Unit",
+    "Req": "SRS-F-006",
+    "VIs": "Step_Tick.vi",
+    "Setup": "Command issue phase already sent command",
+    "Stimulus": "Tick 3 times",
+    "Expected": "Command emitted exactly once per phase entry."
+  },
+  {
+    "ID": "UT-SEQ-003",
+    "Group": "Timing / Execution",
+    "Level": "Integration",
+    "Req": "SRS-F-006",
+    "VIs": "Step_Tick.vi; Condition_Stabilize.vi",
+    "Setup": "Pressure enters range 4 seconds after command, stable time 2 seconds",
+    "Stimulus": "Advance virtual clock",
+    "Expected": "Dwell begins only after 2 continuous stable seconds."
+  },
+  {
+    "ID": "UT-SEQ-004",
+    "Group": "Timing / Execution",
+    "Level": "Unit",
+    "Req": "SRS-F-006",
+    "VIs": "Step_On_Timeout.vi",
+    "Setup": "Retry limit 2, repeated apply timeout",
+    "Stimulus": "Generate 3 timeouts",
+    "Expected": "2 retries and final configured failure action; no infinite retry."
+  },
+  {
+    "ID": "UT-SEQ-005",
+    "Group": "Timing / Execution",
+    "Level": "Unit",
+    "Req": "SRS-F-003",
+    "VIs": "Scheduler_Find_Ready.vi",
+    "Setup": "A\u2192B dependency; A incomplete",
+    "Stimulus": "Tick scheduler",
+    "Expected": "B not started."
+  },
+  {
+    "ID": "UT-SEQ-006",
+    "Group": "Timing / Execution",
+    "Level": "Unit",
+    "Req": "SRS-F-003",
+    "VIs": "Scheduler_Join_Branches.vi",
+    "Setup": "Wait All with one running and one complete",
+    "Stimulus": "Evaluate join",
+    "Expected": "Group remains pending."
+  },
+  {
+    "ID": "UT-SEQ-007",
+    "Group": "Timing / Execution",
+    "Level": "Unit",
+    "Req": "SRS-F-003",
+    "VIs": "Scheduler_Join_Branches.vi",
+    "Setup": "First Complete with other branch active",
+    "Stimulus": "Complete winning branch",
+    "Expected": "Other branch receives safe cancellation; no orphan."
+  },
+  {
+    "ID": "UT-SEQ-008",
+    "Group": "Timing / Execution",
+    "Level": "Unit",
+    "Req": "SRS-F-010",
+    "VIs": "Cycle_Begin.vi; Cycle_Finish.vi",
+    "Setup": "Requested 5 repeats, third attempt interrupted",
+    "Stimulus": "Process cycles",
+    "Expected": "Completed count remains 2 while attempt count reflects 3."
+  },
+  {
+    "ID": "UT-SEQ-009",
+    "Group": "Timing / Execution",
+    "Level": "Unit",
+    "Req": "SRS-F-010",
+    "VIs": "Cycle_Finish.vi",
+    "Setup": "Cycle 4 fails then retry succeeds",
+    "Stimulus": "Process both attempts",
+    "Expected": "Exactly one completed cycle 4, two attempt IDs."
+  },
+  {
+    "ID": "UT-SEQ-010",
+    "Group": "Timing / Execution",
+    "Level": "Integration",
+    "Req": "SRS-F-004",
+    "VIs": "Bridge_Dispatch.vi; Step_Tick.vi",
+    "Setup": "Command group VFD + PRV",
+    "Stimulus": "Issue commands",
+    "Expected": "Each accepted/applied tracked by own command ID; group not assumed atomic."
+  },
+  {
+    "ID": "UT-SEQ-011",
+    "Group": "Timing / Execution",
+    "Level": "Unit",
+    "Req": "SRS-F-007",
+    "VIs": "Popup_Check_ACK.vi",
+    "Setup": "Old RequestID acknowledged during new popup",
+    "Stimulus": "Submit old ACK",
+    "Expected": "New popup remains pending."
+  },
+  {
+    "ID": "UT-SEQ-012",
+    "Group": "Timing / Execution",
+    "Level": "Unit",
+    "Req": "SRS-F-007",
+    "VIs": "Popup_Check_ACK.vi",
+    "Setup": "Requires operator ACK AND digital input",
+    "Stimulus": "Submit operator ACK only",
+    "Expected": "Pending until valid digital feedback."
+  },
+  {
+    "ID": "UT-SEQ-013",
+    "Group": "Timing / Execution",
+    "Level": "Unit",
+    "Req": "SRS-F-007",
+    "VIs": "Popup_Check_ACK.vi",
+    "Setup": "Configured 10 second popup timeout",
+    "Stimulus": "Advance virtual clock past timeout",
+    "Expected": "Target emits configured timeout event, not indefinite wait."
+  },
+  {
+    "ID": "UT-SEQ-014",
+    "Group": "Timing / Execution",
+    "Level": "Unit",
+    "Req": "SRS-F-010",
+    "VIs": "Scheduler_Advance.vi",
+    "Setup": "Duplicate step-completed event for same instance",
+    "Stimulus": "Apply both",
+    "Expected": "No double-advance or duplicate cycle count."
+  },
+  {
+    "ID": "UT-BRG-001",
+    "Group": "Bridge / Concurrency",
+    "Level": "Unit",
+    "Req": "SRS-F-021",
+    "VIs": "Bridge_Acquire_Lease.vi",
+    "Setup": "Two auto sequences request exclusive Servo",
+    "Stimulus": "Submit simultaneous claims",
+    "Expected": "Exactly one owner; other BUSY/rejected."
+  },
+  {
+    "ID": "UT-BRG-002",
+    "Group": "Bridge / Concurrency",
+    "Level": "Unit",
+    "Req": "SRS-F-021",
+    "VIs": "Bridge_Validate_Command.vi",
+    "Setup": "Wrong run token with physically valid setpoint",
+    "Stimulus": "Issue command",
+    "Expected": "Rejected; adapter receives nothing."
+  },
+  {
+    "ID": "UT-BRG-003",
+    "Group": "Bridge / Concurrency",
+    "Level": "Unit",
+    "Req": "SRS-F-021",
+    "VIs": "Bridge_Validate_Command.vi",
+    "Setup": "Stale sequence number after accepted latest command",
+    "Stimulus": "Send delayed old command",
+    "Expected": "Rejected."
+  },
+  {
+    "ID": "UT-BRG-004",
+    "Group": "Bridge / Concurrency",
+    "Level": "Unit",
+    "Req": "SRS-F-021",
+    "VIs": "Bridge_Validate_Command.vi",
+    "Setup": "Pressure target outside approved envelope",
+    "Stimulus": "Send command",
+    "Expected": "Rejected with limit error."
+  },
+  {
+    "ID": "UT-BRG-005",
+    "Group": "Bridge / Concurrency",
+    "Level": "Unit",
+    "Req": "SRS-F-012",
+    "VIs": "Bridge_Loop.vi",
+    "Setup": "Auto run active; Host sends Manual PRV command",
+    "Stimulus": "Send manual request",
+    "Expected": "Rejected; active command unchanged."
+  },
+  {
+    "ID": "UT-BRG-006",
+    "Group": "Bridge / Concurrency",
+    "Level": "Integration",
+    "Req": "SRS-F-015",
+    "VIs": "Bridge_Preempt.vi",
+    "Setup": "Two parallel servo+capture branches active",
+    "Stimulus": "Inject global fault",
+    "Expected": "Normal leases invalidated, all branches interrupted."
+  },
+  {
+    "ID": "UT-BRG-007",
+    "Group": "Bridge / Concurrency",
+    "Level": "Unit",
+    "Req": "SRS-F-021",
+    "VIs": "Bridge_Process_ACK.vi",
+    "Setup": "Controller returns APPLIED, feedback remains far from SP",
+    "Stimulus": "Process ACK",
+    "Expected": "APPLIED true but ACHIEVED remains false."
+  },
+  {
+    "ID": "UT-BRG-008",
+    "Group": "Bridge / Concurrency",
+    "Level": "Unit",
+    "Req": "SRS-F-021",
+    "VIs": "Bridge_Release_Lease.vi",
+    "Setup": "Wrong owner tries to release VFD",
+    "Stimulus": "Request release",
+    "Expected": "Rejected; current owner preserved."
+  },
+  {
+    "ID": "UT-BRG-009",
+    "Group": "Bridge / Concurrency",
+    "Level": "Unit",
+    "Req": "SRS-F-021",
+    "VIs": "Bridge_Acquire_Lease.vi",
+    "Setup": "Steps request VFD+PRV in opposite orders",
+    "Stimulus": "Attempt resource claims",
+    "Expected": "Fixed ordering avoids circular deadlock, one request waits/rejects boundedly."
+  },
+  {
+    "ID": "UT-BRG-010",
+    "Group": "Bridge / Concurrency",
+    "Level": "Integration",
+    "Req": "SRS-F-015",
+    "VIs": "Bridge_Preempt.vi",
+    "Setup": "Delayed command from old run arrives after fault reset/new run",
+    "Stimulus": "Send delayed command",
+    "Expected": "Old generation token rejected."
+  },
+  {
+    "ID": "UT-SUP-001",
+    "Group": "Supervisor / Plugin / Transport",
+    "Level": "Unit",
+    "Req": "SRS-F-013",
+    "VIs": "Supervisor_Set_Mode.vi",
+    "Setup": "Active Running state",
+    "Stimulus": "Request Auto\u2192Manual",
+    "Expected": "Rejected until full stop and safe ownership release."
+  },
+  {
+    "ID": "UT-SUP-002",
+    "Group": "Supervisor / Plugin / Transport",
+    "Level": "Unit",
+    "Req": "SRS-F-015",
+    "VIs": "Supervisor_Handle_Event.vi",
+    "Setup": "Valid Running test with two branches",
+    "Stimulus": "Declare equipment fault",
+    "Expected": "Faulting state and all normal branches cancellation requested."
+  },
+  {
+    "ID": "UT-SUP-003",
+    "Group": "Supervisor / Plugin / Transport",
+    "Level": "Integration",
+    "Req": "SRS-F-014",
+    "VIs": "RT_Watchdog.vi; Transport_Heartbeat.vi",
+    "Setup": "Active VTU run, heartbeat present",
+    "Stimulus": "Drop Host heartbeat",
+    "Expected": "RT local controlled shutdown/protective fallback request occurs within approved limit."
+  },
+  {
+    "ID": "UT-SUP-004",
+    "Group": "Supervisor / Plugin / Transport",
+    "Level": "Integration",
+    "Req": "SRS-F-016",
+    "VIs": "Supervisor_Fault_Procedure.vi",
+    "Setup": "Configured fault sequence tries unsafe sensor-driven action",
+    "Stimulus": "Inject required sensor failure",
+    "Expected": "Fault sequence skipped/rejected; fallback used."
+  },
+  {
+    "ID": "UT-SUP-005",
+    "Group": "Supervisor / Plugin / Transport",
+    "Level": "Unit",
+    "Req": "SRS-F-016",
+    "VIs": "Supervisor_Shutdown_Procedure.vi",
+    "Setup": "Selected Test A and Test B have different shutdown IDs",
+    "Stimulus": "Stop Test A",
+    "Expected": "Only Test A approved shutdown selected."
+  },
+  {
+    "ID": "UT-SUP-006",
+    "Group": "Supervisor / Plugin / Transport",
+    "Level": "Unit",
+    "Req": "SRS-F-025",
+    "VIs": "Plugin_Validate_Manifest.vi",
+    "Setup": "Plugin requests PRV and unauthorized Servo resource",
+    "Stimulus": "Validate",
+    "Expected": "Unauthorized plugin rejected."
+  },
+  {
+    "ID": "UT-SUP-007",
+    "Group": "Supervisor / Plugin / Transport",
+    "Level": "Integration",
+    "Req": "SRS-F-025",
+    "VIs": "Plugin_Poll.vi; Plugin_Cancel.vi",
+    "Setup": "Plugin worker stops heartbeat while run active",
+    "Stimulus": "Advance watchdog clock",
+    "Expected": "Unresponsive detected, leases revoked, supervisor responsive."
+  },
+  {
+    "ID": "UT-SUP-008",
+    "Group": "Supervisor / Plugin / Transport",
+    "Level": "Integration",
+    "Req": "SRS-F-011",
+    "VIs": "Plugin_Start.vi; Plugin_Collect_Result.vi",
+    "Setup": "Valid operation plugin with defined output",
+    "Stimulus": "Start and complete",
+    "Expected": "Typed result associated with correct StepInstanceID."
+  },
+  {
+    "ID": "UT-SUP-009",
+    "Group": "Supervisor / Plugin / Transport",
+    "Level": "Integration",
+    "Req": "SRS-F-011",
+    "VIs": "Plugin_Manager.vi",
+    "Setup": "Full test plugin produces measurement and returns completion",
+    "Stimulus": "Execute test",
+    "Expected": "Supervisor maintains global state and own fault/shutdown procedures."
+  },
+  {
+    "ID": "UT-SUP-010",
+    "Group": "Supervisor / Plugin / Transport",
+    "Level": "Unit",
+    "Req": "SRS-F-025",
+    "VIs": "Plugin_Collect_Result.vi",
+    "Setup": "Plugin sends string instead of expected real result",
+    "Stimulus": "Validate payload",
+    "Expected": "Mark failed, do not coerce to PASS."
+  },
+  {
+    "ID": "UT-SUP-011",
+    "Group": "Supervisor / Plugin / Transport",
+    "Level": "Integration",
+    "Req": "SRS-F-014",
+    "VIs": "Transport_Reconnect.vi",
+    "Setup": "Host lost during test, then reconnects",
+    "Stimulus": "Reconnect link",
+    "Expected": "Display interrupted/faulted run, never automatically resume."
+  },
+  {
+    "ID": "UT-SUP-012",
+    "Group": "Supervisor / Plugin / Transport",
+    "Level": "Unit",
+    "Req": "SRS-F-015",
+    "VIs": "Supervisor_Enter_Fault.vi",
+    "Setup": "Fault detected while another sequence in Stopping state",
+    "Stimulus": "Signal fault",
+    "Expected": "Fault preempts stopping; protective response stays latched."
+  },
+  {
+    "ID": "UT-SUP-013",
+    "Group": "Supervisor / Plugin / Transport",
+    "Level": "Unit",
+    "Req": "SRS-F-015",
+    "VIs": "Supervisor_Handle_Event.vi",
+    "Setup": "Start requested while Faulting",
+    "Stimulus": "Submit Start",
+    "Expected": "Rejected; no normal command output."
+  },
+  {
+    "ID": "UT-DAT-001",
+    "Group": "Capture / Recovery",
+    "Level": "Unit",
+    "Req": "SRS-F-008",
+    "VIs": "Capture_Process_Sample.vi",
+    "Setup": "Samples 2,4,6,8 of one real parameter",
+    "Stimulus": "Capture/finalize",
+    "Expected": "Min 2, max 8, mean 5, valid count 4."
+  },
+  {
+    "ID": "UT-DAT-002",
+    "Group": "Capture / Recovery",
+    "Level": "Unit",
+    "Req": "SRS-F-008",
+    "VIs": "Capture_Finalize.vi",
+    "Setup": "Capture with zero valid samples",
+    "Stimulus": "Finalize",
+    "Expected": "INCOMPLETE, no division-by-zero or PASS."
+  },
+  {
+    "ID": "UT-DAT-003",
+    "Group": "Capture / Recovery",
+    "Level": "Unit",
+    "Req": "SRS-F-008",
+    "VIs": "Capture_Abort.vi",
+    "Setup": "Active session with 20 partial samples",
+    "Stimulus": "Fault during capture",
+    "Expected": "Partial data preserved with INCOMPLETE status."
+  },
+  {
+    "ID": "UT-DAT-004",
+    "Group": "Capture / Recovery",
+    "Level": "Integration",
+    "Req": "SRS-F-009",
+    "VIs": "Event_Log_Loop.vi; Capture_Loop.vi",
+    "Setup": "Measurement captured and fault logged",
+    "Stimulus": "Inspect files",
+    "Expected": "Event log and report capture are independent, linked by RunID."
+  },
+  {
+    "ID": "UT-DAT-005",
+    "Group": "Capture / Recovery",
+    "Level": "Unit",
+    "Req": "SRS-F-024",
+    "VIs": "Event_Log_Append.vi",
+    "Setup": "Two events same RunID and different cycle IDs",
+    "Stimulus": "Append",
+    "Expected": "Distinct cycle and ordered event identity retained."
+  },
+  {
+    "ID": "UT-DAT-006",
+    "Group": "Capture / Recovery",
+    "Level": "Integration",
+    "Req": "SRS-Q-004",
+    "VIs": "Capture_Process_Sample.vi",
+    "Setup": "Inject sample buffer overflow",
+    "Stimulus": "Continue stream",
+    "Expected": "Overflow detected and result quality incomplete; control loop not blocked."
+  },
+  {
+    "ID": "UT-DAT-007",
+    "Group": "Capture / Recovery",
+    "Level": "Unit",
+    "Req": "SRS-Q-005",
+    "VIs": "Checkpoint_Read.vi",
+    "Setup": "Checkpoint for completed cycle 17, power loss mid-cycle 18",
+    "Stimulus": "Load",
+    "Expected": "Run marked interrupted with last committed 17; no auto motion."
+  },
+  {
+    "ID": "UT-DAT-008",
+    "Group": "Capture / Recovery",
+    "Level": "Unit",
+    "Req": "SRS-F-024",
+    "VIs": "Report_Export.vi",
+    "Setup": "Mixed pass, fail, incomplete results",
+    "Stimulus": "Export report",
+    "Expected": "Each status retained with configuration version and timestamp."
+  },
+  {
+    "ID": "UT-DAT-009",
+    "Group": "Capture / Recovery",
+    "Level": "Integration",
+    "Req": "SRS-Q-004",
+    "VIs": "Event_Log_Loop.vi",
+    "Setup": "Simulated disk write error",
+    "Stimulus": "Write events",
+    "Expected": "Failure surfaced and run response follows approved policy, RT remains responsive."
+  },
+  {
+    "ID": "VTU-001",
+    "Group": "VTU / Acceptance",
+    "Level": "Simulation/HIL",
+    "Req": "SRS-F-019",
+    "VIs": "RT_Flow_PID_Loop.vi; Profile_Expand_Points.vi",
+    "Setup": "Approved pressure-only profile, simulated validated controller",
+    "Stimulus": "Run operating points",
+    "Expected": "Correct pressure steps/feedback and capture; flow controller mode preserved as configured."
+  },
+  {
+    "ID": "VTU-002",
+    "Group": "VTU / Acceptance",
+    "Level": "Simulation/HIL",
+    "Req": "SRS-F-019",
+    "VIs": "RT_Pressure_PID_Loop.vi; Profile_Expand_Points.vi",
+    "Setup": "Approved flow-only profile",
+    "Stimulus": "Run operating points",
+    "Expected": "Correct flow targets and pressure protection constraints obeyed."
+  },
+  {
+    "ID": "VTU-003",
+    "Group": "VTU / Acceptance",
+    "Level": "Simulation/HIL",
+    "Req": "SRS-F-019",
+    "VIs": "RT_Flow_PID_Loop.vi; RT_Pressure_PID_Loop.vi",
+    "Setup": "Combined sweep, realistic plant interaction",
+    "Stimulus": "Run points",
+    "Expected": "Both feedback gates required, or bounded failure; no false achieved on one PV alone."
+  },
+  {
+    "ID": "VTU-004",
+    "Group": "VTU / Acceptance",
+    "Level": "Simulation/HIL",
+    "Req": "SRS-F-019",
+    "VIs": "RT_Flow_PID_Loop.vi",
+    "Setup": "Relief pressure point with flow near zero and controller-mode switch",
+    "Stimulus": "Run",
+    "Expected": "No uncontrolled integrator demand; mode change explicitly recorded."
+  },
+  {
+    "ID": "VTU-005",
+    "Group": "VTU / Acceptance",
+    "Level": "Simulation/HIL",
+    "Req": "SRS-F-020",
+    "VIs": "RT_Servo_Controller_Loop.vi; VTU_Sensitivity_Calc.vi",
+    "Setup": "Relative PC lever 2 mm EXAMPLE and independent hitch feedback",
+    "Stimulus": "Run sensitivity cycle",
+    "Expected": "Commanded lever displacement and observed hitch delta separately captured."
+  },
+  {
+    "ID": "VTU-006",
+    "Group": "VTU / Acceptance",
+    "Level": "Simulation/HIL",
+    "Req": "SRS-F-020",
+    "VIs": "RT_Servo_Controller_Loop.vi",
+    "Setup": "Servo encoder reaches command but hitch unchanged",
+    "Stimulus": "Run",
+    "Expected": "Hitch-achievement criterion remains false; timeout policy activated."
+  },
+  {
+    "ID": "VTU-007",
+    "Group": "VTU / Acceptance",
+    "Level": "Simulation/HIL",
+    "Req": "SRS-F-008",
+    "VIs": "Capture_Loop.vi; Result_Resolve_Reference.vi",
+    "Setup": "Prior measured lift capacity and 30 minute / 5 minute example intervals",
+    "Stimulus": "Simulate hold",
+    "Expected": "Initial, periodic and final height stored; acceptance rule pending approved workbook interpretation."
+  },
+  {
+    "ID": "VTU-008",
+    "Group": "VTU / Acceptance",
+    "Level": "Simulation/HIL",
+    "Req": "SRS-F-010",
+    "VIs": "Cycle_Begin.vi; Checkpoint_Write.vi",
+    "Setup": "Endurance 100 cycles, interrupt in cycle 44",
+    "Stimulus": "Run, interrupt, load checkpoint",
+    "Expected": "Complete through 43 only; cycle 44 incomplete; no automatic restart."
+  },
+  {
+    "ID": "VTU-009",
+    "Group": "VTU / Acceptance",
+    "Level": "HIL",
+    "Req": "SRS-Q-002",
+    "VIs": "RT_Fault_Checker.vi; RT_Protective_Response.vi",
+    "Setup": "Commissioned pressure rig and approved safety test plan",
+    "Stimulus": "Simulate/induce validated pressure sensor fault",
+    "Expected": "Independent protection and latched fault meet hardware-owner criteria."
+  },
+  {
+    "ID": "VTU-010",
+    "Group": "VTU / Acceptance",
+    "Level": "Simulation/HIL",
+    "Req": "SRS-F-007",
+    "VIs": "Host_Popup_Manager.vi",
+    "Setup": "Frame capacity fixture variant requires operator ACK",
+    "Stimulus": "No ACK then ACK proper ID",
+    "Expected": "No movement until valid ACK and required interlocks."
+  },
+  {
+    "ID": "VTU-011",
+    "Group": "VTU / Acceptance",
+    "Level": "Simulation/HIL",
+    "Req": "SRS-F-006",
+    "VIs": "Timer_Check.vi; Result_Calculate.vi",
+    "Setup": "TPL lift/lower timestamps from feedback edges",
+    "Stimulus": "Execute 5 cycles",
+    "Expected": "Cycle times calculated from feedback events; no dependence on UI refresh rate."
+  },
+  {
+    "ID": "VTU-012",
+    "Group": "VTU / Acceptance",
+    "Level": "Simulation/HIL",
+    "Req": "SRS-F-008",
+    "VIs": "Capture_Finalize.vi",
+    "Setup": "TPL angle sensor invalid during capture",
+    "Stimulus": "Run angle test",
+    "Expected": "INCOMPLETE or configured fault; no fabricated angle."
+  },
+  {
+    "ID": "VTU-013",
+    "Group": "VTU / Acceptance",
+    "Level": "Simulation/HIL",
+    "Req": "SRS-F-015",
+    "VIs": "RT_Fault_Checker.vi",
+    "Setup": "Servo stalled during Hitch Capacity test",
+    "Stimulus": "Run and inject stall",
+    "Expected": "RT detection and required global cancellation within approved time budget."
+  },
+  {
+    "ID": "VTU-014",
+    "Group": "VTU / Acceptance",
+    "Level": "Simulation/HIL",
+    "Req": "SRS-F-016",
+    "VIs": "Supervisor_Shutdown_Procedure.vi",
+    "Setup": "Hydraulic Pump and Endurance tests have distinct shutdown actions",
+    "Stimulus": "Stop each test separately",
+    "Expected": "Correct test-specific shutdown selected without cross-test mixing."
+  }
+]

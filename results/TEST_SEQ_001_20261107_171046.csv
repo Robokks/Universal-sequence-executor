@@ -1,0 +1,5 @@
+step_no,step_name,result,reason,measured,target,duration_ms
+1,Pre-fill,PASS,,20.000,20.000,1500
+2,Ramp,PASS,,80.000,80.000,2000
+rig_id,VTU_SIM
+OVERALL,PASS

@@ -6,3 +6,4 @@ __pycache__/
 outputs/
 mcp_temp/
 .env
+tools/agent_bridge_log.jsonl

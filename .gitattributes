@@ -1,0 +1,8 @@
+*.vi binary
+*.vim binary
+*.ctl binary
+*.lvclass binary
+*.lvlib binary
+*.lvproj binary
+*.aliases binary
+*.pdf binary

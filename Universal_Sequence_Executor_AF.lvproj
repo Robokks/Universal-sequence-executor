@@ -57,7 +57,9 @@
 		<Item Name="Sequence Executor.lvclass" Type="LVClass" URL="../src/Executor/Sequence Executor.lvclass"/>
 		<Item Name="Test Select Monitored Signal A.vi" Type="VI" URL="../tests/caraya/Test Select Monitored Signal A.vi"/>
 		<Item Name="Test_Sim_First_Order_Step_Caraya.vi" Type="VI" URL="../tests/caraya/Test_Sim_First_Order_Step_Caraya.vi"/>
+		<Item Name="Test_Logic_Caraya.vi" Type="VI" URL="../tests/caraya/Test_Logic_Caraya.vi"/>
 		<Item Name="Test_Sim_First_Order_Step_Caraya.vi" Type="VI" URL="../tests/caraya/Test_Sim_First_Order_Step_Caraya.vi"/>
+		<Item Name="Test_Logic_Caraya.vi" Type="VI" URL="../tests/caraya/Test_Logic_Caraya.vi"/>
 		<Item Name="Dependencies" Type="Dependencies"/>
 		<Item Name="Build Specifications" Type="Build"/>
 	</Item>

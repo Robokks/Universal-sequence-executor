@@ -104,3 +104,13 @@ These are no longer in `src/`, but they prove the techniques work in this enviro
 1. Strict typedefs instead of plain?
 2. Real VTU acceptance values (setpoints, tolerances, timeouts) must come from the approved workbook (`vtu.pdf` / test owner); the JSON values are examples.
 3. RT QMH port: cRIO model, I/O, timing budget, Host↔RT transport — not started.
+
+## 9. AIXML / class-method recipe that works (proved on Load Sequence, 2026-11-08)
+
+1. **Never Bundle/Unbundle on a class wire.** Create accessors with `lvai_create_accessors` (pass explicit `fromField`; automatic resume miscounts when the class has methods) and call them.
+2. **`Bundle By Name`: list `input cluster` LAST in `inputs`**, after the field terminals, or it builds an empty cluster.
+3. Project VIs and class members: author against `lvai_placeholder_subvi` stubs, then `lvai_swap_subvis` (one extra pass per repeated stub). Class wires are `type="path"` stand-ins.
+4. Class cast with no class constant: an off-pane control retyped through `classTerminals` `{"terminal":"Rig type","class":"...Rig.lvclass"}`, wired to To More Specific Class `target class`.
+5. `Launch Nested Actor` needs `Caller Actor in`, and `Caller Actor out` is typed Actor: cast it back using the class input wire as target.
+6. Run `lvai_validate_aixml` BEFORE converting. Fix every "Object terminal not found" and Bundle error; path/class mismatch and protected-scope errors are expected. A failed convert burns the VI name (Error 1051) until LabVIEW restarts.
+7. Accessor data terminal labels are the type label, not always the field name: read them from the stub's `call` (`Sequence File`, `Actor Framework:Message Enqueuer`).

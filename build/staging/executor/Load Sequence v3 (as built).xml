@@ -1,0 +1,136 @@
+<VI _name="Sequence Executor.lvclass:Load Sequence.vi" description="Loads a sequence JSON and launches its rig plug-in. Refuses while Running. Reads and parses the sequence and rig config and validates them; any error or invalid sequence sets Status LOAD ERROR and returns NO error (AF would stop the actor). Otherwise stops the previous rig, loads the plug-in class, casts it to Rig, sets its config, launches it nested (auto-stop), and stores Sequence, Rig Config, Rig Enqueuer, Loaded, Results (all NOT RUN) and Status through the class accessors. A launch error also sets Status LOAD ERROR and Loaded F.">
+  <Control _name="Sequence Executor in" type="path" uid="527" uid_parent="root" value="" conIdx="11" connection="required" outputs="value:527.value" />
+  <Control _name="path" type="path" uid="9602" uid_parent="root" value="" conIdx="10" connection="recommended" outputs="value:9602.value" />
+  <Control _name="error in" type="cluster{bool.status,int32.code,string.source}" uid="9603" uid_parent="root" value="[false,0,]" conIdx="8" connection="required" outputs="value:9603.value" />
+  <Control _name="Rig type" type="path" uid="30000" uid_parent="root" value="" outputs="value:30000.value" />
+  <Constant _name="no error" type="cluster{bool.status,int32.code,string.source}" uid="9605" uid_parent="root" value="[false,0,]" outputs="value:9605.value" />
+  <Constant _name="LOAD ERROR prefix" type="string" uid="9606" uid_parent="root" value="LOAD ERROR: " outputs="value:9606.value" />
+  <Constant _name="sequence running" type="string" uid="9607" uid_parent="root" value="sequence running" outputs="value:9607.value" />
+  <Constant _name="invalid sequence" type="string" uid="9608" uid_parent="root" value="invalid sequence" outputs="value:9608.value" />
+  <Constant _name="NOT RUN" type="string" uid="9609" uid_parent="root" value="NOT RUN" outputs="value:9609.value" />
+  <Constant _name="empty" type="string" uid="9610" uid_parent="root" value="" outputs="value:9610.value" />
+  <Constant _name="LOADED prefix" type="string" uid="9611" uid_parent="root" value="LOADED " outputs="value:9611.value" />
+  <Constant _name=" on " type="string" uid="9612" uid_parent="root" value=" on " outputs="value:9612.value" />
+  <Constant _name="open paren" type="string" uid="9613" uid_parent="root" value=" (" outputs="value:9613.value" />
+  <Constant _name=" steps)" type="string" uid="9614" uid_parent="root" value=" steps)" outputs="value:9614.value" />
+  <Constant _name="true" type="bool" uid="9615" uid_parent="root" value="true" outputs="value:9615.value" />
+  <Constant _name="Step Result base" type="cluster{int32.step_no,string.step_name,string.result,string.reason,double.measured,double.target,double.duration_ms}" uid="9616" uid_parent="root" value="[0,,NOT RUN,,0,0,0]" outputs="value:9616.value" />
+  <Indicator _name="Sequence Executor out" type="path" uid="525" uid_parent="root" value="" conIdx="3" connection="recommended" inputs="value:9678.value" />
+  <Indicator _name="error out" type="cluster{bool.status,int32.code,string.source}" uid="9680" uid_parent="root" value="[false,0,]" conIdx="0" connection="recommended" inputs="value:9605.value" />
+  <Call uid="526" uid_parent="root" target="LVMCP Stub 8f337871d6.vi" inputs="path:9602.value,error in:9603.value" outputs="Sequence File:526.Sequence File,rig config path:526.rig config path,error out:526.error out" />
+  <Call uid="392" uid_parent="root" target="LVMCP Stub 5c24f25df3.vi" inputs="path:526.rig config path,error in:526.error out" outputs="Rig Config:392.Rig Config,plugin class path:392.plugin class path,error out:392.error out" />
+  <Call uid="379" uid_parent="root" target="LVMCP Stub 4c1db707ad.vi" inputs="Sequence File:526.Sequence File,Rig Config:392.Rig Config,error in:392.error out" outputs="valid:379.valid,problems:,error out:379.error out" />
+  <Call uid="30001" uid_parent="root" target="LVMCP Stub 55d4e99ab6.vi" inputs="error in (no error):,Sequence Executor in:527.value" outputs="error out:,Sequence Executor out:30001.Sequence Executor out,Running:30001.Running" />
+  <Call uid="30002" uid_parent="root" target="LVMCP Stub 06318b36e2.vi" inputs="error in (no error):,Sequence Executor in:30001.Sequence Executor out" outputs="error out:,Sequence Executor out:30002.Sequence Executor out,Actor Framework\3AMessage Enqueuer:30002.Actor Framework\3AMessage Enqueuer" />
+  <Node _name="Unbundle By Name" uid="9621" uid_parent="root" fields="status,source" inputs="input cluster:379.error out" outputs="status:9621.status,source:9621.source" />
+  <Node _name="Not" uid="9622" uid_parent="root" inputs="x:379.valid" outputs=".not. x?:9622..not. x?" />
+  <Node _name="Or" uid="9623" uid_parent="root" inputs="x:9621.status,y:9622..not. x?" outputs="x .or. y?:9623.x .or. y?" />
+  <Node _name="Or" uid="9624" uid_parent="root" inputs="x:30001.Running,y:9623.x .or. y?" outputs="x .or. y?:9624.x .or. y?" />
+  <Structure _name="Case Structure" uid="9625" uid_parent="root" selectin="9624.x .or. y?">
+    <Tunnel _id="In1" uid="9626" uid_parent="9625" inputs="value:30002.Sequence Executor out" />
+    <Tunnel _id="In2" uid="9627" uid_parent="9625" inputs="value:30002.Actor Framework\3AMessage Enqueuer" />
+    <Tunnel _id="In3" uid="9628" uid_parent="9625" inputs="value:392.plugin class path" />
+    <Tunnel _id="In4" uid="9629" uid_parent="9625" inputs="value:392.Rig Config" />
+    <Tunnel _id="In5" uid="9630" uid_parent="9625" inputs="value:526.Sequence File" />
+    <Tunnel _id="In6" uid="9631" uid_parent="9625" inputs="value:9621.source" />
+    <Tunnel _id="In7" uid="9632" uid_parent="9625" inputs="value:30001.Running" />
+    <Tunnel _id="In8" uid="9633" uid_parent="9625" inputs="value:9622..not. x?" />
+    <Tunnel _id="In9" uid="10239" uid_parent="9625" inputs="value:9608.value" />
+    <Tunnel _id="In10" uid="10269" uid_parent="9625" inputs="value:9607.value" />
+    <Tunnel _id="In11" uid="10297" uid_parent="9625" inputs="value:9606.value" />
+    <Tunnel _id="In12" uid="10498" uid_parent="9625" inputs="value:9615.value" />
+    <Tunnel _id="In13" uid="10549" uid_parent="9625" inputs="value:9616.value" />
+    <Tunnel _id="In14" uid="10563" uid_parent="9625" inputs="value:9609.value" />
+    <Tunnel _id="In15" uid="10624" uid_parent="9625" inputs="value:9610.value" />
+    <Tunnel _id="In16" uid="10729" uid_parent="9625" inputs="value:9611.value" />
+    <Tunnel _id="In17" uid="10743" uid_parent="9625" inputs="value:9612.value" />
+    <Tunnel _id="In18" uid="10757" uid_parent="9625" inputs="value:9613.value" />
+    <Tunnel _id="In19" uid="10771" uid_parent="9625" inputs="value:9614.value" />
+    <Tunnel _id="In20" uid="30003" uid_parent="9625" inputs="value:30000.value" />
+    <CaseFrame selector="True" uid="9634" uid_parent="9625" selectout="">
+      <Tunnel _id="In1" uid="9635" uid_parent="9634" outputs="value:9635.value" />
+      <Tunnel _id="In2" uid="9636" uid_parent="9634" />
+      <Tunnel _id="In3" uid="9637" uid_parent="9634" />
+      <Tunnel _id="In4" uid="9638" uid_parent="9634" />
+      <Tunnel _id="In5" uid="9639" uid_parent="9634" />
+      <Tunnel _id="In6" uid="9640" uid_parent="9634" outputs="value:9640.value" />
+      <Tunnel _id="In7" uid="9641" uid_parent="9634" outputs="value:9641.value" />
+      <Tunnel _id="In8" uid="9642" uid_parent="9634" outputs="value:9642.value" />
+      <Tunnel _id="In9" uid="10237" uid_parent="9634" outputs="value:10237.value" />
+      <Tunnel _id="In10" uid="10267" uid_parent="9634" outputs="value:10267.value" />
+      <Tunnel _id="In11" uid="10295" uid_parent="9634" outputs="value:10295.value" />
+      <Tunnel _id="In12" uid="10496" uid_parent="9634" />
+      <Tunnel _id="In13" uid="10547" uid_parent="9634" />
+      <Tunnel _id="In14" uid="10561" uid_parent="9634" />
+      <Tunnel _id="In15" uid="10622" uid_parent="9634" />
+      <Tunnel _id="In16" uid="10727" uid_parent="9634" />
+      <Tunnel _id="In17" uid="10741" uid_parent="9634" />
+      <Tunnel _id="In18" uid="10755" uid_parent="9634" />
+      <Tunnel _id="In19" uid="10769" uid_parent="9634" />
+      <Tunnel _id="In20" uid="30004" uid_parent="9634" />
+      <Node _name="Select" uid="9643" uid_parent="9634" inputs="s:9642.value,t:10237.value,f:9640.value" outputs="s? t\3Af:9643.s? t\3Af" />
+      <Node _name="Select" uid="9644" uid_parent="9634" inputs="s:9641.value,t:10267.value,f:9643.s? t\3Af" outputs="s? t\3Af:9644.s? t\3Af" />
+      <Node _name="Concatenate Strings" uid="9645" uid_parent="9634" inputs="string:10295.value,string:9644.s? t\3Af" outputs="concatenated string:9645.concatenated string" />
+      <Call uid="30010" uid_parent="9634" target="LVMCP Stub 14f7267438.vi" inputs="error in (no error):,Sequence Executor in:9635.value,Status:9645.concatenated string" outputs="error out:,Sequence Executor out:30010.Sequence Executor out" />
+      <Tunnel _id="Out1" uid="9647" uid_parent="9634" inputs="value:30010.Sequence Executor out" />
+    </CaseFrame>
+    <CaseFrame selector="False" uid="9648" uid_parent="9625" selectout="">
+      <Tunnel _id="In1" uid="9649" uid_parent="9648" outputs="value:9649.value" />
+      <Tunnel _id="In2" uid="9650" uid_parent="9648" outputs="value:9650.value" />
+      <Tunnel _id="In3" uid="9651" uid_parent="9648" outputs="value:9651.value" />
+      <Tunnel _id="In4" uid="9652" uid_parent="9648" outputs="value:9652.value" />
+      <Tunnel _id="In5" uid="9653" uid_parent="9648" outputs="value:9653.value" />
+      <Tunnel _id="In6" uid="9654" uid_parent="9648" />
+      <Tunnel _id="In7" uid="9655" uid_parent="9648" />
+      <Tunnel _id="In8" uid="9656" uid_parent="9648" />
+      <Tunnel _id="In9" uid="10238" uid_parent="9648" />
+      <Tunnel _id="In10" uid="10268" uid_parent="9648" />
+      <Tunnel _id="In11" uid="10296" uid_parent="9648" outputs="value:10296.value" />
+      <Tunnel _id="In12" uid="10497" uid_parent="9648" outputs="value:10497.value" />
+      <Tunnel _id="In13" uid="10548" uid_parent="9648" outputs="value:10548.value" />
+      <Tunnel _id="In14" uid="10562" uid_parent="9648" outputs="value:10562.value" />
+      <Tunnel _id="In15" uid="10623" uid_parent="9648" outputs="value:10623.value" />
+      <Tunnel _id="In16" uid="10728" uid_parent="9648" outputs="value:10728.value" />
+      <Tunnel _id="In17" uid="10742" uid_parent="9648" outputs="value:10742.value" />
+      <Tunnel _id="In18" uid="10756" uid_parent="9648" outputs="value:10756.value" />
+      <Tunnel _id="In19" uid="10770" uid_parent="9648" outputs="value:10770.value" />
+      <Tunnel _id="In20" uid="30005" uid_parent="9648" outputs="value:30005.value" />
+      <Call uid="9657" uid_parent="9648" target="Actor Framework.lvlib:Stop Msg.lvclass:Send Normal Stop.vi" inputs="Message Enqueuer:9650.value,error in (no error):" outputs="error out:" />
+      <Call uid="9658" uid_parent="9648" target="Get LV Class Default Value.vi" inputs="class path:9651.value,options:,error in (no error):" outputs="object:9658.object,error out:9658.error out" />
+      <Node _name="To More Specific Class" uid="20002" uid_parent="9648" inputs="reference:9658.object,target class:30005.value,error in:9658.error out" outputs="specific class reference:20002.specific class reference,error out:20002.error out" />
+      <Call uid="366" uid_parent="9648" target="LVMCP Stub f757b276eb.vi" inputs="Rig in:20002.specific class reference,Rig Config:9652.value,error in:20002.error out" outputs="Rig out:366.Rig out,error out:366.error out" />
+      <Call uid="9661" uid_parent="9648" target="Actor Framework.lvlib:Actor.lvclass:Launch Nested Actor.vi" inputs="Caller Actor in:9649.value,Nested Actor:366.Rig out,Auto-stop? (T):10497.value,Open Actor Core front panel? (F):,Debug Alias:,error in (no error):366.error out" outputs="Caller Actor out:9661.Caller Actor out,Nested Actor's Enqueuer:9661.Nested Actor's Enqueuer,error out:9661.error out" />
+      <Node _name="To More Specific Class" uid="30020" uid_parent="9648" inputs="reference:9661.Caller Actor out,target class:9649.value,error in:" outputs="specific class reference:30020.specific class reference,error out:" />
+      <Node _name="Unbundle By Name" uid="9662" uid_parent="9648" fields="steps" inputs="input cluster:9653.value" outputs="steps:9662.steps" />
+      <Structure _name="For Loop" uid="9663" uid_parent="9648" count="" maxin="" maxout="">
+        <Constant _name="zero" type="double" uid="9672" uid_parent="9663" value="0" outputs="value:9672.value" />
+        <Tunnel _id="In1" uid="9664" uid_parent="9663" mode="index" inputs="value:9662.steps" outputs="value:9664.value" />
+        <Constant _name="Step Result base" type="cluster{int32.step_no,string.step_name,string.result,string.reason,double.measured,double.target,double.duration_ms}" uid="9665" uid_parent="9663" value="[0,,NOT RUN,,0,0,0]" outputs="value:9665.value" />
+        <Constant _name="NOT RUN" type="string" uid="9666" uid_parent="9663" value="NOT RUN" outputs="value:9666.value" />
+        <Constant _name="empty" type="string" uid="10631" uid_parent="9663" value="" outputs="value:10631.value" />
+        <Node _name="Unbundle By Name" uid="9667" uid_parent="9663" fields="step_no,step_name" inputs="input cluster:9664.value" outputs="step_no:9667.step_no,step_name:9667.step_name" />
+        <Node _name="Bundle By Name" uid="9668" uid_parent="9663" fields="step_no,step_name,result,reason,measured,target,duration_ms" inputs="step_no:9667.step_no,step_name:9667.step_name,result:9666.value,reason:10631.value,measured:9672.value,target:9672.value,duration_ms:9672.value,input cluster:9665.value" outputs="output cluster:9668.output cluster" />
+        <Tunnel _id="Out1" uid="9669" uid_parent="9663" mode="index" inputs="value:9668.output cluster" outputs="value:9669.value" />
+      </Structure>
+      <Node _name="Array Size" uid="9670" uid_parent="9648" inputs="array:9662.steps" outputs="size(s):9670.size(s)" />
+      <Node _name="Number To Decimal String" uid="9671" uid_parent="9648" inputs="number:9670.size(s)" outputs="decimal integer string:9671.decimal integer string" />
+      <Node _name="Unbundle By Name" uid="9673" uid_parent="9648" fields="sequence_id" inputs="input cluster:9653.value" outputs="sequence_id:9673.sequence_id" />
+      <Node _name="Unbundle By Name" uid="9674" uid_parent="9648" fields="rig_id" inputs="input cluster:9652.value" outputs="rig_id:9674.rig_id" />
+      <Node _name="Concatenate Strings" uid="9675" uid_parent="9648" inputs="string:10728.value,string:9673.sequence_id,string:10742.value,string:9674.rig_id,string:10756.value,string:9671.decimal integer string,string:10770.value" outputs="concatenated string:9675.concatenated string" />
+      <Node _name="Unbundle By Name" uid="20003" uid_parent="9648" fields="status,source" inputs="input cluster:9661.error out" outputs="status:20003.status,source:20003.source" />
+      <Node _name="Concatenate Strings" uid="20004" uid_parent="9648" inputs="string:10296.value,string:20003.source" outputs="concatenated string:20004.concatenated string" />
+      <Node _name="Select" uid="20005" uid_parent="9648" inputs="s:20003.status,t:20004.concatenated string,f:9675.concatenated string" outputs="s? t\3Af:20005.s? t\3Af" />
+      <Node _name="Not" uid="20006" uid_parent="9648" inputs="x:20003.status" outputs=".not. x?:20006..not. x?" />
+      <Call uid="30021" uid_parent="9648" target="LVMCP Stub f855e47eab.vi" inputs="error in (no error):,Sequence Executor in:30020.specific class reference,Sequence File:9653.value" outputs="error out:,Sequence Executor out:30021.Sequence Executor out" />
+      <Call uid="30022" uid_parent="9648" target="LVMCP Stub 821cc3795c.vi" inputs="error in (no error):,Sequence Executor in:30021.Sequence Executor out,Rig Config:9652.value" outputs="error out:,Sequence Executor out:30022.Sequence Executor out" />
+      <Call uid="30023" uid_parent="9648" target="LVMCP Stub 06c64b54a3.vi" inputs="error in (no error):,Sequence Executor in:30022.Sequence Executor out,Actor Framework\3AMessage Enqueuer:9661.Nested Actor's Enqueuer" outputs="error out:,Sequence Executor out:30023.Sequence Executor out" />
+      <Call uid="30024" uid_parent="9648" target="LVMCP Stub 7dc5d89b89.vi" inputs="error in (no error):,Sequence Executor in:30023.Sequence Executor out,Loaded:20006..not. x?" outputs="error out:,Sequence Executor out:30024.Sequence Executor out" />
+      <Call uid="30025" uid_parent="9648" target="LVMCP Stub 384c4756d2.vi" inputs="error in (no error):,Sequence Executor in:30024.Sequence Executor out,Results:9669.value" outputs="error out:,Sequence Executor out:30025.Sequence Executor out" />
+      <Call uid="30026" uid_parent="9648" target="LVMCP Stub 14f7267438.vi" inputs="error in (no error):,Sequence Executor in:30025.Sequence Executor out,Status:20005.s? t\3Af" outputs="error out:,Sequence Executor out:30026.Sequence Executor out" />
+      <Tunnel _id="Out1" uid="9677" uid_parent="9648" inputs="value:30026.Sequence Executor out" />
+    </CaseFrame>
+    <Tunnel _id="Out1" uid="9678" uid_parent="9625" outputs="value:9678.value" />
+  </Structure>
+  <FreeLabel comment="Read, validate, launch rig, store" uid="9600" uid_parent="root" />
+</VI>
+<?lvmcp pane="4815"?>

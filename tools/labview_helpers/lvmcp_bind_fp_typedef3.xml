@@ -1,0 +1,82 @@
+<VI _name="lvmcp_bind_fp_typedef3.vi" description="Opens a VI through the active project's application instance\2C opens its front panel\2C replaces each named control (matched by Label.Text) with the given .ctl\2C saves the VI in place and restores the panel window state. Every error is wired.">
+  <FreeLabel comment="Replace named controls with their .ctl" uid="fl" uid_parent="root"/>
+  <Control _name="vi path" type="string" uid="vp" uid_parent="root" value="" outputs="value:vp.value"/>
+  <Control _name="terminal names" type="string" uid="tn" uid_parent="root" value="" outputs="value:tn.value"/>
+  <Control _name="ctl paths" type="string" uid="cp" uid_parent="root" value="" outputs="value:cp.value"/>
+  <Control _name="error in" type="cluster{bool.status,int32.code,string.source}" uid="ei" uid_parent="root" value="[false,0,]" outputs="value:ei.value"/>
+  <Node _name="Property Node" fields="read+Project\3AActive Project" type="{LV.Application}" inputs="reference:,error in (no error):ei.value" outputs="Project\3AActive Project:pa.proj,reference out:,error out:pa.err" uid="pa" uid_parent="root"/>
+  <Node _name="Property Node" fields="read+Application" type="{LV.Project}" inputs="reference:pa.proj,error in (no error):pa.err" outputs="Application:pb.app,reference out:,error out:pb.err" uid="pb" uid_parent="root"/>
+  <Constant _name="empty format" type="string" uid="ef" uid_parent="root" value="" outputs="value:ef.value"/>
+  <Constant _name="pipe" type="string" uid="pi" uid_parent="root" value="|" outputs="value:pi.value"/>
+  <Constant _name="string array type" type="array{string}" uid="sat" uid_parent="root" value="[]" outputs="value:sat.value"/>
+  <Node _name="Spreadsheet String To Array" inputs="format string:ef.value,spreadsheet string:tn.value,array type (2D Dbl):sat.value,delimiter (Tab):pi.value" outputs="array:sa1.array" uid="sa1" uid_parent="root"/>
+  <Node _name="Spreadsheet String To Array" inputs="format string:ef.value,spreadsheet string:cp.value,array type (2D Dbl):sat.value,delimiter (Tab):pi.value" outputs="array:sa2.array" uid="sa2" uid_parent="root"/>
+  <Node _name="String To Path" inputs="string:vp.value" outputs="path:stp.path" uid="stp" uid_parent="root"/>
+  <Node _name="Open VI Reference" inputs="application reference (local):pb.app,vi path:stp.path,error in (no error):pb.err" outputs="vi reference:ov.vi,error out:ov.err" uid="ov" uid_parent="root"/>
+  <Indicator _name="open vi error" type="cluster{bool.status,int32.code,string.source}" uid="ove" uid_parent="root" value="[false,0,]" inputs="value:ov.err"/>
+  <Node _name="Property Node" fields="read+Front Panel Window\3AOpen" type="{LV.VI}" inputs="reference:ov.vi,error in (no error):ov.err" outputs="Front Panel Window\3AOpen:wo.open,reference out:,error out:wo.err" uid="wo" uid_parent="root"/>
+  <Node _name="Invoke Node" target="FP.Open" type="{LV.VI}" inputs="reference:ov.vi,error in (no error):wo.err,Activate:,State:" outputs="reference out:,error out:fo.err" uid="fo" uid_parent="root"/>
+  <Node _name="Property Node" fields="read+Front Panel" type="{LV.VI}" inputs="reference:ov.vi,error in (no error):fo.err" outputs="Front Panel:fp.panel,reference out:,error out:fp.err" uid="fp" uid_parent="root"/>
+  <Node _name="Property Node" fields="read+Controls[]" type="{LV.Panel}" inputs="reference:fp.panel,error in (no error):fp.err" outputs="Controls[]:cs.controls,reference out:,error out:cs.err" uid="cs" uid_parent="root"/>
+  <Structure _name="For Loop" count="" maxin="" maxout="" uid="l1" uid_parent="root">
+    <Tunnel _id="In1" inputs="value:cs.controls" mode="index" outputs="value:l1i1.value" uid="l1i1" uid_parent="l1"/>
+    <Node _name="Property Node" fields="read+Label.Text" type="{LV.Control}" inputs="reference:l1i1.value,error in (no error):" outputs="Label.Text:lt.text,reference out:,error out:lt.err" uid="lt" uid_parent="l1"/>
+    <Tunnel _id="Out1" inputs="value:lt.text" mode="index" outputs="value:l1o1.value" uid="l1o1" uid_parent="l1"/>
+    <Tunnel _id="Out2" inputs="value:lt.err" mode="index" outputs="value:l1o2.value" uid="l1o2" uid_parent="l1"/>
+  </Structure>
+  <Indicator _name="label errors" type="array{cluster{bool.status,int32.code,string.source}}" uid="le" uid_parent="root" value="[]" inputs="value:l1o2.value"/>
+  <Indicator _name="terminal names seen" type="array{string}" uid="tns" uid_parent="root" value="[]" inputs="value:l1o1.value"/>
+  <Structure _name="For Loop" count="" maxin="" maxout="" uid="l2" uid_parent="root">
+    <Tunnel _id="In1" inputs="value:sa1.array" mode="index" outputs="value:l2i1.value" uid="l2i1" uid_parent="l2"/>
+    <Tunnel _id="In2" inputs="value:l1o1.value" outputs="value:l2i2.value" uid="l2i2" uid_parent="l2"/>
+    <Tunnel _id="In3" inputs="value:cs.controls" outputs="value:l2i3.value" uid="l2i3" uid_parent="l2"/>
+    <Tunnel _id="In4" inputs="value:sa2.array" mode="index" outputs="value:l2i4.value" uid="l2i4" uid_parent="l2"/>
+    <ShiftReg uid="sr" uid_parent="l2">
+      <Left inputs="value:cs.err" outputs="value:srl.value" uid="srl" uid_parent="sr"/>
+      <Right inputs="value:c2o2.value" outputs="value:srr.value" uid="srr" uid_parent="sr"/>
+    </ShiftReg>
+    <Node _name="String To Path" inputs="string:l2i4.value" outputs="path:l2p.path" uid="l2p" uid_parent="l2"/>
+    <Node _name="Search 1D Array" inputs="1D array:l2i2.value,element:l2i1.value,start index (0):" outputs="index of element:l2s.index" uid="l2s" uid_parent="l2"/>
+    <Constant _name="zero" type="int32" uid="l2z" uid_parent="l2" value="0" outputs="value:l2z.value"/>
+    <Node _name="Greater Or Equal?" inputs="x:l2s.index,y:l2z.value" outputs="x &gt;= y?:l2g.found" uid="l2g" uid_parent="l2"/>
+    <Structure _name="Case Structure" selectin="l2g.found" uid="c2" uid_parent="l2">
+      <Tunnel _id="In1" inputs="value:l2i3.value" uid="c2i1" uid_parent="c2"/>
+      <Tunnel _id="In2" inputs="value:l2s.index" uid="c2i2" uid_parent="c2"/>
+      <Tunnel _id="In3" inputs="value:l2p.path" uid="c2i3" uid_parent="c2"/>
+      <Tunnel _id="In4" inputs="value:srl.value" uid="c2i4" uid_parent="c2"/>
+      <CaseFrame selector="False" selectout="" uid="c2f" uid_parent="c2">
+        <Tunnel _id="In1" outputs="value:" uid="c2fi1" uid_parent="c2f"/>
+        <Tunnel _id="In2" outputs="value:" uid="c2fi2" uid_parent="c2f"/>
+        <Tunnel _id="In3" outputs="value:" uid="c2fi3" uid_parent="c2f"/>
+        <Tunnel _id="In4" outputs="value:c2fi4.value" uid="c2fi4" uid_parent="c2f"/>
+        <Constant _name="none" type="int32" uid="c2f0" uid_parent="c2f" value="0" outputs="value:c2f0.value"/>
+        <Tunnel _id="Out1" inputs="value:c2f0.value" uid="c2fo1" uid_parent="c2f"/>
+        <Tunnel _id="Out2" inputs="value:c2fi4.value" uid="c2fo2" uid_parent="c2f"/>
+      </CaseFrame>
+      <CaseFrame selector="True" selectout="" uid="c2t" uid_parent="c2">
+        <Tunnel _id="In1" outputs="value:c2ti1.value" uid="c2ti1" uid_parent="c2t"/>
+        <Tunnel _id="In2" outputs="value:c2ti2.value" uid="c2ti2" uid_parent="c2t"/>
+        <Tunnel _id="In3" outputs="value:c2ti3.value" uid="c2ti3" uid_parent="c2t"/>
+        <Tunnel _id="In4" outputs="value:c2ti4.value" uid="c2ti4" uid_parent="c2t"/>
+        <Node _name="Index Array" inputs="array:c2ti1.value,index:c2ti2.value" outputs="element:c2ia.element" uid="c2ia" uid_parent="c2t"/>
+        <Node _name="Invoke Node" target="Replace" type="{LV.Control}" inputs="reference:c2ia.element,error in (no error):c2ti4.value,Style:,Path:c2ti3.value,PaletteString:" outputs="reference out:,error out:c2r.err,Replace:" uid="c2r" uid_parent="c2t"/>
+        <Constant _name="one" type="int32" uid="c2t1" uid_parent="c2t" value="1" outputs="value:c2t1.value"/>
+        <Tunnel _id="Out1" inputs="value:c2t1.value" uid="c2to1" uid_parent="c2t"/>
+        <Tunnel _id="Out2" inputs="value:c2r.err" uid="c2to2" uid_parent="c2t"/>
+      </CaseFrame>
+      <Tunnel _id="Out1" outputs="value:c2o1.value" uid="c2o1" uid_parent="c2"/>
+      <Tunnel _id="Out2" outputs="value:c2o2.value" uid="c2o2" uid_parent="c2"/>
+    </Structure>
+    <Tunnel _id="Out1" inputs="value:c2o1.value" mode="index" outputs="value:l2o1.value" uid="l2o1" uid_parent="l2"/>
+    <Tunnel _id="Out2" inputs="value:c2o2.value" mode="index" outputs="value:l2o2.value" uid="l2o2" uid_parent="l2"/>
+  </Structure>
+  <Node _name="Add Array Elements" inputs="numeric array:l2o1.value" outputs="sum:sum.sum" uid="sum" uid_parent="root"/>
+  <Indicator _name="terminals bound" type="int32" uid="tb" uid_parent="root" value="0" inputs="value:sum.sum"/>
+  <Indicator _name="replace errors" type="array{cluster{bool.status,int32.code,string.source}}" uid="re" uid_parent="root" value="[]" inputs="value:l2o2.value"/>
+  <Node _name="Invoke Node" target="Save.Instrument" type="{LV.VI}" inputs="reference:ov.vi,error in (no error):srr.value,Path to saved file:,Save a Copy:,Without Diagram:" outputs="reference out:,error out:sv.err" uid="sv" uid_parent="root"/>
+  <Indicator _name="save vi error" type="cluster{bool.status,int32.code,string.source}" uid="sve" uid_parent="root" value="[false,0,]" inputs="value:sv.err"/>
+  <Node _name="Property Node" fields="write+Front Panel Window\3AOpen" type="{LV.VI}" inputs="reference:ov.vi,error in (no error):sv.err,Front Panel Window\3AOpen:wo.open" outputs="reference out:,error out:wc.err" uid="wc" uid_parent="root"/>
+  <Node _name="Close Reference" inputs="reference:ov.vi,error in (no error):wc.err" outputs="error out:cr1.err" uid="cr1" uid_parent="root"/>
+  <Node _name="Close Reference" inputs="reference:pb.app,error in (no error):cr1.err" outputs="error out:cr2.err" uid="cr2" uid_parent="root"/>
+  <Indicator _name="error out" type="cluster{bool.status,int32.code,string.source}" uid="eo" uid_parent="root" value="[false,0,]" inputs="value:cr2.err"/>
+</VI>

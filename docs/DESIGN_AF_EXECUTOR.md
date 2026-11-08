@@ -112,6 +112,13 @@ Private data: `Sequence` (Sequence File), `Rig Config` (Rig Config), `Results` [
 Executor messages (`src/Executor Messages/`): Load Sequence Msg (path), Start Sequence Msg, Stop Sequence Msg (Abort "STOPPED BY OPERATOR"), Emergency Stop Msg (Abort "E-STOP", sent at **High** priority — AF has no public Critical), Channel Feedback Msg (Channel Feedback).
 Rig messages (`src/Rig Messages/`): Apply Setpoints Msg. VTU plug-in messages (`plugins/VTU Sim Rig/Messages/`): Tick Msg.
 
+## 7a. As-built deviations (recorded during build)
+
+- `Rig.Channels` field exists but is not written: the VTU Sim Rig builds the Channel Feedback value directly and passes it to `Publish Feedback` (AIXML-authored writes to a typedef class field break). Behaviour unchanged.
+- VTU Sim Rig does not store the Time-Delayed Send notifier (`Tick Notifier` field unused); the tick helper ends on its own when the actor's queue is released at stop. To be confirmed by the stop test.
+- Channel Feedback Msg's sender is named `Send Process Feedback.vi` (AF message maker derives it from the method name). Kept to avoid hand-renaming class members.
+- Logic pane slots follow `docs/CONNECTOR_PANE_RULES.md` (measured 4815 numbering: top 7/5, bottom 6/4).
+
 ## 8. Build notes
 
 - Actor Core / Stop Core overrides: `lvai_create_override` + `lvai_af_add_hook` (AIXML cannot author Call Parent Method). Launcher: `lvai_generate_vi_with_events` (plain converter drops event frames).

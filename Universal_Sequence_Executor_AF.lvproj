@@ -53,6 +53,7 @@
 		</Item>
 		<Item Name="lvmcp_bind_fp_typedef3.vi" Type="VI" URL="../tools/labview_helpers/lvmcp_bind_fp_typedef3.vi"/>
 		<Item Name="Rig.lvclass" Type="LVClass" URL="../src/Rig/Rig.lvclass"/>
+		<Item Name="Sequence Executor Launcher.vi" Type="VI" URL="../Sequence Executor Launcher.vi"/>
 		<Item Name="Sequence Executor.lvclass" Type="LVClass" URL="../src/Executor/Sequence Executor.lvclass"/>
 		<Item Name="Test Select Monitored Signal A.vi" Type="VI" URL="../tests/caraya/Test Select Monitored Signal A.vi"/>
 		<Item Name="Dependencies" Type="Dependencies"/>

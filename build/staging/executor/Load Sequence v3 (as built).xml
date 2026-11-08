@@ -4,9 +4,6 @@
   <Control _name="error in" type="cluster{bool.status,int32.code,string.source}" uid="9603" uid_parent="root" value="[false,0,]" conIdx="8" connection="required" outputs="value:9603.value" />
   <Control _name="Rig type" type="path" uid="30000" uid_parent="root" value="" outputs="value:30000.value" />
   <Constant _name="no error" type="cluster{bool.status,int32.code,string.source}" uid="9605" uid_parent="root" value="[false,0,]" outputs="value:9605.value" />
-  <Constant _name="LS enter" outputs="value:40010.value" type="string" uid="40010" uid_parent="root" value="LS|enter"/>
-  <Constant _name="trace path" outputs="value:40011.value" type="path" uid="40011" uid_parent="root" value="C:\\Users\\DynaAdmin\\PycharmProjects\\Universal-sequence-executor-AF\\results\\trace_load.txt"/>
-  <Node _name="Write to Text File" uid="40012" uid_parent="root" inputs="file (use dialog):40011.value,text:40010.value,error in:,prompt (Choose or enter file path):" outputs="refnum out:,cancelled:,error out:" />
   <Constant _name="LOAD ERROR prefix" type="string" uid="9606" uid_parent="root" value="LOAD ERROR: " outputs="value:9606.value" />
   <Constant _name="sequence running" type="string" uid="9607" uid_parent="root" value="sequence running" outputs="value:9607.value" />
   <Constant _name="invalid sequence" type="string" uid="9608" uid_parent="root" value="invalid sequence" outputs="value:9608.value" />
@@ -51,7 +48,6 @@
     <Tunnel _id="In19" uid="10771" uid_parent="9625" inputs="value:9614.value" />
     <Tunnel _id="In20" uid="30003" uid_parent="9625" inputs="value:30000.value" />
     <Tunnel _id="In21" uid="30006" uid_parent="9625" inputs="value:9605.value" />
-    <Tunnel _id="In22" uid="40020" uid_parent="9625" inputs="value:40011.value" />
     <CaseFrame selector="True" uid="9634" uid_parent="9625" selectout="">
       <Tunnel _id="In1" uid="9635" uid_parent="9634" outputs="value:9635.value" />
       <Tunnel _id="In2" uid="9636" uid_parent="9634" />
@@ -74,13 +70,9 @@
       <Tunnel _id="In19" uid="10769" uid_parent="9634" />
       <Tunnel _id="In20" uid="30004" uid_parent="9634" />
       <Tunnel _id="In21" uid="30007" uid_parent="9634" outputs="value:30007.value" />
-      <Tunnel _id="In22" uid="40021" uid_parent="9634" outputs="value:40021.value" />
       <Node _name="Select" uid="9643" uid_parent="9634" inputs="s:9642.value,t:10237.value,f:9640.value" outputs="s? t\3Af:9643.s? t\3Af" />
       <Node _name="Select" uid="9644" uid_parent="9634" inputs="s:9641.value,t:10267.value,f:9643.s? t\3Af" outputs="s? t\3Af:9644.s? t\3Af" />
       <Node _name="Concatenate Strings" uid="9645" uid_parent="9634" inputs="string:10295.value,string:9644.s? t\3Af" outputs="concatenated string:9645.concatenated string" />
-      <Constant _name="rej prefix" outputs="value:40013.value" type="string" uid="40013" uid_parent="9634" value="LS|rej|"/>
-      <Node _name="Concatenate Strings" uid="40014" uid_parent="9634" inputs="string:40013.value,string:9645.concatenated string" outputs="concatenated string:40014.concatenated string" />
-      <Node _name="Write to Text File" uid="40015" uid_parent="9634" inputs="file (use dialog):40021.value,text:40014.concatenated string,error in:,prompt (Choose or enter file path):" outputs="refnum out:,cancelled:,error out:" />
       <Call uid="30010" uid_parent="9634" target="LVMCP Stub 14f7267438.vi" inputs="error in (no error):,Sequence Executor in:9635.value,Status:9645.concatenated string" outputs="error out:,Sequence Executor out:30010.Sequence Executor out" />
       <Call uid="30011" uid_parent="9634" target="LVMCP Stub af37b3bff9.vi" inputs="Sequence Executor in:30010.Sequence Executor out,Status:9645.concatenated string,error in:30007.value" outputs="Sequence Executor out:30011.Sequence Executor out,error out:" />
       <Tunnel _id="Out1" uid="9647" uid_parent="9634" inputs="value:30011.Sequence Executor out" />
@@ -107,7 +99,6 @@
       <Tunnel _id="In19" uid="10770" uid_parent="9648" outputs="value:10770.value" />
       <Tunnel _id="In20" uid="30005" uid_parent="9648" outputs="value:30005.value" />
       <Tunnel _id="In21" uid="30008" uid_parent="9648" outputs="value:30008.value" />
-      <Tunnel _id="In22" uid="40022" uid_parent="9648" />
       <Call uid="9657" uid_parent="9648" target="Actor Framework.lvlib:Stop Msg.lvclass:Send Normal Stop.vi" inputs="Message Enqueuer:9650.value,error in (no error):" outputs="error out:" />
       <Call uid="9658" uid_parent="9648" target="Get LV Class Default Value.vi" inputs="class path:9651.value,options:,error in (no error):" outputs="object:9658.object,error out:9658.error out" />
       <Node _name="To More Specific Class" uid="20002" uid_parent="9648" inputs="reference:9658.object,target class:30005.value,error in:9658.error out" outputs="specific class reference:20002.specific class reference,error out:20002.error out" />
@@ -131,10 +122,6 @@
       <Node _name="Unbundle By Name" uid="9674" uid_parent="9648" fields="rig_id" inputs="input cluster:9652.value" outputs="rig_id:9674.rig_id" />
       <Node _name="Concatenate Strings" uid="9675" uid_parent="9648" inputs="string:10728.value,string:9673.sequence_id,string:10742.value,string:9674.rig_id,string:10756.value,string:9671.decimal integer string,string:10770.value" outputs="concatenated string:9675.concatenated string" />
       <Node _name="Unbundle By Name" uid="20003" uid_parent="9648" fields="status,source" inputs="input cluster:9661.error out" outputs="status:20003.status,source:20003.source" />
-      <Constant _name="LS prefix" outputs="value:40001.value" type="string" uid="40001" uid_parent="9648" value="LS|"/>
-      <Constant _name="trace path" outputs="value:40002.value" type="path" uid="40002" uid_parent="9648" value="C:\\Users\\DynaAdmin\\PycharmProjects\\Universal-sequence-executor-AF\\results\\trace_load.txt"/>
-      <Node _name="Concatenate Strings" uid="40003" uid_parent="9648" inputs="string:40001.value,string:20003.source" outputs="concatenated string:40003.concatenated string" />
-      <Node _name="Write to Text File" uid="40004" uid_parent="9648" inputs="file (use dialog):40002.value,text:40003.concatenated string,error in:,prompt (Choose or enter file path):" outputs="refnum out:,cancelled:,error out:" />
       <Node _name="Concatenate Strings" uid="20004" uid_parent="9648" inputs="string:10296.value,string:20003.source" outputs="concatenated string:20004.concatenated string" />
       <Node _name="Select" uid="20005" uid_parent="9648" inputs="s:20003.status,t:20004.concatenated string,f:9675.concatenated string" outputs="s? t\3Af:20005.s? t\3Af" />
       <Node _name="Not" uid="20006" uid_parent="9648" inputs="x:20003.status" outputs=".not. x?:20006..not. x?" />

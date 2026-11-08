@@ -1,0 +1,36 @@
+{
+    "sequence_id":  "VTU_TIMEOUT_TEST",
+    "description":  "Single-step sequence whose 500 ms timeout is shorter than the settling time - must FAIL with Timeout.",
+    "rig_config":  "../rigs/vtu_sim.json",
+    "steps":  [
+                  {
+                      "step_no":  1,
+                      "step_name":  "Pre-fill & Prime",
+                      "command_type":  "RAMP_PRESSURE",
+                      "setpoints":  [
+                                        {
+                                            "channel":  "Pressure",
+                                            "value":  20.0
+                                        },
+                                        {
+                                            "channel":  "Flow",
+                                            "value":  15.0
+                                        },
+                                        {
+                                            "channel":  "Displacement",
+                                            "value":  0.0
+                                        }
+                                    ],
+                      "conditions":  [
+                                         {
+                                             "channel":  "Pressure",
+                                             "target":  20.0,
+                                             "tolerance":  2.0
+                                         }
+                                     ],
+                      "dwell_time_ms":  1000,
+                      "timeout_ms":  500,
+                      "expected_result":  "PASS"
+                  }
+              ]
+}

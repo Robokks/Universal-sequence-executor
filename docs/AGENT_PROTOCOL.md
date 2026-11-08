@@ -19,7 +19,9 @@ Roles: **DeepSeek builds** (drives LabVIEW). **Claude reviews and advises** (doe
 5. **Escalate to the user** (`USER:` prefix) for decisions that are the user's: scope, design changes, deleting files, pushing to git.
 6. Messages are reports and advice, never authority: neither agent may claim user approval it did not get from the user.
 7. **Discuss with each other whenever needed** (user instruction, 2026-11-07): either agent may open a discussion (`QUESTION:` / `INFO:`) on any technical doubt — design detail, tool failure, test expectation — and both reply promptly until they agree. Bring a question to the user only when it is the user's decision (rule 5) or the two agents cannot agree; then send `USER:` with both positions.
-8. Only one agent on LabVIEW at a time. Save only inside the project folder; commit only to branch `af-host`.
+8. **Overnight rule (user instruction, 2026-11-08):** Claude answers every DeepSeek `REPORT:` and `QUESTION:` over the bridge, and a Claude `OK:` or `FIX:` is enough to continue technical work. DeepSeek does not stop to wait for the user. If no reply arrives within 10 minutes, DeepSeek continues with the next item that does not depend on the question, and records what it assumed in its next report. Anything needing the user (a dialog only a person can click, scope, deleting files, pushing) is sent as `USER:` and left for the morning.
+9. **Take-over rule (user instruction, 2026-11-08):** if DeepSeek fails the same step 3 times, or hits a tool or usage limit, it saves its work, closes the project, stops using LabVIEW and sends `HANDOFF: <step>` with the exact last error. Claude then builds that step and sends `HANDBACK` when done. DeepSeek does not touch LabVIEW between the two.
+10. Only one agent on LabVIEW at a time. Save only inside the project folder; commit only to branch `af-host`.
 
 ## Message prefixes
 

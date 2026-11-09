@@ -1,0 +1,148 @@
+{
+    "sequence_id": "CONFIGURABLE_SAMPLE",
+    "description": "Sample of the configurable step format. Draft: the executor does not read this format yet.",
+    "rig_config": "../rigs/configurable_sim.json",
+    "steps": [
+        {
+            "step_no": 1,
+            "step_name": "Lubrication System: Pump ON",
+            "interlock_status": "Waiting for pump running feedback",
+            "pre_delay_ms": 500,
+            "post_delay_ms": 1000,
+            "timeout_ms": 10000,
+            "popup": {
+                "enabled": true,
+                "message": "Confirm oil level",
+                "type": "OK",
+                "timeout_ms": 0
+            },
+            "retest": {
+                "enabled": false,
+                "popup": false,
+                "popup_message": "",
+                "condition": "",
+                "goto_step_no": 0
+            },
+            "log": {
+                "peak": false,
+                "average": false,
+                "event": true
+            },
+            "actions": {
+                "do": [
+                    {
+                        "name": "LUB PUMP",
+                        "on": true,
+                        "mode": "FROM_IO"
+                    }
+                ],
+                "ao": [
+                    {
+                        "name": "PRESSURE SETPOINT",
+                        "value": 20.0,
+                        "mode": "FROM_IO"
+                    }
+                ],
+                "misc_write": [],
+                "call": []
+            },
+            "checks": {
+                "di_high": {
+                    "and": [
+                        "OIL LEVEL OK",
+                        "LUB PUMP RUNNING"
+                    ],
+                    "or": []
+                },
+                "di_low": {
+                    "and": [
+                        "EMERGENCY STOP"
+                    ],
+                    "or": []
+                },
+                "misc_high": {
+                    "and": [],
+                    "or": []
+                },
+                "misc_low": {
+                    "and": [],
+                    "or": []
+                },
+                "t0_high": {
+                    "and": [
+                        {
+                            "name": "LUB PRESSURE",
+                            "min": 18.0,
+                            "max": 22.0
+                        }
+                    ],
+                    "or": []
+                },
+                "t0_low": {
+                    "and": [],
+                    "or": []
+                },
+                "misc_compare": []
+            }
+        },
+        {
+            "step_no": 2,
+            "step_name": "Lubrication System: Delay Only",
+            "interlock_status": "",
+            "pre_delay_ms": 2000,
+            "post_delay_ms": 0,
+            "timeout_ms": 0,
+            "popup": {
+                "enabled": false,
+                "message": "",
+                "type": "OK",
+                "timeout_ms": 0
+            },
+            "retest": {
+                "enabled": false,
+                "popup": false,
+                "popup_message": "",
+                "condition": "",
+                "goto_step_no": 0
+            },
+            "log": {
+                "peak": false,
+                "average": false,
+                "event": false
+            },
+            "actions": {
+                "do": [],
+                "ao": [],
+                "misc_write": [],
+                "call": []
+            },
+            "checks": {
+                "di_high": {
+                    "and": [],
+                    "or": []
+                },
+                "di_low": {
+                    "and": [],
+                    "or": []
+                },
+                "misc_high": {
+                    "and": [],
+                    "or": []
+                },
+                "misc_low": {
+                    "and": [],
+                    "or": []
+                },
+                "t0_high": {
+                    "and": [],
+                    "or": []
+                },
+                "t0_low": {
+                    "and": [],
+                    "or": []
+                },
+                "misc_compare": []
+            }
+        }
+    ]
+}

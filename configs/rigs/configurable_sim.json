@@ -1,0 +1,14 @@
+{
+    "rig_id": "CONFIGURABLE_SIM",
+    "description": "Sample rig for the configurable step format. Draft: the executor does not read this format yet.",
+    "plugin_class": "../../plugins/VTU Sim Rig/VTU Sim Rig.lvclass",
+    "channels": [
+        { "name": "EMERGENCY STOP", "type": "DI" },
+        { "name": "OIL LEVEL OK", "type": "DI" },
+        { "name": "LUB PUMP RUNNING", "type": "DI" },
+        { "name": "LUB PUMP", "type": "DO" },
+        { "name": "PRESSURE SETPOINT", "type": "AO", "unit": "bar", "min": 0, "max": 250 },
+        { "name": "LUB PRESSURE", "type": "AI", "unit": "bar", "min": 0, "max": 250 },
+        { "name": "OPERATOR READY", "type": "MISC_BOOL" }
+    ]
+}

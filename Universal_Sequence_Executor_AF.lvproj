@@ -40,6 +40,12 @@
 			<Item Name="Launch Message Counter.vi" Type="VI" URL="../Launch Message Counter.vi"/>
 			<Item Name="Test Actor Messaging.vi" Type="VI" URL="../Test Actor Messaging.vi"/>
 		</Item>
+		<Item Name="tests" Type="Folder">
+			<Item Name="Test_Advance_Step_Caraya.vi" Type="VI" URL="../tests/caraya/Test_Advance_Step_Caraya.vi"/>
+			<Item Name="Run_All_Caraya.vi" Type="VI" URL="../tests/caraya/Run_All_Caraya.vi"/>
+			<Item Name="Test_Check_Group_Edges_Caraya.vi" Type="VI" URL="../tests/caraya/Test_Check_Group_Edges_Caraya.vi"/>
+			<Item Name="Test_Configurable_Parse_Caraya.vi" Type="VI" URL="../tests/caraya/Test_Configurable_Parse_Caraya.vi"/>
+		</Item>
 		<Item Name="Typedefs" Type="Folder">
 			<Item Name="Channel Definition.ctl" Type="VI" URL="../src/Typedefs/Channel Definition.ctl"/>
 			<Item Name="Channel Feedback.ctl" Type="VI" URL="../src/Typedefs/Channel Feedback.ctl"/>
@@ -56,11 +62,9 @@
 		<Item Name="Sequence Executor Launcher.vi" Type="VI" URL="../Sequence Executor Launcher.vi"/>
 		<Item Name="Sequence Executor.lvclass" Type="LVClass" URL="../src/Executor/Sequence Executor.lvclass"/>
 		<Item Name="Test Select Monitored Signal A.vi" Type="VI" URL="../tests/caraya/Test Select Monitored Signal A.vi"/>
+		<Item Name="Test_Check_Groups_Caraya.vi" Type="VI" URL="../tests/caraya/Test_Check_Groups_Caraya.vi"/>
 		<Item Name="Test_Logic_Caraya.vi" Type="VI" URL="../tests/caraya/Test_Logic_Caraya.vi"/>
 		<Item Name="Test_Sim_First_Order_Step_Caraya.vi" Type="VI" URL="../tests/caraya/Test_Sim_First_Order_Step_Caraya.vi"/>
-		<Item Name="tests" Type="Folder">
-			<Item Name="Run_All_Caraya.vi" Type="VI" URL="../tests/caraya/Run_All_Caraya.vi"/>
-		</Item>
 		<Item Name="Dependencies" Type="Dependencies"/>
 		<Item Name="Build Specifications" Type="Build"/>
 	</Item>

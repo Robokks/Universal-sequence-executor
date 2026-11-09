@@ -1,0 +1,5 @@
+step_no,step_name,result,reason,measured,target,duration_ms
+1,Heat Up,PASS,,58.901,60.000,1902
+2,Spin Up,PASS,,1184.136,1200.000,1804
+rig_id,THERMAL_SIM
+OVERALL,PASS

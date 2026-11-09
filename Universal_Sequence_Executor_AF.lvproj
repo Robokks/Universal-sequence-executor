@@ -58,6 +58,9 @@
 		<Item Name="Test Select Monitored Signal A.vi" Type="VI" URL="../tests/caraya/Test Select Monitored Signal A.vi"/>
 		<Item Name="Test_Logic_Caraya.vi" Type="VI" URL="../tests/caraya/Test_Logic_Caraya.vi"/>
 		<Item Name="Test_Sim_First_Order_Step_Caraya.vi" Type="VI" URL="../tests/caraya/Test_Sim_First_Order_Step_Caraya.vi"/>
+		<Item Name="tests" Type="Folder">
+			<Item Name="Run_All_Caraya.vi" Type="VI" URL="../tests/caraya/Run_All_Caraya.vi"/>
+		</Item>
 		<Item Name="Dependencies" Type="Dependencies"/>
 		<Item Name="Build Specifications" Type="Build"/>
 	</Item>

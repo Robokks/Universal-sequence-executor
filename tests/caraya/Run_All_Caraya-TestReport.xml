@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites framework-name="Caraya" framework-version="1.4.4.148">
+<testsuite name="Test_Logic_Caraya.vi" errors="0" skipped="0" tests="5" failures="0" timestamp="2026-11-09T09:05:42.079">
+    <testcase classname="Test_Logic_Caraya.vi" name="parse: sequence_id"/>
+    <testcase classname="Test_Logic_Caraya.vi" name="parse empty: error 5001"/>
+    <testcase classname="Test_Logic_Caraya.vi" name="lookup: Pressure = 20"/>
+    <testcase classname="Test_Logic_Caraya.vi" name="lookup: Bogus not found"/>
+    <testcase classname="Test_Logic_Caraya.vi" name="safe setpoints: Pressure clamps to 0"/>
+</testsuite>
+<testsuite name="Test_Sim_First_Order_Step_Caraya.vi" errors="0" skipped="0" tests="1" failures="0" timestamp="2026-11-09T09:05:42.122">
+    <testcase classname="Test_Sim_First_Order_Step_Caraya.vi" name="Sim step 0-&gt;100 gives 11.7503097415"/>
+</testsuite>
+</testsuites>

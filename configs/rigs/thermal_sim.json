@@ -1,0 +1,19 @@
+{
+    "rig_id":  "THERMAL_SIM",
+    "description":  "Second simulated rig for the universality check: different channel names, units, limits and channel count. Uses the same simulation plug-in class.",
+    "plugin_class":  "../../plugins/VTU Sim Rig/VTU Sim Rig.lvclass",
+    "channels":  [
+                     {
+                         "name":  "Temperature",
+                         "unit":  "degC",
+                         "min":  20,
+                         "max":  150
+                     },
+                     {
+                         "name":  "Speed",
+                         "unit":  "rpm",
+                         "min":  0,
+                         "max":  3000
+                     }
+                 ]
+}

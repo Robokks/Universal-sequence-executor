@@ -1,0 +1,37 @@
+{
+    "sequence_id":  "THERMAL_UNIVERSALITY",
+    "description":  "Universality check: runs on a rig with other channel names and no executor changes.",
+    "rig_config":  "../rigs/thermal_sim.json",
+    "steps":  [
+                  {
+                      "step_no":  1,
+                      "step_name":  "Heat Up",
+                      "command_type":  "RAMP",
+                      "setpoints":  [
+                                        { "channel":  "Temperature", "value":  60.0 },
+                                        { "channel":  "Speed", "value":  500.0 }
+                                    ],
+                      "conditions":  [
+                                         { "channel":  "Temperature", "target":  60.0, "tolerance":  3.0 }
+                                     ],
+                      "dwell_time_ms":  500,
+                      "timeout_ms":  15000,
+                      "expected_result":  "PASS"
+                  },
+                  {
+                      "step_no":  2,
+                      "step_name":  "Spin Up",
+                      "command_type":  "RAMP",
+                      "setpoints":  [
+                                        { "channel":  "Temperature", "value":  60.0 },
+                                        { "channel":  "Speed", "value":  1200.0 }
+                                    ],
+                      "conditions":  [
+                                         { "channel":  "Speed", "target":  1200.0, "tolerance":  50.0 }
+                                     ],
+                      "dwell_time_ms":  500,
+                      "timeout_ms":  15000,
+                      "expected_result":  "PASS"
+                  }
+              ]
+}

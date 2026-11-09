@@ -1,0 +1,21 @@
+{
+    "sequence_id":  "THERMAL_UNKNOWN_CHANNEL",
+    "description":  "Negative check: uses a channel the rig does not have, so Load must reject it.",
+    "rig_config":  "../rigs/thermal_sim.json",
+    "steps":  [
+                  {
+                      "step_no":  1,
+                      "step_name":  "Bad Channel",
+                      "command_type":  "RAMP",
+                      "setpoints":  [
+                                        { "channel":  "Pressure", "value":  10.0 }
+                                    ],
+                      "conditions":  [
+                                         { "channel":  "Pressure", "target":  10.0, "tolerance":  1.0 }
+                                     ],
+                      "dwell_time_ms":  100,
+                      "timeout_ms":  2000,
+                      "expected_result":  "PASS"
+                  }
+              ]
+}

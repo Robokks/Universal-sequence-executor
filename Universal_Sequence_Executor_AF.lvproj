@@ -41,10 +41,11 @@
 			<Item Name="Test Actor Messaging.vi" Type="VI" URL="../Test Actor Messaging.vi"/>
 		</Item>
 		<Item Name="tests" Type="Folder">
-			<Item Name="Test_Advance_Step_Caraya.vi" Type="VI" URL="../tests/caraya/Test_Advance_Step_Caraya.vi"/>
 			<Item Name="Run_All_Caraya.vi" Type="VI" URL="../tests/caraya/Run_All_Caraya.vi"/>
+			<Item Name="Test_Advance_Step_Caraya.vi" Type="VI" URL="../tests/caraya/Test_Advance_Step_Caraya.vi"/>
 			<Item Name="Test_Check_Group_Edges_Caraya.vi" Type="VI" URL="../tests/caraya/Test_Check_Group_Edges_Caraya.vi"/>
 			<Item Name="Test_Configurable_Parse_Caraya.vi" Type="VI" URL="../tests/caraya/Test_Configurable_Parse_Caraya.vi"/>
+			<Item Name="Test_Prepare_Checks_Caraya.vi" Type="VI" URL="../tests/caraya/Test_Prepare_Checks_Caraya.vi"/>
 		</Item>
 		<Item Name="Typedefs" Type="Folder">
 			<Item Name="Channel Definition.ctl" Type="VI" URL="../src/Typedefs/Channel Definition.ctl"/>

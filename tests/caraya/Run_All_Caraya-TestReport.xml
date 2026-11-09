@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites framework-name="Caraya" framework-version="1.4.4.148">
-<testsuite name="Test_Logic_Caraya.vi" errors="0" skipped="0" tests="5" failures="0" timestamp="2026-11-09T10:43:54.261">
+<testsuite name="Test_Sim_First_Order_Step_Caraya.vi" errors="0" skipped="0" tests="1" failures="0" timestamp="2026-11-09T12:49:42.472">
+    <testcase classname="Test_Sim_First_Order_Step_Caraya.vi" name="Sim step 0-&gt;100 gives 11.7503097415"/>
+</testsuite>
+<testsuite name="Test_Logic_Caraya.vi" errors="0" skipped="0" tests="5" failures="0" timestamp="2026-11-09T12:49:42.530">
     <testcase classname="Test_Logic_Caraya.vi" name="parse: sequence_id"/>
     <testcase classname="Test_Logic_Caraya.vi" name="parse empty: error 5001"/>
     <testcase classname="Test_Logic_Caraya.vi" name="lookup: Pressure = 20"/>
     <testcase classname="Test_Logic_Caraya.vi" name="lookup: Bogus not found"/>
     <testcase classname="Test_Logic_Caraya.vi" name="safe setpoints: Pressure clamps to 0"/>
 </testsuite>
-<testsuite name="Test_Sim_First_Order_Step_Caraya.vi" errors="0" skipped="0" tests="1" failures="0" timestamp="2026-11-09T10:43:54.326">
-    <testcase classname="Test_Sim_First_Order_Step_Caraya.vi" name="Sim step 0-&gt;100 gives 11.7503097415"/>
-</testsuite>
-<testsuite name="Test_Check_Groups_Caraya.vi" errors="0" skipped="0" tests="11" failures="0" timestamp="2026-11-09T10:43:54.401">
+<testsuite name="Test_Check_Groups_Caraya.vi" errors="0" skipped="0" tests="11" failures="0" timestamp="2026-11-09T12:49:42.595">
     <testcase classname="Test_Check_Groups_Caraya.vi" name="bool group RUN passes"/>
     <testcase classname="Test_Check_Groups_Caraya.vi" name="bool group OK fails"/>
     <testcase classname="Test_Check_Groups_Caraya.vi" name="bool group first fail OK"/>
@@ -23,7 +23,7 @@
     <testcase classname="Test_Check_Groups_Caraya.vi" name="compare EQ out fails"/>
     <testcase classname="Test_Check_Groups_Caraya.vi" name="compare first fail I1"/>
 </testsuite>
-<testsuite name="Test_Check_Group_Edges_Caraya.vi" errors="0" skipped="0" tests="19" failures="0" timestamp="2026-11-09T10:43:54.500">
+<testsuite name="Test_Check_Group_Edges_Caraya.vi" errors="0" skipped="0" tests="19" failures="0" timestamp="2026-11-09T12:49:42.662">
     <testcase classname="Test_Check_Group_Edges_Caraya.vi" name="bool AND true OR false fails"/>
     <testcase classname="Test_Check_Group_Edges_Caraya.vi" name="bool AND false OR true fails"/>
     <testcase classname="Test_Check_Group_Edges_Caraya.vi" name="bool AND false OR true fails item"/>
@@ -44,7 +44,7 @@
     <testcase classname="Test_Check_Group_Edges_Caraya.vi" name="all checks compare failure named"/>
     <testcase classname="Test_Check_Group_Edges_Caraya.vi" name="all checks compare failure named item"/>
 </testsuite>
-<testsuite name="Test_Configurable_Parse_Caraya.vi" errors="0" skipped="0" tests="13" failures="0" timestamp="2026-11-09T10:43:54.574">
+<testsuite name="Test_Configurable_Parse_Caraya.vi" errors="0" skipped="0" tests="13" failures="0" timestamp="2026-11-09T12:49:42.763">
     <testcase classname="Test_Configurable_Parse_Caraya.vi" name="parse sample has no error"/>
     <testcase classname="Test_Configurable_Parse_Caraya.vi" name="parse sample has 2 steps"/>
     <testcase classname="Test_Configurable_Parse_Caraya.vi" name="step 1 popup enabled"/>
@@ -59,12 +59,18 @@
     <testcase classname="Test_Configurable_Parse_Caraya.vi" name="wrong type rejected"/>
     <testcase classname="Test_Configurable_Parse_Caraya.vi" name="empty steps error 5001"/>
 </testsuite>
-<testsuite name="Test_Advance_Step_Caraya.vi" errors="0" skipped="0" tests="25" failures="0" timestamp="2026-11-09T10:43:54.634">
+<testsuite name="Test_Advance_Step_Caraya.vi" errors="0" skipped="0" tests="31" failures="0" timestamp="2026-11-09T12:49:42.822">
     <testcase classname="Test_Advance_Step_Caraya.vi" name="pre delay waits phase"/>
     <testcase classname="Test_Advance_Step_Caraya.vi" name="pre delay ends phase"/>
     <testcase classname="Test_Advance_Step_Caraya.vi" name="popup waits phase"/>
     <testcase classname="Test_Advance_Step_Caraya.vi" name="popup acknowledged phase"/>
-    <testcase classname="Test_Advance_Step_Caraya.vi" name="popup times out phase"/>
+    <testcase classname="Test_Advance_Step_Caraya.vi" name="popup timeout fails step phase"/>
+    <testcase classname="Test_Advance_Step_Caraya.vi" name="popup timeout fails step failed"/>
+    <testcase classname="Test_Advance_Step_Caraya.vi" name="popup timeout fails step retest"/>
+    <testcase classname="Test_Advance_Step_Caraya.vi" name="popup ack at timeout continues phase"/>
+    <testcase classname="Test_Advance_Step_Caraya.vi" name="popup ack at timeout continues failed"/>
+    <testcase classname="Test_Advance_Step_Caraya.vi" name="popup zero timeout waits phase"/>
+    <testcase classname="Test_Advance_Step_Caraya.vi" name="popup zero timeout waits failed"/>
     <testcase classname="Test_Advance_Step_Caraya.vi" name="not configured popup skipped phase"/>
     <testcase classname="Test_Advance_Step_Caraya.vi" name="actions sent once phase"/>
     <testcase classname="Test_Advance_Step_Caraya.vi" name="actions sent once send_actions"/>
@@ -85,5 +91,23 @@
     <testcase classname="Test_Advance_Step_Caraya.vi" name="post delay waits phase"/>
     <testcase classname="Test_Advance_Step_Caraya.vi" name="post delay ends phase"/>
     <testcase classname="Test_Advance_Step_Caraya.vi" name="done stays done phase"/>
+</testsuite>
+<testsuite name="Test_Prepare_Checks_Caraya.vi" errors="0" skipped="0" tests="16" failures="0" timestamp="2026-11-09T12:49:42.894">
+    <testcase classname="Test_Prepare_Checks_Caraya.vi" name="valid input has no error"/>
+    <testcase classname="Test_Prepare_Checks_Caraya.vi" name="comparison EQ"/>
+    <testcase classname="Test_Prepare_Checks_Caraya.vi" name="comparison NE"/>
+    <testcase classname="Test_Prepare_Checks_Caraya.vi" name="comparison GT"/>
+    <testcase classname="Test_Prepare_Checks_Caraya.vi" name="comparison GE"/>
+    <testcase classname="Test_Prepare_Checks_Caraya.vi" name="comparison LT"/>
+    <testcase classname="Test_Prepare_Checks_Caraya.vi" name="comparison LE"/>
+    <testcase classname="Test_Prepare_Checks_Caraya.vi" name="name kept"/>
+    <testcase classname="Test_Prepare_Checks_Caraya.vi" name="compare with kept"/>
+    <testcase classname="Test_Prepare_Checks_Caraya.vi" name="tolerance kept"/>
+    <testcase classname="Test_Prepare_Checks_Caraya.vi" name="and list kept"/>
+    <testcase classname="Test_Prepare_Checks_Caraya.vi" name="or list kept"/>
+    <testcase classname="Test_Prepare_Checks_Caraya.vi" name="range max kept"/>
+    <testcase classname="Test_Prepare_Checks_Caraya.vi" name="unknown comparison error 5003"/>
+    <testcase classname="Test_Prepare_Checks_Caraya.vi" name="lowercase comparison refused"/>
+    <testcase classname="Test_Prepare_Checks_Caraya.vi" name="no compare items has no error"/>
 </testsuite>
 </testsuites>

@@ -24,7 +24,7 @@ one deliberately wrong expectation as a negative control per new test VI, then r
 
 ## Behaviour defaults (the user has not specified these)
 
-- Popup: `OK` only. On timeout the step continues.
+- Popup: `OK` only. If it times out unanswered the step fails, so actions never run unconfirmed. `timeout_ms` 0 waits for the operator.
 - Retest: on failure, 1 retry, then the step fails.
 - T0 High and T0 Low: both are Min-Max range checks.
 - `ACK`: operator acknowledgement.
